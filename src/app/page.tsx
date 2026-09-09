@@ -1,69 +1,105 @@
-import Image from "next/image";
+import { Suspense } from "react";
+import { HomeHero } from "@/components/public/HomeHero";
+import { FeaturedProvidersList } from "@/components/public/FeaturedProvidersList";
+import { FeaturedProvidersSkeleton } from "@/components/public/FeaturedProvidersSkeleton";
+import { HomeCategories } from "@/components/public/HomeCategories";
+import { HomeAdvantages } from "@/components/public/HomeAdvantages";
+import { Testimonials } from "@/components/public/Testimonials";
+import { HomeFooter } from "@/components/public/HomeFooter";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-sand text-ink font-sans flex flex-col">
+      {/* Hero Section */}
+      <HomeHero />
+
+      {/* Featured Providers Section */}
+      <section className="py-16 md:py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+          <div>
+            <span className="text-accent text-[13px] font-bold tracking-[0.08em] uppercase">
+              PRESTATAIRES EN VEDETTE
+            </span>
+            <h2 className="font-heading font-bold text-3xl mt-2 text-ink">
+              Les réservations du moment
+            </h2>
+          </div>
+          <div className="flex gap-2">
+            {/* Visual arrows for mockup fidelity */}
+            <button className="w-10 h-10 flex items-center justify-center border border-divider text-ink bg-transparent rounded-full hover:bg-neutral-100 transition-colors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button className="w-10 h-10 flex items-center justify-center border-none text-accent bg-accent-100 rounded-full hover:bg-accent-200 transition-colors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Dynamic List with Skeleton Loading */}
+        <Suspense fallback={<FeaturedProvidersSkeleton />}>
+          <FeaturedProvidersList />
+        </Suspense>
+      </section>
+
+      {/* Categories Section */}
+      <HomeCategories />
+
+      {/* Categories Links (Footer Grid) */}
+      <section className="bg-trust py-16 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h5 className="text-white/90 font-semibold tracking-[0.08em] mb-10 text-[13px] uppercase">
+            NOS CATÉGORIES DE PRESTATAIRES
+          </h5>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+            <div>
+              <h6 className="text-white/50 text-[11px] tracking-[0.06em] mb-4">DIVERTISSEMENT</h6>
+              <div className="flex flex-col gap-2.5">
+                <a href="/search?pole=DIVERTISSEMENT" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Groupes & musiciens</a>
+                <a href="/search?pole=DIVERTISSEMENT" className="text-white/70 hover:text-white text-[13.5px] transition-colors">DJ</a>
+                <a href="/search?pole=DIVERTISSEMENT" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Danse & percussions</a>
+                <a href="/search?pole=DIVERTISSEMENT" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Artistes & spectacles</a>
+                <a href="/search?pole=DIVERTISSEMENT" className="text-white/70 hover:text-white text-[13.5px] transition-colors">MC / Animateurs</a>
+              </div>
+            </div>
+            <div>
+              <h6 className="text-white/50 text-[11px] tracking-[0.06em] mb-4">RÉCEPTION</h6>
+              <div className="flex flex-col gap-2.5">
+                <a href="/search?pole=RECEPTION" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Traiteurs</a>
+                <a href="/search?pole=RECEPTION" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Décoration</a>
+                <a href="/search?pole=RECEPTION" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Lieux & salles</a>
+                <a href="/search?pole=RECEPTION" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Sonorisation & éclairage</a>
+              </div>
+            </div>
+            <div>
+              <h6 className="text-white/50 text-[11px] tracking-[0.06em] mb-4">IMAGE & SOUVENIR</h6>
+              <div className="flex flex-col gap-2.5">
+                <a href="/search?pole=IMAGE_SOUVENIR" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Photographes</a>
+                <a href="/search?pole=IMAGE_SOUVENIR" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Vidéastes</a>
+                <a href="/search?pole=IMAGE_SOUVENIR" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Photobooth</a>
+                <a href="/search?pole=IMAGE_SOUVENIR" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Drone</a>
+              </div>
+            </div>
+            <div>
+              <h6 className="text-white/50 text-[11px] tracking-[0.06em] mb-4">SERVICES</h6>
+              <div className="flex flex-col gap-2.5">
+                <a href="/search?pole=SERVICES" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Sécurité</a>
+                <a href="/search?pole=SERVICES" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Transport / VIP</a>
+                <a href="/search?pole=SERVICES" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Hôtesses</a>
+                <a href="/search?pole=SERVICES" className="text-white/70 hover:text-white text-[13.5px] transition-colors">Wedding planners</a>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Advantages Section */}
+      <HomeAdvantages />
+
+      {/* Testimonials Section */}
+      <Testimonials />
+
+      {/* Footer */}
+      <HomeFooter />
     </div>
   );
 }
