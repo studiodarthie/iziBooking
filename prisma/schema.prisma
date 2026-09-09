@@ -1,0 +1,317 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth standard models
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(ORGANIZER)
+  isAdmin       Boolean   @default(false)
+  
+  accounts      Account[]
+  sessions      Session[]
+  
+  // Relations iziBooking
+  providerProfile ProviderProfile?
+  bookings        Booking[] // Bookings made by this user (organizer)
+  sentMessages    Message[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserRole {
+  ORGANIZER
+  PROVIDER
+  ADMIN
+}
+
+enum ProviderPole {
+  DIVERTISSEMENT
+  RECEPTION
+  IMAGE_SOUVENIR
+  SERVICES
+}
+
+// Profil du prestataire
+model ProviderProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  pole        ProviderPole
+  name        String
+  bio         String?  @db.Text
+  category    String   // ex: Chanteur, DJ, Traiteur, Photographe...
+  specialty   String?  // Généralisation de musicGenre
+  location    String   // Ville, Pays
+  isVerified  Boolean  @default(false)
+  
+  // Tarifs
+  basePrice   Float?
+  currency    String   @default("XAF") // FCFA par défaut
+  whatsapp    String?  // Numéro WhatsApp (ex: +237...)
+  
+  // Médias
+  mediaLinks  MediaLink[]
+  
+  // Nouveaux ajouts Phase 1
+  services        Service[]
+  scheduleSetting ScheduleSetting?
+  
+  // Phase 2 : Onboarding
+  onboardingCompleted Boolean @default(false)
+  
+  // Réservations reçues
+  bookings    Booking[]
+  blockedDates BlockedDate[]
+  coupons     Coupon[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MediaLink {
+  id                String          @id @default(cuid())
+  providerProfileId String
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  type              MediaType
+  url               String
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+}
+
+// Réservation
+model Booking {
+  id                String          @id @default(cuid())
+  
+  organizerId       String
+  organizer         User            @relation(fields: [organizerId], references: [id])
+  
+  providerProfileId String
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id])
+  
+  eventDate       DateTime
+  eventType       String
+  eventLocation   String
+  details         String?       @db.Text
+  clientWhatsApp  String?       // Numéro WhatsApp du client
+  
+  status          BookingStatus @default(PENDING)
+  budget          Float?        // Budget proposé par le client
+  totalAmount     Float?        // Prix final convenu
+  
+  serviceId       String?
+  service         Service?      @relation(fields: [serviceId], references: [id])
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  messages        Message[]
+  payments        Payment[]
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  DEPOSIT_PAID
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+// Dates d'indisponibilité pour le calendrier
+model BlockedDate {
+  id                String          @id @default(cuid())
+  providerProfileId String
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  date              DateTime
+  reason            String?
+  
+  @@unique([providerProfileId, date])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  
+  content   String   @db.Text
+  
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// NOUVEAUX MODELES - PHASE 1
+// ==========================================
+
+model Service {
+  id                String          @id @default(cuid())
+  providerProfileId String
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  
+  name              String
+  description       String?         @db.Text
+  category          String?         
+  
+  startingPrice     Float?          // Prix "À partir de" pour donner une idée au client
+  
+  bookings          Booking[]       // Relation inverse
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model ScheduleSetting {
+  id                String          @id @default(cuid())
+  providerProfileId String          @unique
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  
+  timezone          String          @default("Africa/Douala")
+  leadTimeHours     Int             @default(48) // Délai de prévenance min
+  bookingHorizon    Int             @default(180) // Max jours à l'avance
+  
+  workingHours      WorkingHour[]
+  timeOffs          TimeOff[]
+}
+
+model WorkingHour {
+  id                String          @id @default(cuid())
+  scheduleSettingId String
+  scheduleSetting   ScheduleSetting @relation(fields: [scheduleSettingId], references: [id], onDelete: Cascade)
+  
+  dayOfWeek         Int             // 0 = Dimanche, 1 = Lundi, etc.
+  startTime         String          // Format "HH:mm"
+  endTime           String          // Format "HH:mm"
+  
+  @@unique([scheduleSettingId, dayOfWeek])
+}
+
+model TimeOff {
+  id                String          @id @default(cuid())
+  scheduleSettingId String
+  scheduleSetting   ScheduleSetting @relation(fields: [scheduleSettingId], references: [id], onDelete: Cascade)
+  
+  startDate         DateTime
+  endDate           DateTime
+  reason            String?
+}
+
+// ==========================================
+// NOUVEAUX MODELES - PHASE 2 (Confort & Rétention)
+// ==========================================
+
+model Payment {
+  id          String        @id @default(cuid())
+  bookingId   String
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  amount      Float
+  currency    String        @default("XAF")
+  method      PaymentMethod @default(CASH)
+  status      PaymentStatus @default(PENDING)
+  type        PaymentType   @default(DEPOSIT) // Acompte ou solde
+  
+  reference   String?       // ID de transaction externe (CinetPay, Orange Money, etc.)
+  notes       String?       @db.Text
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum PaymentMethod {
+  CASH
+  MOBILE_MONEY
+  BANK_TRANSFER
+  CREDIT_CARD
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentType {
+  DEPOSIT   // Acompte
+  BALANCE   // Reste à payer (Solde)
+  FULL      // Paiement total
+}
+
+model Coupon {
+  id                String          @id @default(cuid())
+  providerProfileId String
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  
+  code              String          // ex: "BIENVENUE20"
+  discountType      DiscountType
+  discountValue     Float           // 20 (si %), 5000 (si FIXED)
+  
+  validFrom         DateTime?
+  validUntil        DateTime?
+  usageLimit        Int?            // Combien de fois ce code peut être utilisé en tout
+  usageCount        Int             @default(0)
+  
+  isActive          Boolean         @default(true)
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([providerProfileId, code])
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
