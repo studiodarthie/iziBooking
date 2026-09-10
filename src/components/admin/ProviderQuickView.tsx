@@ -3,9 +3,10 @@
 import { X, ShieldCheck, ShieldAlert, CheckCircle2, ExternalLink, MapPin, Tag, Video, Image as ImageIcon, Briefcase, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
+import type { ProviderWithDetails } from "@/app/admin/providers/page";
 
 interface ProviderQuickViewProps {
-  provider: any | null;
+  provider: ProviderWithDetails | null;
   onClose: () => void;
   onToggleVerification: (id: string, currentStatus: boolean) => void;
   isToggling: boolean;
@@ -24,8 +25,8 @@ export function ProviderQuickView({ provider, onClose, onToggleVerification, isT
 
   if (!provider) return null;
 
-  const images = provider.mediaLinks?.filter((m: any) => m.type === "IMAGE") || [];
-  const videos = provider.mediaLinks?.filter((m: any) => m.type === "VIDEO") || [];
+  const images = provider.mediaLinks?.filter((m) => m.type === "IMAGE") || [];
+  const videos = provider.mediaLinks?.filter((m) => m.type === "VIDEO") || [];
 
   return (
     <>
@@ -41,7 +42,7 @@ export function ProviderQuickView({ provider, onClose, onToggleVerification, isT
         {/* Header - Glassmorphism */}
         <div className="sticky top-0 z-10 bg-sand/80 backdrop-blur-md border-b border-ink/10 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h2 className="font-heading font-black text-xl text-ink">Centre d'Inspection</h2>
+            <h2 className="font-heading font-black text-xl text-ink">Centre d’Inspection</h2>
             {provider.isVerified ? (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-success/10 text-success">
                 <CheckCircle2 size={12} /> Vérifié
@@ -129,7 +130,7 @@ export function ProviderQuickView({ provider, onClose, onToggleVerification, isT
             <div>
               <h3 className="text-sm font-bold uppercase tracking-wider text-ink/40 mb-3">Services proposés ({provider.services.length})</h3>
               <div className="space-y-2">
-                {provider.services.map((service: any) => (
+                {provider.services.map((service) => (
                   <div key={service.id} className="bg-white p-3 rounded-xl border border-ink/5 shadow-sm flex justify-between items-center">
                     <div>
                       <p className="text-sm font-bold text-ink">{service.name}</p>
@@ -149,7 +150,7 @@ export function ProviderQuickView({ provider, onClose, onToggleVerification, isT
             <div>
               <h3 className="text-sm font-bold uppercase tracking-wider text-ink/40 mb-3">Portfolio ({provider.mediaLinks.length} médias)</h3>
               <div className="grid grid-cols-3 gap-2">
-                {images.slice(0, 6).map((img: any) => (
+                {images.slice(0, 6).map((img) => (
                   <div key={img.id} className="aspect-square rounded-lg bg-ink/5 overflow-hidden relative group">
                     <img src={img.url} alt="Portfolio" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/20 transition-colors flex items-center justify-center">

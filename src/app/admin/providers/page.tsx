@@ -1,6 +1,16 @@
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { ProviderListClient } from "./ProviderListClient";
-import { ShieldCheck, Search } from "lucide-react";
+import { Search } from "lucide-react";
+
+export type ProviderWithDetails = Prisma.ProviderProfileGetPayload<{
+  include: {
+    user: { select: { email: true; image: true; name: true } };
+    services: true;
+    mediaLinks: true;
+    _count: { select: { bookings: true } };
+  };
+}>;
 
 export default async function AdminProvidersPage(props: {
   searchParams: Promise<{ q?: string }>
@@ -9,7 +19,7 @@ export default async function AdminProvidersPage(props: {
   const q = searchParams.q || "";
 
   // Build the Prisma "where" clause dynamically
-  const whereClause: any = {};
+  const whereClause: Prisma.ProviderProfileWhereInput = {};
 
   if (q) {
     whereClause.OR = [

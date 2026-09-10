@@ -33,8 +33,8 @@ export async function toggleProviderVerification(providerId: string, currentStat
     revalidatePath(`/p/${providerId}`);
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erreur toggle verification:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : "Erreur inconnue" };
   }
 }

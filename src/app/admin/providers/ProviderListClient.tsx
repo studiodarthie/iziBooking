@@ -5,11 +5,12 @@ import { toggleProviderVerification } from "./actions";
 import { ShieldCheck, ShieldAlert, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ProviderQuickView } from "@/components/admin/ProviderQuickView";
+import type { ProviderWithDetails } from "./page";
 
-export function ProviderListClient({ initialProviders }: { initialProviders: any[] }) {
+export function ProviderListClient({ initialProviders }: { initialProviders: ProviderWithDetails[] }) {
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
-  const [selectedProvider, setSelectedProvider] = useState<any | null>(null);
+  const [selectedProvider, setSelectedProvider] = useState<ProviderWithDetails | null>(null);
 
   const handleToggle = async (providerId: string, currentStatus: boolean) => {
     // Prevent the row click event from firing if we clicked the button directly
