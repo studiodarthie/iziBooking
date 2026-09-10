@@ -1,18 +1,14 @@
 "use client";
 
-import { 
-  Users, 
-  CalendarCheck, 
-  DollarSign, 
-  TrendingUp,
+import {
+  CalendarCheck,
+  DollarSign,
   MapPin,
   Calendar as CalendarIcon,
-  CreditCard,
   CheckCircle,
   Eye,
   Copy,
-  Layers,
-  Settings
+  Layers
 } from "lucide-react";
 import { 
   XAxis, 
@@ -23,23 +19,18 @@ import {
   AreaChart,
   Area
 } from 'recharts';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import type { DashboardUser } from "@/types/dashboard";
 
-export function ProviderDashboard({ user }: { user: any }) {
+export function ProviderDashboard({ user }: { user: DashboardUser }) {
   const profile = user.providerProfile;
   const bookings = profile?.bookings || [];
   const services = profile?.services || [];
   
-  const [publicUrl, setPublicUrl] = useState("");
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setPublicUrl(`${window.location.origin}/p/${profile?.id}`);
-    }
-  }, [profile?.id]);
+  const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/p/${profile?.id}` : "";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(publicUrl);
@@ -50,13 +41,13 @@ export function ProviderDashboard({ user }: { user: any }) {
   // Calculs réels basés sur les réservations
   const totalBookings = bookings.length;
   const totalRevenue = bookings
-    .filter((b: any) => b.status === "CONFIRMED" || b.status === "COMPLETED")
-    .reduce((acc: number, curr: any) => acc + (curr.totalPrice || 0), 0);
+    .filter((b) => b.status === "CONFIRMED" || b.status === "COMPLETED")
+    .reduce((acc: number, curr) => acc + (curr.totalAmount || 0), 0);
   
   // Calcul réel de la complétion du profil
   let completeness = 20; // Profil basique créé
   if (user.image) completeness += 20;
-  if (profile?.description) completeness += 20;
+  if (profile?.bio) completeness += 20;
   if (services.length > 0) completeness += 20;
   if (profile?.location) completeness += 20;
 
@@ -80,7 +71,7 @@ export function ProviderDashboard({ user }: { user: any }) {
           <h1 className="text-3xl font-heading font-black text-ink tracking-tight">
             Bonjour, {profile?.name || "Prestataire"} 👋
           </h1>
-          <p className="text-ink/60 mt-1">Voici l'état de votre activité aujourd'hui sur iziBooking.</p>
+          <p className="text-ink/60 mt-1">Voici l’état de votre activité aujourd’hui sur iziBooking.</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href={`/p/${profile?.id}`}>
@@ -195,7 +186,7 @@ export function ProviderDashboard({ user }: { user: any }) {
                   <p className="text-ink/40 text-sm mt-1">Partagez votre lien public pour recevoir vos premières demandes.</p>
                 </div>
               ) : (
-                bookings.slice(0, 3).map((booking: any) => (
+                bookings.slice(0, 3).map((booking) => (
                   <Link key={booking.id} href={`/dashboard/bookings/${booking.id}`} className="group flex items-center justify-between p-4 rounded-xl border border-ink/5 hover:border-primary/20 hover:bg-primary/5 transition-all cursor-pointer">
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 rounded-xl bg-ink/5 flex flex-col items-center justify-center">
@@ -209,7 +200,7 @@ export function ProviderDashboard({ user }: { user: any }) {
                       <div>
                         <h3 className="font-bold text-ink group-hover:text-primary transition-colors">{booking.eventType || "Événement"}</h3>
                         <p className="text-sm text-ink/60 mt-0.5 flex items-center gap-1">
-                          <MapPin size={14} /> {booking.location || "Lieu non précisé"}
+                          <MapPin size={14} /> {booking.eventLocation || "Lieu non précisé"}
                         </p>
                       </div>
                     </div>
@@ -217,7 +208,7 @@ export function ProviderDashboard({ user }: { user: any }) {
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-trust/10 text-trust">
                         {booking.status}
                       </span>
-                      <p className="font-bold text-ink mt-1">{(booking.totalPrice || 0).toLocaleString('fr-FR')} FCFA</p>
+                      <p className="font-bold text-ink mt-1">{(booking.totalAmount || 0).toLocaleString('fr-FR')} FCFA</p>
                     </div>
                   </Link>
                 ))
@@ -282,7 +273,7 @@ export function ProviderDashboard({ user }: { user: any }) {
 
           {/* Vertical Activity Timeline */}
           <div className="bg-white rounded-2xl p-6 border border-ink/5 shadow-sm">
-            <h2 className="text-lg font-bold text-ink mb-6">Fil d'actualité</h2>
+            <h2 className="text-lg font-bold text-ink mb-6">Fil d’actualité</h2>
             
             <div className="relative border-l-2 border-ink/10 ml-3 space-y-8 pb-4">
               
@@ -294,7 +285,7 @@ export function ProviderDashboard({ user }: { user: any }) {
                 <div>
                   <div className="flex justify-between items-baseline mb-1">
                     <h3 className="text-sm font-bold text-ink">Compte créé</h3>
-                    <span className="text-[10px] font-bold text-ink/40">À L'INSTANT</span>
+                    <span className="text-[10px] font-bold text-ink/40">À L’INSTANT</span>
                   </div>
                   <p className="text-sm text-ink/70">Bienvenue sur iziBooking ! Votre compte prestataire est actif.</p>
                 </div>
@@ -308,7 +299,7 @@ export function ProviderDashboard({ user }: { user: any }) {
                   <div>
                     <div className="flex justify-between items-baseline mb-1">
                       <h3 className="text-sm font-bold text-ink">Service Ajouté</h3>
-                      <span className="text-[10px] font-bold text-ink/40">AUJOURD'HUI</span>
+                      <span className="text-[10px] font-bold text-ink/40">AUJOURD’HUI</span>
                     </div>
                     <p className="text-sm text-ink/70">Vous avez ajouté un nouveau service à votre catalogue.</p>
                   </div>

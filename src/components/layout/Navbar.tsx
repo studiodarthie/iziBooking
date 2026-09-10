@@ -2,9 +2,10 @@
 
 import { Bell, Search, Menu, MessageSquare } from "lucide-react";
 import Image from "next/image";
+import type { Prisma } from "@prisma/client";
 
 type NavbarProps = {
-  user: any; // We can type this properly later if needed, but it contains user and providerProfile
+  user: Prisma.UserGetPayload<{ include: { providerProfile: true } }>;
 };
 
 export function Navbar({ user }: NavbarProps) {

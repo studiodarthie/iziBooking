@@ -2,31 +2,30 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { 
-  Plus, 
-  Search, 
-  CalendarCheck, 
-  CreditCard, 
-  Users, 
-  MapPin, 
+import {
+  Search,
+  CalendarCheck,
+  CreditCard,
+  Users,
+  MapPin,
   Clock,
   ChevronRight,
-  TrendingUp,
   MessageSquare
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import type { DashboardUser } from "@/types/dashboard";
 
-export function OrganizerDashboard({ user }: { user: any }) {
+export function OrganizerDashboard({ user }: { user: DashboardUser }) {
   const bookings = user.bookings || [];
 
   // Calculate stats
   const totalBookings = bookings.length;
-  const confirmedBookings = bookings.filter((b: any) => b.status === "CONFIRMED" || b.status === "COMPLETED").length;
-  const pendingBookings = bookings.filter((b: any) => b.status === "PENDING" || b.status === "DEPOSIT_PAID").length;
+  const confirmedBookings = bookings.filter((b) => b.status === "CONFIRMED" || b.status === "COMPLETED").length;
+  const pendingBookings = bookings.filter((b) => b.status === "PENDING" || b.status === "DEPOSIT_PAID").length;
   const totalBudget = bookings
-    .filter((b: any) => b.status === "CONFIRMED" || b.status === "COMPLETED")
-    .reduce((acc: number, curr: any) => acc + (curr.totalPrice || curr.budget || 0), 0);
+    .filter((b) => b.status === "CONFIRMED" || b.status === "COMPLETED")
+    .reduce((acc: number, curr) => acc + (curr.totalAmount || curr.budget || 0), 0);
 
   // Status mapping for visual display
   const getStatusDisplay = (status: string) => {
@@ -141,7 +140,7 @@ export function OrganizerDashboard({ user }: { user: any }) {
                   </div>
                   <h3 className="text-lg font-bold text-ink mb-1">Aucune réservation</h3>
                   <p className="text-ink/60 text-sm text-center max-w-sm mb-6">
-                    Vous n'avez pas encore contacté de prestataires. Explorez le catalogue pour trouver la perle rare pour votre événement !
+                    Vous n’avez pas encore contacté de prestataires. Explorez le catalogue pour trouver la perle rare pour votre événement !
                   </p>
                   <Link href="/search">
                     <button className="bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-md hover:shadow-lg">
@@ -151,7 +150,7 @@ export function OrganizerDashboard({ user }: { user: any }) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {bookings.slice(0, 5).map((booking: any) => {
+                  {bookings.slice(0, 5).map((booking) => {
                     const statusUI = getStatusDisplay(booking.status);
                     const provider = booking.providerProfile;
                     return (
@@ -169,7 +168,7 @@ export function OrganizerDashboard({ user }: { user: any }) {
                           <div>
                             <h4 className="font-bold text-ink group-hover:text-primary transition-colors">{provider?.name || "Prestataire Inconnu"}</h4>
                             <div className="flex items-center flex-wrap gap-x-3 gap-y-1 text-xs text-ink/60 mt-1">
-                              <span className="flex items-center gap-1"><MapPin size={12} /> {booking.location || "Lieu non précisé"}</span>
+                              <span className="flex items-center gap-1"><MapPin size={12} /> {booking.eventLocation || "Lieu non précisé"}</span>
                               <span className="flex items-center gap-1"><Clock size={12} /> {new Date(booking.eventDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                             </div>
                           </div>
@@ -180,7 +179,7 @@ export function OrganizerDashboard({ user }: { user: any }) {
                             <span className={`w-1.5 h-1.5 rounded-full ${statusUI.dot}`}></span>
                             {statusUI.label}
                           </div>
-                          <p className="font-black text-ink">{(booking.totalPrice || booking.budget || 0).toLocaleString('fr-FR')} <span className="text-[10px] font-bold">FCFA</span></p>
+                          <p className="font-black text-ink">{(booking.totalAmount || booking.budget || 0).toLocaleString('fr-FR')} <span className="text-[10px] font-bold">FCFA</span></p>
                         </div>
                       </Link>
                     );
@@ -229,7 +228,7 @@ export function OrganizerDashboard({ user }: { user: any }) {
                     <span className="w-2 h-2 rounded-full bg-ink/20"></span> Annulé
                   </span>
                   <span className="text-ink font-black">
-                    {bookings.filter((b: any) => b.status === "CANCELLED").length}
+                    {bookings.filter((b) => b.status === "CANCELLED").length}
                   </span>
                 </div>
               </div>
@@ -267,7 +266,7 @@ export function OrganizerDashboard({ user }: { user: any }) {
             <div className="absolute -right-6 -top-6 opacity-10">
               <MessageSquare size={100} />
             </div>
-            <h3 className="font-bold text-lg mb-2 relative z-10">Besoin d'aide ?</h3>
+            <h3 className="font-bold text-lg mb-2 relative z-10">Besoin d’aide ?</h3>
             <p className="text-sm text-sand/70 mb-4 relative z-10">Notre équipe de conciergerie est là pour vous aider à trouver les meilleurs prestataires.</p>
             <button className="bg-white text-ink text-sm font-bold py-2 px-4 rounded-lg hover:bg-sand transition-colors relative z-10">
               Contacter le support

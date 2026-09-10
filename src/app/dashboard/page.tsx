@@ -25,7 +25,11 @@ export default async function DashboardPage() {
       },
       bookings: {
         include: {
-          providerProfile: true
+          providerProfile: {
+            include: {
+              user: { select: { image: true } }
+            }
+          }
         },
         orderBy: {
           createdAt: 'desc'
