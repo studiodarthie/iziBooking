@@ -360,8 +360,7 @@ export default function OnboardingPage() {
                   )}
                   
                   <CldUploadWidget
-                    uploadPreset="izibooking_preset"
-                    signatureEndpoint="/api/cloudinary/sign"
+                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "kamita_preset"}
                     onSuccess={(result: CloudinaryUploadWidgetResults) => {
                       if (typeof result.info !== "object" || !result.info) return;
                       setFormData({ ...formData, image: result.info.secure_url });
