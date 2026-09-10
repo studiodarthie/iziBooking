@@ -3,9 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Search, Phone, Mail, User, Menu, X, Star, ChevronDown, MapPin, Wallet, Sparkles } from "lucide-react";
+import { Search, Star, ChevronDown, MapPin, Wallet, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PublicNavbar } from "@/components/public/PublicNavbar";
 
 const CATEGORIES_BY_POLE: Record<string, string[]> = {
   DIVERTISSEMENT: ["Groupes & musiciens", "DJ", "Danse & percussions", "Artistes & spectacles", "MC / Animateurs"],
@@ -28,7 +29,6 @@ export function HomeHero({ featured }: { featured: HeroFeaturedProvider | null }
   const router = useRouter();
 
   const [selectedPole, setSelectedPole] = useState("");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,68 +62,7 @@ export function HomeHero({ featured }: { featured: HeroFeaturedProvider | null }
       <div className="absolute inset-0 bg-gradient-to-r from-[#0d0d0d] via-[#0d0d0d]/80 to-transparent z-10"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent z-10"></div>
 
-      {/* Topbar */}
-      <div className="relative z-20 justify-end items-center px-4 md:px-8 py-2 text-xs md:text-[12.5px] text-white/70 border-b border-white/10 hidden md:flex">
-        <div className="flex gap-5">
-          <a href="tel:+237600000000" className="flex items-center gap-1.5 hover:text-white transition-colors">
-            <Phone size={13} /> Appelez-nous : +237 6 00 00 00 00
-          </a>
-          <a href="mailto:contact@izibooking.africa" className="flex items-center gap-1.5 hover:text-white transition-colors">
-            <Mail size={13} /> contact@izibooking.africa
-          </a>
-        </div>
-      </div>
-
-      {/* Navbar */}
-      <nav className="relative z-50 flex items-center justify-between px-4 md:px-8 py-5 border-b border-white/5">
-        <div>
-          <Link href="/" className="font-heading font-bold text-xl md:text-2xl text-white tracking-tight">
-            iziBooking
-          </Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="hidden lg:flex items-center gap-6 mr-2">
-            <Link href="/" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Accueil</Link>
-            <Link href="/search" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Catalogue</Link>
-            <Link href="#temoignages" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Références</Link>
-          </div>
-          <Link href="/login" className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-white/40 transition-colors">
-            <User size={18} />
-          </Link>
-          <Link href="/onboarding" className="hidden md:block">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-primary hover:bg-accent-600 text-white border-none rounded-full py-2 pl-2 pr-5 flex items-center gap-2.5 text-sm font-semibold transition-colors shadow-[0_0_15px_rgba(181,69,27,0.3)]"
-            >
-              <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-lg leading-none pb-0.5">+</span>
-              Inscription gratuite
-            </motion.button>
-          </Link>
-          <button onClick={() => setIsMobileMenuOpen(true)} className="text-white/80 hover:text-white ml-2 lg:hidden">
-            <Menu size={24} />
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] bg-[#0d0d0d] flex flex-col p-6 lg:hidden">
-          <div className="flex items-center justify-between mb-10">
-            <span className="font-heading font-bold text-xl text-white">iziBooking</span>
-            <button onClick={() => setIsMobileMenuOpen(false)} className="text-white/80 hover:text-white">
-              <X size={24} />
-            </button>
-          </div>
-          <div className="flex flex-col gap-6">
-            <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white transition-colors">Accueil</Link>
-            <Link href="/search" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white transition-colors">Catalogue</Link>
-            <Link href="#temoignages" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white transition-colors">Références</Link>
-            <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white transition-colors">Connexion</Link>
-            <Link href="/onboarding" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-primary">Inscription gratuite</Link>
-          </div>
-        </div>
-      )}
+      <PublicNavbar theme="dark" showTopbar />
 
       {/* Hero Content */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16 lg:py-24 lg:flex-1 lg:flex lg:items-center">

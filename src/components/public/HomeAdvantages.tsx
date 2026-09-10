@@ -21,8 +21,8 @@ const advantages = [
   },
   {
     icon: LockKeyhole,
-    title: "Booking garanti",
-    desc: "Les fonds sont conservés en séquestre et versés à l'artiste après la prestation."
+    title: "Litiges pris en charge",
+    desc: "En cas de désaccord sur une prestation, notre équipe peut intervenir pour arbitrer et trouver une solution avec le prestataire."
   }
 ];
 

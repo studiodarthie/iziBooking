@@ -4,81 +4,60 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Star } from "lucide-react";
 
-export function Testimonials() {
-  return (
-    <section id="temoignages" className="bg-accent-100 py-16 md:py-24 relative overflow-hidden min-h-[420px] flex items-center">
-      {/* Decorative Photos */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-        whileInView={{ opacity: 1, scale: 1, rotate: -8 }}
-        transition={{ duration: 0.7 }}
-        className="hidden lg:block absolute top-8 left-[6%] w-[160px] h-[180px] shadow-lg border-4 border-white rounded-xl z-0 overflow-hidden"
-      >
-        <Image src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=300" alt="Client" fill className="object-cover" />
-      </motion.div>
-      
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-        whileInView={{ opacity: 1, scale: 1, rotate: 6 }}
-        transition={{ duration: 0.7, delay: 0.1 }}
-        className="hidden lg:block absolute bottom-5 left-[16%] w-[170px] h-[190px] shadow-lg border-4 border-white rounded-xl z-0 overflow-hidden"
-      >
-        <Image src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=300" alt="Client" fill className="object-cover" />
-      </motion.div>
-      
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-        whileInView={{ opacity: 1, scale: 1, rotate: 7 }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-        className="hidden lg:block absolute top-4 right-[6%] w-[170px] h-[190px] shadow-lg border-4 border-white rounded-xl z-0 overflow-hidden"
-      >
-        <Image src="https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=300" alt="Client" fill className="object-cover" />
-      </motion.div>
-      
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-        whileInView={{ opacity: 1, scale: 1, rotate: -6 }}
-        transition={{ duration: 0.7, delay: 0.3 }}
-        className="hidden lg:block absolute bottom-2 right-[16%] w-[160px] h-[180px] shadow-lg border-4 border-white rounded-xl z-0 overflow-hidden"
-      >
-        <Image src="https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?auto=compress&cs=tinysrgb&w=300" alt="Client" fill className="object-cover" />
-      </motion.div>
+export type Testimonial = {
+  id: string;
+  rating: number;
+  comment: string;
+  organizerName: string;
+  organizerImage: string | null;
+  providerName: string;
+};
 
-      {/* Content */}
-      <div className="max-w-2xl mx-auto text-center relative z-20 px-6">
-        <div className="flex justify-center gap-1 text-accent mb-6">
-          <Star className="fill-accent text-accent" size={22} />
-          <Star className="fill-accent text-accent" size={22} />
-          <Star className="fill-accent text-accent" size={22} />
-          <Star className="fill-accent text-accent" size={22} />
-          <Star className="text-accent" size={22} />
+export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
+  if (testimonials.length === 0) return null;
+
+  return (
+    <section id="temoignages" className="bg-accent-100 py-16 md:py-24">
+      <div className="max-w-6xl mx-auto px-4 md:px-8">
+        <div className="text-center max-w-xl mx-auto mb-12">
+          <span className="text-accent text-xs font-bold tracking-[0.08em] uppercase">Ce qu’ils en disent</span>
+          <h2 className="font-heading font-bold text-3xl md:text-4xl text-ink mt-3">
+            Des organisateurs déjà conquis
+          </h2>
         </div>
-        
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-xl md:text-2xl leading-relaxed text-ink m-0 font-medium"
-        >
-          « Nous avons réservé un traiteur et un DJ pour notre mariage en moins de deux jours. Tout était clair, du premier échange jusqu’à la prestation. »
-        </motion.p>
-        
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8"
-        >
-          <div className="font-bold text-lg text-ink">Marielle K.</div>
-          <div className="text-neutral-600 text-sm mt-1">Organisatrice, mariage à Douala</div>
-          <div className="flex justify-center mt-4">
-            <svg width="120" height="14" viewBox="0 0 140 16">
-              <path d="M2 12 Q35 2 70 10 T138 6" fill="none" stroke="currentColor" className="text-accent" strokeWidth="3" strokeLinecap="round"/>
-            </svg>
-          </div>
-        </motion.div>
+
+        <div className={`grid gap-6 ${testimonials.length === 1 ? "max-w-xl mx-auto" : testimonials.length === 2 ? "md:grid-cols-2 max-w-3xl mx-auto" : "md:grid-cols-3"}`}>
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="bg-white rounded-2xl p-6 shadow-sm flex flex-col"
+            >
+              <div className="flex gap-0.5 text-accent mb-4">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <Star key={n} size={16} className={n <= t.rating ? "fill-accent text-accent" : "text-neutral-300"} />
+                ))}
+              </div>
+              <p className="text-ink leading-relaxed flex-1">« {t.comment} »</p>
+              <div className="flex items-center gap-3 mt-6 pt-4 border-t border-divider">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent/20 flex items-center justify-center text-sm font-bold text-accent shrink-0">
+                  {t.organizerImage ? (
+                    <Image src={t.organizerImage} alt={t.organizerName} fill className="object-cover" />
+                  ) : (
+                    t.organizerName.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-ink">{t.organizerName}</div>
+                  <div className="text-neutral-500 text-xs">À propos de {t.providerName}</div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

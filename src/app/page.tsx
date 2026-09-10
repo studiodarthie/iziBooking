@@ -4,7 +4,7 @@ import { FeaturedProvidersList } from "@/components/public/FeaturedProvidersList
 import { FeaturedProvidersSkeleton } from "@/components/public/FeaturedProvidersSkeleton";
 import { HomeCategories, type CategoryCount } from "@/components/public/HomeCategories";
 import { HomeAdvantages } from "@/components/public/HomeAdvantages";
-import { Testimonials } from "@/components/public/Testimonials";
+import { Testimonials, type Testimonial } from "@/components/public/Testimonials";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import prisma from "@/lib/prisma";
 import { getRatingSummary } from "@/lib/ratings";
@@ -32,6 +32,25 @@ export default async function Home() {
       count: await prisma.providerProfile.count({ where: { isVerified: true, pole, user: { isBanned: false } } })
     }))
   );
+
+  const reviews = await prisma.review.findMany({
+    where: { rating: { gte: 4 }, comment: { not: null } },
+    orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+    take: 3,
+    include: {
+      organizer: { select: { name: true, image: true } },
+      providerProfile: { select: { name: true } }
+    }
+  });
+
+  const testimonials: Testimonial[] = reviews.map((r) => ({
+    id: r.id,
+    rating: r.rating,
+    comment: r.comment!,
+    organizerName: r.organizer.name || "Organisateur iziBooking",
+    organizerImage: r.organizer.image,
+    providerName: r.providerProfile.name,
+  }));
 
   const featured = featuredProvider ? (() => {
     const summary = getRatingSummary(featuredProvider.reviews);
@@ -125,7 +144,7 @@ export default async function Home() {
       <HomeAdvantages />
 
       {/* Testimonials Section */}
-      <Testimonials />
+      <Testimonials testimonials={testimonials} />
 
       {/* Footer */}
       <HomeFooter />

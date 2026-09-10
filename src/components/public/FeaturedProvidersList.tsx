@@ -11,7 +11,7 @@ export async function FeaturedProvidersList() {
   const providers = await prisma.providerProfile.findMany({
     where: { isVerified: true, user: { isBanned: false } },
     orderBy: { createdAt: "desc" },
-    take: 6,
+    take: 8,
     include: {
       user: {
         select: {
@@ -28,77 +28,57 @@ export async function FeaturedProvidersList() {
 
   if (providers.length === 0) {
     return (
-      <div className="col-span-3 py-12 text-center text-ink/50 bg-white rounded-xl shadow-sm border border-divider">
+      <div className="col-span-full py-12 text-center text-ink/50 bg-white rounded-xl shadow-sm border border-divider">
         Aucun prestataire mis en avant pour le moment.
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
       {providers.map((provider) => {
         const summary = getRatingSummary(provider.reviews);
         return (
-          <div key={provider.id} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group">
-            <div className="relative h-[220px] w-full overflow-hidden">
+          <div key={provider.id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group">
+            <Link href={`/p/${provider.id}`} className="absolute inset-0 z-0">
               <Image
                 src={provider.mediaLinks[0]?.url || provider.user?.image || "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800"}
                 alt={provider.name}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
+            </Link>
 
-              <div className="absolute top-3 left-3 flex flex-col gap-2">
-                <span className="bg-white text-ink text-xs font-semibold px-2 py-1 rounded shadow-sm">
-                  {provider.pole === "DIVERTISSEMENT" ? "Divertissement" :
-                   provider.pole === "RECEPTION" ? "Réception" :
-                   provider.pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" : "Services"}
-                </span>
-                <span className="bg-white text-ink text-xs font-semibold px-2 py-1 rounded shadow-sm w-fit">
-                  {provider.category}
-                </span>
+            <span className="absolute top-2 left-2 z-10 bg-white/90 text-ink text-[10px] font-semibold px-2 py-0.5 rounded pointer-events-none">
+              {provider.pole === "DIVERTISSEMENT" ? "Divertissement" :
+               provider.pole === "RECEPTION" ? "Réception" :
+               provider.pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" : "Services"}
+            </span>
+
+            {summary.count > 0 && (
+              <div className="absolute top-2 right-2 z-10 bg-white/90 text-ink flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded pointer-events-none">
+                <Star size={10} className="fill-accent text-accent" />
+                {summary.average.toFixed(1)}
               </div>
+            )}
 
-              {summary.count > 0 && (
-                <div className="absolute bottom-3 left-3 text-white flex items-center gap-1.5 text-sm font-medium drop-shadow-md">
-                  <Star size={14} className="fill-accent text-accent" />
-                  {summary.average.toFixed(1)} ({summary.count})
-                </div>
-              )}
-            </div>
-
-            <div className="p-5">
-              <h3 className="font-heading font-bold text-lg text-ink truncate">{provider.name}</h3>
-              <p className="text-ink/70 text-sm mt-1 line-clamp-2 min-h-[40px]">
-                {provider.bio || `${provider.category} professionnel à ${provider.location}.`}
-              </p>
-
-              <div className="flex flex-col gap-2 mt-4 text-xs text-ink/60">
-                <span className="flex items-center gap-1.5">
-                  <MapPin size={14} /> {provider.location}
-                </span>
+            <div className="absolute bottom-0 inset-x-0 z-10 p-3 pointer-events-none">
+              <h3 className="font-heading font-bold text-sm text-white truncate">{provider.name}</h3>
+              <div className="flex items-center gap-1 text-[11px] text-white/70 mt-0.5 truncate">
+                <MapPin size={10} className="shrink-0" /> {provider.location}
               </div>
-
-              <div className="flex justify-between items-center mt-5 pt-4 border-t border-divider">
-                <span className="font-bold text-[17px] text-ink">
-                  {provider.basePrice ? `${provider.basePrice.toLocaleString("fr-FR")} ${provider.currency}` : "Sur devis"}
-                </span>
-              </div>
-
-              <div className="flex gap-2 mt-4">
-                <Link href={`/p/${provider.id}`} className="flex-1">
-                  <button className="w-full py-2 bg-neutral-100 hover:bg-neutral-200 text-ink font-semibold rounded-lg transition-colors text-sm">
-                    Voir profil
-                  </button>
-                </Link>
-                <Link href={`/book/${provider.id}`} className="flex-1">
-                  <button className="w-full py-2 bg-primary hover:bg-accent-600 text-white font-semibold rounded-lg transition-colors text-sm">
-                    Réserver
-                  </button>
-                </Link>
+              <div className="text-xs font-bold text-white mt-1">
+                {provider.basePrice ? `${provider.basePrice.toLocaleString("fr-FR")} ${provider.currency}` : "Sur devis"}
               </div>
             </div>
+
+            <Link
+              href={`/book/${provider.id}`}
+              className="absolute bottom-3 right-3 z-20 bg-primary hover:bg-accent-600 text-white font-semibold rounded-lg px-2.5 py-1.5 text-[11px] transition-colors shadow-sm"
+            >
+              Réserver
+            </Link>
           </div>
         );
       })}
