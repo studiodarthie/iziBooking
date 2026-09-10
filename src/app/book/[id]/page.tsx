@@ -5,6 +5,7 @@ import { redirect, notFound } from "next/navigation";
 import { User } from "lucide-react";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { BookingForm } from "@/components/public/BookingForm";
+import { getUnavailableDates } from "./actions";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -43,6 +44,8 @@ export default async function BookingPage(props: Props) {
     notFound();
   }
 
+  const unavailableDates = await getUnavailableDates(profile.id);
+
   return (
     <div className="min-h-screen bg-[#FBF6EE] font-sans text-ink">
       <PublicNavbar theme="light" />
@@ -71,7 +74,7 @@ export default async function BookingPage(props: Props) {
         </div>
 
         {/* Formulaire */}
-        <BookingForm providerId={profile.id} services={profile.services} />
+        <BookingForm providerId={profile.id} services={profile.services} unavailableDates={unavailableDates} />
         
       </main>
     </div>

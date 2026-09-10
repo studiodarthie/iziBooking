@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { CheckCircle, Info } from "lucide-react";
 import type { Service } from "@prisma/client";
 
-export function BookingForm({ providerId, services }: { providerId: string, services: Service[] }) {
+export function BookingForm({ providerId, services, unavailableDates }: { providerId: string, services: Service[], unavailableDates: string[] }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null); // null means "Sur-mesure"
@@ -20,10 +20,18 @@ export function BookingForm({ providerId, services }: { providerId: string, serv
     details: ""
   });
 
+  const unavailableSet = new Set(unavailableDates);
+  const isDateUnavailable = formData.eventDate !== "" && unavailableSet.has(formData.eventDate);
+  const todayStr = new Date().toISOString().split("T")[0];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.eventDate || !formData.eventType || !formData.eventLocation || !formData.clientWhatsApp) {
       alert("Veuillez remplir tous les champs obligatoires, y compris votre numéro WhatsApp.");
+      return;
+    }
+    if (isDateUnavailable) {
+      alert("Cette date n'est pas disponible pour ce prestataire. Merci d'en choisir une autre.");
       return;
     }
 
@@ -110,13 +118,23 @@ export function BookingForm({ providerId, services }: { providerId: string, serv
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label className="block text-sm font-semibold text-ink mb-2">Date de l’événement *</label>
-            <input 
+            <input
               required
               type="date"
-              className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+              min={todayStr}
+              className={`w-full px-4 py-3 rounded-xl border focus:ring-1 outline-none ${
+                isDateUnavailable
+                  ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                  : "border-neutral-200 focus:border-primary focus:ring-primary"
+              }`}
               value={formData.eventDate}
               onChange={e => setFormData({...formData, eventDate: e.target.value})}
             />
+            {isDateUnavailable && (
+              <p className="text-xs text-red-500 mt-1.5">
+                Ce prestataire n’est pas disponible à cette date. Merci d’en choisir une autre.
+              </p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold text-ink mb-2">Type d’événement *</label>
@@ -198,7 +216,7 @@ export function BookingForm({ providerId, services }: { providerId: string, serv
         </div>
         <button 
           type="submit"
-          disabled={loading}
+          disabled={loading || isDateUnavailable}
           className="px-8 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md shadow-primary/20 disabled:opacity-50"
         >
           {loading ? "Envoi..." : "Envoyer ma demande"}
