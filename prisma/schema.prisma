@@ -52,6 +52,7 @@ model User {
   providerProfile ProviderProfile?
   bookings        Booking[] // Bookings made by this user (organizer)
   sentMessages    Message[]
+  reviews         Review[]
 }
 
 model VerificationToken {
@@ -108,7 +109,8 @@ model ProviderProfile {
   bookings    Booking[]
   blockedDates BlockedDate[]
   coupons     Coupon[]
-  
+  reviews     Review[]
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -155,6 +157,25 @@ model Booking {
   
   messages        Message[]
   payments        Payment[]
+  review          Review?
+}
+
+model Review {
+  id                String          @id @default(cuid())
+
+  bookingId         String          @unique
+  booking           Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  providerProfileId String
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+
+  organizerId       String
+  organizer         User            @relation(fields: [organizerId], references: [id])
+
+  rating            Int      // 1 à 5
+  comment           String?  @db.Text
+
+  createdAt         DateTime @default(now())
 }
 
 enum BookingStatus {
