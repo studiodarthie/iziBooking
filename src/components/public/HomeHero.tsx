@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Search, Phone, Mail, User, Menu, X, Star } from "lucide-react";
+import { Search, Phone, Mail, User, Menu, X, Star, ChevronDown, MapPin, Wallet, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -50,7 +50,7 @@ export function HomeHero({ featured }: { featured: HeroFeaturedProvider | null }
   };
 
   return (
-    <div className="relative overflow-hidden bg-[#0d0d0d] min-h-screen flex flex-col">
+    <div className="relative overflow-hidden bg-[#0d0d0d] flex flex-col lg:min-h-screen">
       {/* Background Image */}
       <Image
         src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1920"
@@ -126,10 +126,10 @@ export function HomeHero({ featured }: { featured: HeroFeaturedProvider | null }
       )}
 
       {/* Hero Content */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 flex-1 flex items-center py-12 md:py-20 lg:py-24">
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16 lg:py-24 lg:flex-1 lg:flex lg:items-center">
         <div className="grid lg:grid-cols-[1fr_560px] gap-10 lg:gap-16 w-full items-center">
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
@@ -137,7 +137,7 @@ export function HomeHero({ featured }: { featured: HeroFeaturedProvider | null }
             <span className="text-[#C9982B] uppercase text-[12px] font-bold tracking-[0.1em] mb-4 inline-block">
               DÉCOUVREZ LES MEILLEURS PRESTATAIRES PRÈS DE VOUS
             </span>
-            <h1 className="text-white font-heading font-extrabold text-[clamp(34px,4.4vw,54px)] leading-[1.1] mb-8">
+            <h1 className="text-white font-heading font-extrabold text-[clamp(30px,4.4vw,54px)] leading-[1.1] mb-8">
               La scène africaine,<br/>
               <span className="text-[#C9982B] relative inline-block mt-2">
                 réservable en un clic.
@@ -146,54 +146,68 @@ export function HomeHero({ featured }: { featured: HeroFeaturedProvider | null }
                 </svg>
               </span>
             </h1>
-            
+
             {/* Search Form */}
-            <form onSubmit={handleSearch} className="flex flex-col gap-4 max-w-xl mt-12">
+            <form onSubmit={handleSearch} className="flex flex-col gap-3 max-w-xl mt-10 md:mt-12">
               <input 
                 name="q"
                 type="text" 
                 placeholder="Que recherchez-vous ?" 
                 className="h-14 px-5 bg-[#232323] border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:border-accent/50 w-full text-sm font-medium"
               />
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <select 
-                  name="pole" 
-                  value={selectedPole}
-                  onChange={(e) => setSelectedPole(e.target.value)}
-                  className="h-12 px-3 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-sm focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none"
-                >
-                  <option value="">Divertissement</option>
-                  <option value="DIVERTISSEMENT">Divertissement</option>
-                  <option value="RECEPTION">Réception</option>
-                  <option value="IMAGE_SOUVENIR">Photo & Vidéo</option>
-                  <option value="SERVICES">Services</option>
-                </select>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div className="relative">
+                  <Sparkles size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                  <select
+                    name="pole"
+                    value={selectedPole}
+                    onChange={(e) => setSelectedPole(e.target.value)}
+                    className="h-12 pl-9 pr-8 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none truncate"
+                  >
+                    <option value="">Divertissement</option>
+                    <option value="DIVERTISSEMENT">Divertissement</option>
+                    <option value="RECEPTION">Réception</option>
+                    <option value="IMAGE_SOUVENIR">Photo & Vidéo</option>
+                    <option value="SERVICES">Services</option>
+                  </select>
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                </div>
 
-                <select 
-                  name="category" 
-                  disabled={!selectedPole}
-                  className={`h-12 px-3 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-sm focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none ${!selectedPole ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <option value="">Occasion</option>
-                  {selectedPole && CATEGORIES_BY_POLE[selectedPole]?.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    name="category"
+                    disabled={!selectedPole}
+                    className={`h-12 pl-3 pr-8 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none truncate ${!selectedPole ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <option value="">Occasion</option>
+                    {selectedPole && CATEGORIES_BY_POLE[selectedPole]?.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                </div>
 
-                <input 
-                  name="loc"
-                  type="text" 
-                  placeholder="Pays" 
-                  className="h-12 px-3 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-sm placeholder:text-white/60 focus:outline-none focus:border-accent/50 w-full"
-                />
+                <div className="relative">
+                  <MapPin size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                  <input
+                    name="loc"
+                    type="text"
+                    placeholder="Pays"
+                    className="h-12 pl-9 pr-3 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] placeholder:text-white/50 focus:outline-none focus:border-accent/50 w-full"
+                  />
+                </div>
 
-                <select name="budget" className="h-12 px-3 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-sm focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none">
-                  <option value="">Budget</option>
-                  <option value="50000">{'< 50k FCFA'}</option>
-                  <option value="150000">50k - 150k</option>
-                  <option value="400000">150k - 400k</option>
-                  <option value="400001">{'> 400k FCFA'}</option>
-                </select>
+                <div className="relative">
+                  <Wallet size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                  <select name="budget" className="h-12 pl-9 pr-8 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none truncate">
+                    <option value="">Budget</option>
+                    <option value="50000">{'< 50k FCFA'}</option>
+                    <option value="150000">50k - 150k</option>
+                    <option value="400000">150k - 400k</option>
+                    <option value="400001">{'> 400k FCFA'}</option>
+                  </select>
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                </div>
               </div>
               <motion.button 
                 whileHover={{ scale: 1.02 }}
