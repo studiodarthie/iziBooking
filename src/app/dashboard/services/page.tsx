@@ -34,7 +34,7 @@ export default async function ServicesPage() {
             <h1 className="text-3xl font-heading font-bold text-ink">Catalogue de Services</h1>
           </div>
           <p className="mt-2 text-ink/60">
-            Créez des "packages" ou services pour donner une idée de vos offres aux organisateurs d'événements.
+            Créez des “packages” ou services pour donner une idée de vos offres aux organisateurs d’événements.
           </p>
         </div>
       </div>

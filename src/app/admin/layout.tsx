@@ -48,7 +48,7 @@ export default async function AdminLayout({
                       className="group flex gap-x-3 rounded-xl p-3 text-sm font-bold leading-6 hover:bg-sand/10 hover:text-white text-sand/80 transition-all"
                     >
                       <BarChart3 className="h-6 w-6 shrink-0" />
-                      Vue d'ensemble
+                      Vue d’ensemble
                     </Link>
                   </li>
                   <li>
@@ -68,7 +68,7 @@ export default async function AdminLayout({
                   className="group flex gap-x-3 rounded-xl p-3 text-sm font-bold leading-6 hover:bg-red-500/10 hover:text-red-400 text-sand/60 transition-all"
                 >
                   <LogOut className="h-6 w-6 shrink-0" />
-                  Quitter l'Admin
+                  Quitter l’Admin
                 </Link>
               </li>
             </ul>

@@ -62,7 +62,7 @@ export default async function CalendarPage() {
         <div>
           <h1 className="text-3xl font-heading font-bold text-ink">Calendrier & Disponibilités</h1>
           <p className="mt-1 text-ink/60">
-            Gérez vos horaires de travail et vos jours d'indisponibilité pour contrôler quand vous pouvez être réservé.
+            Gérez vos horaires de travail et vos jours d’indisponibilité pour contrôler quand vous pouvez être réservé.
           </p>
         </div>
         

@@ -52,7 +52,7 @@ export function PublicCalendar({
             onClick={handleToday}
             className="px-4 py-1.5 text-sm font-medium hover:bg-white rounded-md transition-colors text-ink/70 hover:shadow-sm"
           >
-            Aujourd'hui
+            Aujourd’hui
           </button>
           <button 
             onClick={handleNextMonth}

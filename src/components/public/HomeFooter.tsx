@@ -23,7 +23,7 @@ export function HomeFooter() {
                   required
                 />
                 <button type="submit" className="bg-primary hover:bg-accent-600 text-white font-semibold px-4 py-2.5 rounded-lg transition-colors text-sm">
-                  S'inscrire
+                  S’inscrire
                 </button>
               </form>
             </div>
@@ -41,7 +41,7 @@ export function HomeFooter() {
           <div className="flex-1">
             <h6 className="text-neutral-400 font-semibold mb-5 text-sm uppercase tracking-wider">Support</h6>
             <div className="flex flex-col gap-3">
-              <Link href="#" className="text-sm text-neutral-300 hover:text-accent transition-colors">Centre d'aide</Link>
+              <Link href="#" className="text-sm text-neutral-300 hover:text-accent transition-colors">Centre d’aide</Link>
               <Link href="#" className="text-sm text-neutral-300 hover:text-accent transition-colors">Sécurité & confiance</Link>
               <Link href="#" className="text-sm text-neutral-300 hover:text-accent transition-colors">Contact</Link>
               <Link href="#" className="text-sm text-neutral-300 hover:text-accent transition-colors">FAQ</Link>

@@ -60,12 +60,12 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
         <div className="w-full lg:w-[25%] shrink-0 flex flex-col gap-6 overflow-y-auto pr-2">
           
           <div className="bg-white rounded-2xl border border-ink/10 shadow-sm p-6">
-            <h2 className="text-xl font-heading font-bold text-ink mb-1">Détails de l'événement</h2>
+            <h2 className="text-xl font-heading font-bold text-ink mb-1">Détails de l’événement</h2>
             <p className="text-sm font-medium text-primary mb-6">Avec {otherPartyName}</p>
 
             <div className="space-y-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-ink/40">Type d'événement</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-ink/40">Type d’événement</span>
                 <p className="text-ink font-medium mt-1">{booking.eventType}</p>
               </div>
               

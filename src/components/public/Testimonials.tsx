@@ -69,7 +69,7 @@ export function Testimonials() {
           transition={{ duration: 0.5 }}
           className="text-xl md:text-2xl leading-relaxed text-ink m-0 font-medium"
         >
-          « Nous avons réservé un traiteur et un DJ pour notre mariage en moins de deux jours. Tout était clair, du prix aux avis, et le paiement bloqué m'a rassurée jusqu'à la fin de la prestation. »
+          « Nous avons réservé un traiteur et un DJ pour notre mariage en moins de deux jours. Tout était clair, du prix aux avis, et le paiement bloqué m’a rassurée jusqu’à la fin de la prestation. »
         </motion.p>
         
         <motion.div 

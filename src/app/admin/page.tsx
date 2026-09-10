@@ -20,7 +20,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-heading font-black text-ink">Vue d'ensemble</h1>
+        <h1 className="text-3xl font-heading font-black text-ink">Vue d’ensemble</h1>
         <p className="text-ink/60 mt-1">Statistiques globales de la plateforme iziBooking.</p>
       </div>
 
@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
                 <ShieldCheck size={24} />
               </div>
               <h3 className="font-bold text-ink">Tout est à jour !</h3>
-              <p className="text-sm text-ink/60 mt-1">Aucun prestataire n'est en attente de vérification.</p>
+              <p className="text-sm text-ink/60 mt-1">Aucun prestataire n’est en attente de vérification.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -92,7 +92,7 @@ export default async function AdminDashboardPage() {
                 <thead className="bg-sand/30 text-xs uppercase font-bold text-ink/50 border-b border-ink/10">
                   <tr>
                     <th className="px-6 py-4">Prestataire en attente</th>
-                    <th className="px-6 py-4">Date d'inscription</th>
+                    <th className="px-6 py-4">Date d’inscription</th>
                     <th className="px-6 py-4 text-right">Action</th>
                   </tr>
                 </thead>
