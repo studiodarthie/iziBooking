@@ -65,10 +65,6 @@ export default async function CalendarPage() {
             Gérez vos horaires de travail et vos jours d’indisponibilité pour contrôler quand vous pouvez être réservé.
           </p>
         </div>
-        
-        <button className="bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all whitespace-nowrap">
-          + Nouveau Rendez-vous
-        </button>
       </div>
       
       <div className="flex flex-col xl:flex-row gap-6 flex-1 min-h-[600px]">

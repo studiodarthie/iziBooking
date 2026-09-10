@@ -1,28 +1,35 @@
 "use client";
 
-import { Bell, Search, Menu, MessageSquare } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import Image from "next/image";
 import type { Prisma } from "@prisma/client";
 
+export type NavbarUser = Prisma.UserGetPayload<{ include: { providerProfile: true } }>;
+
 type NavbarProps = {
-  user: Prisma.UserGetPayload<{ include: { providerProfile: true } }>;
+  user: NavbarUser;
+  onMenuClick?: () => void;
 };
 
-export function Navbar({ user }: NavbarProps) {
+export function Navbar({ user, onMenuClick }: NavbarProps) {
   const profile = user.providerProfile;
   const displayName = profile?.name || user.name || "Utilisateur";
   const displayRole = user.role === "PROVIDER" ? "Prestataire" : "Organisateur";
-  
+
   return (
     <header className="sticky top-0 z-40 flex h-20 shrink-0 items-center gap-x-4 border-b border-ink/10 bg-background/80 px-4 shadow-sm backdrop-blur-md sm:gap-x-6 sm:px-6 lg:px-8">
       {/* Mobile menu button */}
-      <button type="button" className="-m-2.5 p-2.5 text-ink/70 lg:hidden hover:text-ink">
+      <button
+        type="button"
+        onClick={onMenuClick}
+        className="-m-2.5 p-2.5 text-ink/70 lg:hidden hover:text-ink"
+      >
         <span className="sr-only">Ouvrir le menu</span>
         <Menu className="h-6 w-6" aria-hidden="true" />
       </button>
 
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-end lg:justify-between items-center">
-        <form className="relative hidden flex-1 lg:flex items-center" action="#" method="GET">
+        <form className="relative hidden flex-1 lg:flex items-center" action="/search" method="GET">
           <label htmlFor="search-field" className="sr-only">
             Rechercher
           </label>
@@ -34,28 +41,14 @@ export function Navbar({ user }: NavbarProps) {
             <input
               id="search-field"
               className="block h-10 w-full rounded-full border border-ink/10 bg-white py-0 pl-10 pr-4 text-ink placeholder:text-ink/40 focus:ring-1 focus:ring-primary sm:text-sm transition-colors shadow-sm"
-              placeholder="Rechercher..."
+              placeholder="Rechercher un prestataire..."
               type="search"
-              name="search"
+              name="q"
             />
           </div>
         </form>
 
         <div className="flex items-center gap-x-4 lg:gap-x-6 ml-auto">
-          <button type="button" className="relative p-2 text-ink/50 hover:text-ink transition-colors bg-white border border-ink/10 rounded-full shadow-sm">
-            <span className="sr-only">Notifications</span>
-            <Bell className="h-5 w-5" aria-hidden="true" />
-            <span className="absolute top-1 right-1 flex h-2 w-2 rounded-full bg-accent"></span>
-          </button>
-
-          <button type="button" className="hidden sm:flex items-center gap-2 p-2 px-4 text-ink/70 hover:text-ink hover:bg-ink/5 transition-colors border border-ink/10 rounded-full bg-white shadow-sm">
-            <MessageSquare className="h-4 w-4" />
-            <span className="text-sm font-medium">Discuter avec izi</span>
-          </button>
-
-          {/* Separator */}
-          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-ink/10" aria-hidden="true" />
-
           {/* Profile dropdown */}
           <div className="flex items-center gap-x-3">
             <div className="relative h-9 w-9 overflow-hidden rounded-full bg-accent/20 border border-accent/30 shadow-sm">

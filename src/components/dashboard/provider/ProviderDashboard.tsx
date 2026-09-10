@@ -56,16 +56,20 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
   if (services.length > 0) completeness += 20;
   if (profile?.location) completeness += 20;
 
-  // Graphique (vide si pas de data)
-  const chartData = [
-    { name: 'Lun', appointments: 0, revenue: 0 },
-    { name: 'Mar', appointments: 0, revenue: 0 },
-    { name: 'Mer', appointments: 0, revenue: 0 },
-    { name: 'Jeu', appointments: 0, revenue: 0 },
-    { name: 'Ven', appointments: 0, revenue: 0 },
-    { name: 'Sam', appointments: 0, revenue: 0 },
-    { name: 'Dim', appointments: 0, revenue: 0 },
-  ];
+  // Revenus des 7 derniers jours, calculés à partir des vraies réservations
+  const dayLabels = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  const today = new Date();
+  const chartData = Array.from({ length: 7 }).map((_, i) => {
+    const day = new Date(today);
+    day.setDate(today.getDate() - (6 - i));
+    const revenue = bookings
+      .filter((b) =>
+        (b.status === "CONFIRMED" || b.status === "COMPLETED") &&
+        new Date(b.createdAt).toDateString() === day.toDateString()
+      )
+      .reduce((acc: number, curr) => acc + (curr.totalAmount || 0), 0);
+    return { name: dayLabels[day.getDay()], revenue };
+  });
 
   return (
     <div className="flex flex-col h-full pb-16 font-sans">
@@ -88,13 +92,6 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
               <Eye size={16} /> Aperçu public
             </motion.button>
           </Link>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-primary text-white shadow-[0_4px_15px_rgba(181,69,27,0.3)] hover:bg-primary/90 text-sm font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 transition-all"
-          >
-            <CalendarCheck size={16} /> Nouveau RDV manuel
-          </motion.button>
         </div>
       </div>
 
@@ -148,10 +145,7 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-lg font-bold text-ink">Activité de la semaine</h2>
-                <p className="text-sm text-ink/50 mt-1">Données à zéro en attendant les premières réservations</p>
-              </div>
-              <div className="flex bg-sand/50 rounded-lg p-1">
-                <button className="px-4 py-1.5 text-sm font-bold bg-white text-ink shadow-sm rounded-md">Revenus</button>
+                <p className="text-sm text-ink/50 mt-1">Revenus confirmés des 7 derniers jours</p>
               </div>
             </div>
             <div style={{ width: '100%', height: 280 }}>

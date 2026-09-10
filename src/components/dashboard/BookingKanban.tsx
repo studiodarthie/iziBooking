@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Calendar as CalendarIcon, MapPin, User, MoreHorizontal } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, User } from "lucide-react";
 import { updateBookingStatus } from "@/app/dashboard/bookings/actions";
 import { useRouter } from "next/navigation";
 import type { BookingStatus } from "@prisma/client";
@@ -65,9 +65,6 @@ export function BookingKanban({ initialBookings }: { initialBookings: Booking[] 
             {booking.organizer.name || "Client anonyme"}
           </span>
         </div>
-        <button className="text-ink/40 hover:text-primary">
-          <MoreHorizontal size={16} />
-        </button>
       </div>
 
       <h4 className="font-bold text-ink mb-2">{booking.eventType}</h4>

@@ -2,25 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  MessageSquare, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Calendar,
+  Settings,
   LogOut,
   Music,
-  Bell,
   CheckCircle,
-  Users,
   Image as ImageIcon,
-  BarChart,
   Clock,
-  CreditCard,
-  Tag,
-  TrendingUp,
   List,
-  MapPin,
-  ClipboardList
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -29,34 +20,25 @@ const PROVIDER_SECTIONS = [
     title: "VUE D'ENSEMBLE",
     items: [
       { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { name: "Statistiques", href: "#", icon: BarChart },
       { name: "Calendrier", href: "/dashboard/calendar", icon: Calendar },
     ]
   },
   {
     title: "GESTION DES RÉSERVATIONS",
     items: [
-      { name: "Réservations", href: "/dashboard/bookings", icon: Clock, badge: 3 },
-      { name: "Clients", href: "#", icon: Users },
-      { name: "Paiements", href: "#", icon: CreditCard },
-      { name: "Coupons", href: "#", icon: Tag },
-      { name: "Tarifs dynamiques", href: "#", icon: TrendingUp },
+      { name: "Réservations", href: "/dashboard/bookings", icon: Clock },
     ]
   },
   {
     title: "CONFIGURATION MÉTIER",
     items: [
       { name: "Services", href: "/dashboard/services", icon: List },
-      { name: "Équipe", href: "#", icon: Users },
-      { name: "Lieux", href: "#", icon: MapPin },
       { name: "Médiathèque", href: "/dashboard/media", icon: ImageIcon },
     ]
   },
   {
     title: "PARAMÈTRES",
     items: [
-      { name: "Champs personnalisés", href: "#", icon: ClipboardList },
-      { name: "Notifications", href: "#", icon: Bell },
       { name: "Général", href: "/dashboard/settings", icon: Settings },
     ]
   }
@@ -64,9 +46,7 @@ const PROVIDER_SECTIONS = [
 
 const ORGANIZER_NAVIGATION = [
   { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Mes Réservations", href: "/dashboard/bookings", icon: CheckCircle, badge: 1 },
-  { name: "Artistes favoris", href: "/dashboard/artists", icon: Users },
-  { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
+  { name: "Mes Réservations", href: "/dashboard/bookings", icon: CheckCircle },
   { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
 ];
 
@@ -100,9 +80,8 @@ export function Sidebar({ role = "PROVIDER" }: { role?: string }) {
                 </div>
                 <ul role="list" className="flex flex-col gap-y-1">
                   {section.items.map((item) => {
-                    const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard' && item.href !== '#');
-                    const isDraft = item.href === '#';
-                    
+                    const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard');
+
                     return (
                       <li key={item.name}>
                         <Link
@@ -110,9 +89,7 @@ export function Sidebar({ role = "PROVIDER" }: { role?: string }) {
                           className={`group flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                             isActive
                               ? "bg-white/20 text-white shadow-sm"
-                              : isDraft 
-                                ? "text-white/40 cursor-not-allowed hover:bg-transparent"
-                                : "text-white/70 hover:bg-white/10 hover:text-white"
+                              : "text-white/70 hover:bg-white/10 hover:text-white"
                           }`}
                         >
                           <div className="flex items-center gap-x-3">
@@ -123,11 +100,6 @@ export function Sidebar({ role = "PROVIDER" }: { role?: string }) {
                             />
                             {item.name}
                           </div>
-                          {item.badge && (
-                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-900 shadow-sm">
-                              {item.badge}
-                            </span>
-                          )}
                         </Link>
                       </li>
                     );
@@ -159,11 +131,6 @@ export function Sidebar({ role = "PROVIDER" }: { role?: string }) {
                         />
                         {item.name}
                       </div>
-                      {item.badge && (
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-900 shadow-sm">
-                          {item.badge}
-                        </span>
-                      )}
                     </Link>
                   </li>
                 );

@@ -11,8 +11,7 @@ import { toggleBlockedDate } from "@/app/dashboard/calendar/actions";
 import {
   Loader2, ChevronLeft, ChevronRight,
   Users,
-  List, LayoutGrid, CalendarDays, Clock,
-  Filter
+  CalendarDays
 } from "lucide-react";
 
 type BlockedDateType = { id: string, date: string };
@@ -96,50 +95,17 @@ export default function AvailabilityCalendar({
         </div>
       )}
 
-      {/* Top Filters Bar */}
-      <div className="bg-white p-2 rounded-xl border border-ink/10 shadow-sm flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 border-r border-ink/10 pr-3">
-          <Filter className="w-4 h-4 text-ink/40 ml-2" />
-          <select className="px-2 py-1.5 bg-white text-sm font-medium text-ink/70 outline-none hover:text-ink cursor-pointer">
-            <option>Tous les Services</option>
-          </select>
-        </div>
-        
-        <select className="px-2 py-1.5 bg-white text-sm font-medium text-ink/70 outline-none hover:text-ink cursor-pointer border-r border-ink/10 pr-3">
-          <option>Tout le personnel</option>
-        </select>
-        
-        <select className="px-2 py-1.5 bg-white text-sm font-medium text-ink/70 outline-none hover:text-ink cursor-pointer">
-          <option>Tous les Clients</option>
-        </select>
-
-        <div className="flex items-center gap-2 border border-ink/10 rounded-lg p-1 ml-auto bg-sand/30">
-          <button onClick={handlePreviousMonth} className="p-1 hover:bg-white rounded-md transition-colors"><ChevronLeft size={16} /></button>
-          <span className="text-sm font-medium px-2 min-w-[140px] text-center capitalize">
-            {format(currentMonth, "MMMM yyyy", { locale: fr })}
-          </span>
-          <button onClick={handleNextMonth} className="p-1 hover:bg-white rounded-md transition-colors"><ChevronRight size={16} /></button>
-        </div>
-      </div>
-
-      {/* View Options Bar */}
+      {/* Month Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-white border border-ink/10 rounded-lg p-1 shadow-sm gap-1">
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium bg-primary text-white rounded-md">
-              <CalendarDays size={16} /> Mois
-            </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-ink/70 hover:bg-ink/5 rounded-md transition-colors">
-              <LayoutGrid size={16} /> Semaine
-            </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-ink/70 hover:bg-ink/5 rounded-md transition-colors">
-              <Clock size={16} /> Jour
-            </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-ink/70 hover:bg-ink/5 rounded-md transition-colors">
-              <List size={16} /> Liste
-            </button>
+          <div className="flex items-center gap-2 border border-ink/10 rounded-lg p-1 bg-white shadow-sm">
+            <button onClick={handlePreviousMonth} className="p-1 hover:bg-sand/30 rounded-md transition-colors"><ChevronLeft size={16} /></button>
+            <span className="flex items-center gap-2 text-sm font-medium px-2 min-w-[140px] text-center justify-center capitalize">
+              <CalendarDays size={16} className="text-primary" /> {format(currentMonth, "MMMM yyyy", { locale: fr })}
+            </span>
+            <button onClick={handleNextMonth} className="p-1 hover:bg-sand/30 rounded-md transition-colors"><ChevronRight size={16} /></button>
           </div>
-          
+
           <button onClick={handleToday} className="px-4 py-2 text-sm font-bold bg-primary text-white rounded-lg shadow-sm hover:bg-primary/90 transition-colors">
             Aujourd’hui
           </button>
