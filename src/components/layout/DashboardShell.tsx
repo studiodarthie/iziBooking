@@ -8,10 +8,12 @@ import { Navbar, type NavbarUser } from "@/components/layout/Navbar";
 export function DashboardShell({
   role,
   user,
+  unreadMessages = 0,
   children,
 }: {
   role: string;
   user: NavbarUser;
+  unreadMessages?: number;
   children: React.ReactNode;
 }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -20,7 +22,7 @@ export function DashboardShell({
     <div className="flex h-screen bg-sand/30 text-ink font-sans overflow-hidden">
       {/* Sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-        <Sidebar role={role} />
+        <Sidebar role={role} unreadMessages={unreadMessages} />
       </div>
 
       {/* Mobile sidebar overlay */}
@@ -31,7 +33,7 @@ export function DashboardShell({
             onClick={() => setIsMobileNavOpen(false)}
           />
           <div className="relative flex w-72 max-w-[80vw]">
-            <Sidebar role={role} />
+            <Sidebar role={role} unreadMessages={unreadMessages} />
             <button
               onClick={() => setIsMobileNavOpen(false)}
               className="absolute top-5 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"

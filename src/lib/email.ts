@@ -67,6 +67,25 @@ export async function notifyNewBooking(params: {
   });
 }
 
+export async function notifyContactMessage(params: {
+  providerEmail: string;
+  senderName: string;
+  content: string;
+}) {
+  const preview = params.content.length > 300 ? `${params.content.slice(0, 300)}…` : params.content;
+  await sendEmail({
+    to: params.providerEmail,
+    subject: `Nouveau message de contact — ${params.senderName}`,
+    html: emailShell(
+      "Nouveau message",
+      `<p><strong>${params.senderName}</strong> vous a contacté via votre fiche iziBooking :</p>
+       <p style="padding: 12px 16px; background: #F4E9D8; border-radius: 10px; font-style: italic;">« ${preview} »</p>`,
+      `${BASE_URL}/dashboard/messages`,
+      "Voir le message"
+    ),
+  });
+}
+
 export async function notifyNewMessage(params: {
   recipientEmail: string;
   senderName: string;

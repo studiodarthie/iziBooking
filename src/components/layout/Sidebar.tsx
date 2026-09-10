@@ -14,6 +14,7 @@ import {
   List,
   Tag,
   Crown,
+  Mail,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -29,6 +30,7 @@ const PROVIDER_SECTIONS = [
     title: "GESTION DES RÉSERVATIONS",
     items: [
       { name: "Réservations", href: "/dashboard/bookings", icon: Clock },
+      { name: "Messages", href: "/dashboard/messages", icon: Mail },
     ]
   },
   {
@@ -54,7 +56,7 @@ const ORGANIZER_NAVIGATION = [
   { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
 ];
 
-export function Sidebar({ role = "PROVIDER" }: { role?: string }) {
+export function Sidebar({ role = "PROVIDER", unreadMessages = 0 }: { role?: string; unreadMessages?: number }) {
   const pathname = usePathname();
   
   return (
@@ -104,6 +106,11 @@ export function Sidebar({ role = "PROVIDER" }: { role?: string }) {
                             />
                             {item.name}
                           </div>
+                          {item.href === "/dashboard/messages" && unreadMessages > 0 && (
+                            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[11px] font-bold text-white">
+                              {unreadMessages}
+                            </span>
+                          )}
                         </Link>
                       </li>
                     );

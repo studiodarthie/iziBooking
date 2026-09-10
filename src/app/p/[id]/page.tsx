@@ -7,8 +7,9 @@ import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { ProviderCard } from "@/components/public/ProviderCard";
 import Image from "next/image";
-import { MapPin, Star, ShieldCheck, User, MessageCircle, Mail } from "lucide-react";
+import { MapPin, Star, ShieldCheck, User, MessageCircle } from "lucide-react";
 import { getRatingSummary } from "@/lib/ratings";
+import { ContactProviderModal } from "@/components/public/ContactProviderModal";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -178,15 +179,9 @@ export default async function PublicProviderPage(props: Props) {
                   <MessageCircle size={18} />
                   WhatsApp
                 </a>
-              ) : profile.user.email ? (
-                <a
-                  href={`mailto:${profile.user.email}?subject=${encodeURIComponent(`Demande via iziBooking - ${profile.name}`)}`}
-                  className="flex-1 px-4 py-3.5 bg-white text-[#0d0d0d] font-semibold rounded-xl border border-neutral-200 hover:bg-neutral-50 transition-colors shadow-sm flex items-center justify-center gap-2"
-                >
-                  <Mail size={18} />
-                  Contacter
-                </a>
-              ) : null}
+              ) : (
+                <ContactProviderModal providerProfileId={profile.id} providerName={profile.name} />
+              )}
               <Link href={`/book/${profile.id}`} className="flex-1 px-4 py-3.5 bg-[#B5451B] text-white font-semibold rounded-xl hover:bg-[#9a3915] transition-colors shadow-lg shadow-[#B5451B]/20 flex items-center justify-center gap-2">
                 Réserver
               </Link>

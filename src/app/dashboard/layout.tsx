@@ -33,8 +33,14 @@ export default async function DashboardLayout({
   // Mais ici, nous voulons que le dashboard se rende avec le rôle du user (user.role)
   // Onboarding est géré lors de la création du compte via next-auth "newUser"
 
+  const unreadMessages = user.providerProfile
+    ? await prisma.contactMessage.count({
+        where: { providerProfileId: user.providerProfile.id, isRead: false }
+      })
+    : 0;
+
   return (
-    <DashboardShell role={user.role} user={user}>
+    <DashboardShell role={user.role} user={user} unreadMessages={unreadMessages}>
       {children}
     </DashboardShell>
   );

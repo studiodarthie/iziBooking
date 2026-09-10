@@ -58,6 +58,7 @@ model User {
   sentMessages    Message[]
   reviews         Review[]
   disputesOpened  Dispute[]
+  contactMessagesSent ContactMessage[]
 }
 
 model VerificationToken {
@@ -120,6 +121,7 @@ model ProviderProfile {
   blockedDates BlockedDate[]
   coupons     Coupon[]
   reviews     Review[]
+  contactMessages ContactMessage[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -246,6 +248,22 @@ model Message {
   content   String   @db.Text
   
   createdAt DateTime @default(now())
+}
+
+// Premier contact d'un organisateur avec un prestataire, avant toute demande de réservation.
+// Volontairement séparé de Message/Booking : ce n'est pas encore une réservation.
+model ContactMessage {
+  id                String          @id @default(cuid())
+  providerProfileId String
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+
+  senderId          String
+  sender            User            @relation(fields: [senderId], references: [id])
+
+  content           String          @db.Text
+  isRead            Boolean         @default(false)
+
+  createdAt         DateTime        @default(now())
 }
 
 model Dispute {
