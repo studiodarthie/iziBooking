@@ -377,9 +377,10 @@ enum PaymentStatus {
 }
 
 enum PaymentType {
-  DEPOSIT   // Acompte
-  BALANCE   // Reste à payer (Solde)
-  FULL      // Paiement total
+  DEPOSIT      // Acompte
+  BALANCE      // Reste à payer (Solde)
+  FULL         // Paiement total
+  SERVICE_FEE  // Frais de service organisateur (3%), prélevé à DEPOSIT_PAID
 }
 
 model Coupon {

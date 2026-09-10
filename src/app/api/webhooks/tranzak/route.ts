@@ -96,6 +96,19 @@ export async function POST(req: NextRequest) {
         where: { id: bookingPayment.id },
         data: { status: "COMPLETED", commissionAmount, payoutStatus: "PENDING" },
       }),
+      // Frais de service organisateur (3%) : encore à recouvrer, distinct de la commission
+      // prélevée au prestataire ci-dessus.
+      prisma.payment.create({
+        data: {
+          bookingId: bookingPayment.bookingId,
+          amount: bookingPayment.amount * 0.03,
+          currency: bookingPayment.currency,
+          status: "PENDING",
+          type: "SERVICE_FEE",
+          collectedByPlatform: false,
+          payoutStatus: "NOT_APPLICABLE",
+        },
+      }),
       prisma.booking.update({
         where: { id: bookingPayment.bookingId },
         data: { status: "DEPOSIT_PAID" },

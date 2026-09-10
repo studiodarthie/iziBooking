@@ -36,7 +36,8 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
       messages: { orderBy: { createdAt: "asc" } },
       review: true,
       coupon: { select: { code: true } },
-      dispute: { select: { status: true, reason: true, resolutionNote: true, createdAt: true } }
+      dispute: { select: { status: true, reason: true, resolutionNote: true, createdAt: true } },
+      payments: { where: { type: "SERVICE_FEE" }, select: { amount: true, status: true } }
     }
   });
 
@@ -142,6 +143,13 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
                 Code {booking.coupon.code} sera appliqué dès que le montant sera fixé.
               </p>
             ) : null}
+            {isOrganizer && booking.payments[0] && (
+              <p className="text-xs text-ink/50 font-medium mt-2">
+                Frais de service iziBooking (3%) : {booking.payments[0].amount.toLocaleString('fr-FR')} {booking.providerProfile.currency}
+                {" — "}
+                {booking.payments[0].status === "COMPLETED" ? "réglé" : "à régler"}
+              </p>
+            )}
           </div>
 
           {/* Review: organizer can leave one once the booking is completed */}

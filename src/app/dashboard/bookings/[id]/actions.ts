@@ -128,6 +128,19 @@ export async function confirmDirectDeposit(bookingId: string, method: PaymentMet
           payoutStatus: "NOT_APPLICABLE",
         }
       }),
+      // Frais de service organisateur (3%) : encore à recouvrer, la plateforme ne voit pas
+      // cet argent puisque le paiement du prestataire s'est fait hors plateforme.
+      prisma.payment.create({
+        data: {
+          bookingId,
+          amount: booking.totalAmount * 0.03,
+          method,
+          status: "PENDING",
+          type: "SERVICE_FEE",
+          collectedByPlatform: false,
+          payoutStatus: "NOT_APPLICABLE",
+        }
+      }),
       prisma.booking.update({ where: { id: bookingId }, data: { status: "DEPOSIT_PAID" } }),
     ]);
 
