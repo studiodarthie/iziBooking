@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star } from "lucide-react";
 
 export function Testimonials() {
   return (
@@ -44,14 +44,6 @@ export function Testimonials() {
         <Image src="https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?auto=compress&cs=tinysrgb&w=300" alt="Client" fill className="object-cover" />
       </motion.div>
 
-      {/* Navigation Controls (Visual only for mockup) */}
-      <button className="hidden md:flex absolute top-1/2 left-[12%] -translate-y-1/2 w-12 h-12 rounded-full border-[1.5px] border-accent bg-transparent text-accent items-center justify-center cursor-pointer hover:bg-accent hover:text-white transition-colors z-10">
-        <ChevronLeft size={24} />
-      </button>
-      <button className="hidden md:flex absolute top-1/2 right-[12%] -translate-y-1/2 w-12 h-12 rounded-full border-none bg-accent text-white items-center justify-center cursor-pointer hover:bg-accent-600 transition-colors z-10 shadow-md">
-        <ChevronRight size={24} />
-      </button>
-
       {/* Content */}
       <div className="max-w-2xl mx-auto text-center relative z-20 px-6">
         <div className="flex justify-center gap-1 text-accent mb-6">
@@ -69,7 +61,7 @@ export function Testimonials() {
           transition={{ duration: 0.5 }}
           className="text-xl md:text-2xl leading-relaxed text-ink m-0 font-medium"
         >
-          « Nous avons réservé un traiteur et un DJ pour notre mariage en moins de deux jours. Tout était clair, du prix aux avis, et le paiement bloqué m’a rassurée jusqu’à la fin de la prestation. »
+          « Nous avons réservé un traiteur et un DJ pour notre mariage en moins de deux jours. Tout était clair, du premier échange jusqu’à la prestation. »
         </motion.p>
         
         <motion.div 
