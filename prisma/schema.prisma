@@ -44,15 +44,20 @@ model User {
   image         String?
   role          UserRole  @default(ORGANIZER)
   isAdmin       Boolean   @default(false)
-  
+
+  isBanned      Boolean   @default(false)
+  bannedAt      DateTime?
+  banReason     String?   @db.Text
+
   accounts      Account[]
   sessions      Session[]
-  
+
   // Relations iziBooking
   providerProfile ProviderProfile?
   bookings        Booking[] // Bookings made by this user (organizer)
   sentMessages    Message[]
   reviews         Review[]
+  disputesOpened  Dispute[]
 }
 
 model VerificationToken {
@@ -189,6 +194,7 @@ model Booking {
   messages        Message[]
   payments        Payment[]
   review          Review?
+  dispute         Dispute?
 }
 
 model Review {
@@ -240,6 +246,27 @@ model Message {
   content   String   @db.Text
   
   createdAt DateTime @default(now())
+}
+
+model Dispute {
+  id             String        @id @default(cuid())
+  bookingId      String        @unique
+  booking        Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  openedById     String
+  openedBy       User          @relation(fields: [openedById], references: [id])
+
+  reason         String        @db.Text
+  status         DisputeStatus @default(OPEN)
+  resolutionNote String?       @db.Text
+
+  createdAt      DateTime      @default(now())
+  resolvedAt     DateTime?
+}
+
+enum DisputeStatus {
+  OPEN
+  RESOLVED
 }
 
 // ==========================================

@@ -31,6 +31,12 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user }) {
+      if (!user.email) return true;
+      const existing = await prisma.user.findUnique({ where: { email: user.email } });
+      if (existing?.isBanned) return false;
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

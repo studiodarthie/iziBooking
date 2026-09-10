@@ -80,6 +80,9 @@ export async function submitBooking(data: {
   if (!user) {
     return { success: false, error: "Utilisateur introuvable." };
   }
+  if (user.isBanned) {
+    return { success: false, error: "Votre compte a été suspendu. Contactez le support pour plus d'informations." };
+  }
 
   const dayStart = new Date(data.eventDate);
   dayStart.setHours(0, 0, 0, 0);

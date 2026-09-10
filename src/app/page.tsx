@@ -11,7 +11,7 @@ import { getRatingSummary } from "@/lib/ratings";
 
 export default async function Home() {
   const featuredProvider = await prisma.providerProfile.findFirst({
-    where: { isVerified: true },
+    where: { isVerified: true, user: { isBanned: false } },
     orderBy: { createdAt: "desc" },
     include: {
       user: { select: { image: true } },
@@ -29,7 +29,7 @@ export default async function Home() {
   const categoryCounts: CategoryCount[] = await Promise.all(
     poleLabels.map(async ({ pole, name }) => ({
       name,
-      count: await prisma.providerProfile.count({ where: { isVerified: true, pole } })
+      count: await prisma.providerProfile.count({ where: { isVerified: true, pole, user: { isBanned: false } } })
     }))
   );
 

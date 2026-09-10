@@ -232,3 +232,37 @@ export async function submitReview(bookingId: string, rating: number, comment?: 
     return { error: "Erreur lors de l'envoi de l'avis" };
   }
 }
+
+export async function openDispute(bookingId: string, reason: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) return { error: "Non autorisé" };
+  if (!reason.trim()) return { error: "Merci de décrire le problème." };
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: { providerProfile: true }
+  });
+  if (!user) return { error: "Non autorisé" };
+
+  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  if (!booking) return { error: "Réservation introuvable" };
+
+  const isProvider = user.providerProfile?.id === booking.providerProfileId;
+  const isOrganizer = user.id === booking.organizerId;
+  if (!isProvider && !isOrganizer) return { error: "Non autorisé" };
+
+  try {
+    await prisma.dispute.create({
+      data: { bookingId, openedById: user.id, reason: reason.trim() }
+    });
+
+    revalidatePath(`/dashboard/bookings/${bookingId}`);
+    return { success: true };
+  } catch (error: unknown) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
+      return { error: "Un litige est déjà ouvert pour cette réservation." };
+    }
+    console.error("Erreur ouverture litige:", error);
+    return { error: "Erreur lors du signalement." };
+  }
+}

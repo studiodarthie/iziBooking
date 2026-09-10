@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Users, BarChart3, LogOut, ShieldCheck, Banknote } from "lucide-react";
+import { Users, BarChart3, LogOut, ShieldCheck, Banknote, UserCog, AlertTriangle } from "lucide-react";
 
 export default async function AdminLayout({
   children,
@@ -23,6 +23,10 @@ export default async function AdminLayout({
 
   if (!user || !user.isAdmin) {
     redirect("/dashboard");
+  }
+
+  if (user.isBanned) {
+    redirect("/api/auth/signout?callbackUrl=/login?banned=1");
   }
 
   return (
@@ -67,6 +71,24 @@ export default async function AdminLayout({
                     >
                       <Banknote className="h-6 w-6 shrink-0" />
                       Reversements
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/admin/disputes"
+                      className="group flex gap-x-3 rounded-xl p-3 text-sm font-bold leading-6 hover:bg-sand/10 hover:text-white text-sand/80 transition-all"
+                    >
+                      <AlertTriangle className="h-6 w-6 shrink-0" />
+                      Litiges
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/admin/users"
+                      className="group flex gap-x-3 rounded-xl p-3 text-sm font-bold leading-6 hover:bg-sand/10 hover:text-white text-sand/80 transition-all"
+                    >
+                      <UserCog className="h-6 w-6 shrink-0" />
+                      Utilisateurs
                     </Link>
                   </li>
                 </ul>

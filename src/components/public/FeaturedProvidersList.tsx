@@ -9,7 +9,7 @@ export async function FeaturedProvidersList() {
   // await new Promise(resolve => setTimeout(resolve, 1500));
 
   const providers = await prisma.providerProfile.findMany({
-    where: { isVerified: true },
+    where: { isVerified: true, user: { isBanned: false } },
     orderBy: { createdAt: "desc" },
     take: 6,
     include: {

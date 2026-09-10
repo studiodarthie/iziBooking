@@ -26,6 +26,7 @@ export default async function PublicProviderPage(props: Props) {
           image: true,
           name: true,
           email: true,
+          isBanned: true,
         }
       },
       mediaLinks: true,
@@ -41,7 +42,7 @@ export default async function PublicProviderPage(props: Props) {
     }
   });
 
-  if (!profile) {
+  if (!profile || profile.user.isBanned) {
     notFound();
   }
 
@@ -53,6 +54,7 @@ export default async function PublicProviderPage(props: Props) {
       isVerified: true,
       id: { not: profile.id },
       category: profile.category,
+      user: { isBanned: false },
     },
     take: 3,
     include: {

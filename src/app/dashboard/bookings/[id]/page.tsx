@@ -10,6 +10,7 @@ import { ChatBox } from "./ChatBox";
 
 import { BookingTimeline } from "./BookingTimeline";
 import { ReviewForm } from "./ReviewForm";
+import { DisputeSection } from "./DisputeSection";
 import { isTranzakConfigured } from "@/lib/tranzak";
 
 export default async function BookingDetailsPage(props: { params: Promise<{ id: string }> }) {
@@ -34,7 +35,8 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
       providerProfile: { select: { id: true, name: true, userId: true, currency: true } },
       messages: { orderBy: { createdAt: "asc" } },
       review: true,
-      coupon: { select: { code: true } }
+      coupon: { select: { code: true } },
+      dispute: { select: { status: true, reason: true, resolutionNote: true, createdAt: true } }
     }
   });
 
@@ -160,6 +162,8 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
               <ReviewForm bookingId={booking.id} />
             )
           )}
+
+          <DisputeSection bookingId={booking.id} dispute={booking.dispute} />
 
         </div>
 

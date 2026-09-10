@@ -25,6 +25,10 @@ export default async function DashboardLayout({
     redirect("/api/auth/signout?callbackUrl=/login");
   }
 
+  if (user.isBanned) {
+    redirect("/api/auth/signout?callbackUrl=/login?banned=1");
+  }
+
   // Si l'utilisateur n'a pas encore de profil prestataire et n'est pas un organisateur
   // Mais ici, nous voulons que le dashboard se rende avec le rôle du user (user.role)
   // Onboarding est géré lors de la création du compte via next-auth "newUser"

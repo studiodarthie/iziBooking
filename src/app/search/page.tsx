@@ -239,7 +239,7 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
   const dateStr = searchParams.date || "";
   const sort = searchParams.sort || "recent";
 
-  const whereClause: Prisma.ProviderProfileWhereInput = { isVerified: true };
+  const whereClause: Prisma.ProviderProfileWhereInput = { isVerified: true, user: { isBanned: false } };
 
   if (q) {
     whereClause.OR = [
