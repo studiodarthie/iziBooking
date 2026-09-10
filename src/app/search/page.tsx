@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { MapPin, Calendar, Search, ChevronDown, Grid, List, ChevronUp } from "lucide-react";
+import { MapPin, Calendar, Search, ChevronDown, ChevronUp } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { Prisma, ProviderPole } from "@prisma/client";
 import { ProviderCard } from "@/components/public/ProviderCard";
 import { ProviderCardSkeleton } from "@/components/public/ProviderCardSkeleton";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
+import { SearchSortSelect } from "@/components/public/SearchSortSelect";
+import { getRatingSummary } from "@/lib/ratings";
 import { startOfDay, endOfDay, parseISO, format } from "date-fns";
 
-type SearchParams = { q?: string; loc?: string; pole?: string; minPrice?: string; maxPrice?: string; date?: string };
+type SearchParams = { q?: string; loc?: string; pole?: string; minPrice?: string; maxPrice?: string; date?: string; sort?: string };
 
 // The layout and sidebar wrapper
 export default async function SearchPage(props: {
@@ -156,13 +158,6 @@ export default async function SearchPage(props: {
                   </div>
                 </summary>
                 <div className="px-5 pb-5">
-                  {/* Decorative Slider Track */}
-                  <div className="h-1 bg-ink/10 rounded-full w-full mb-4 relative">
-                    <div className="absolute left-[10%] right-[30%] h-full bg-primary rounded-full"></div>
-                    <div className="absolute left-[10%] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary ring-2 ring-white shadow-sm"></div>
-                    <div className="absolute right-[30%] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary ring-2 ring-white shadow-sm"></div>
-                  </div>
-                  
                   <div className="flex items-center gap-3">
                     <div className="flex-1">
                       <input 
@@ -242,6 +237,7 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
   const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice, 10) : undefined;
   const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice, 10) : undefined;
   const dateStr = searchParams.date || "";
+  const sort = searchParams.sort || "recent";
 
   const whereClause: Prisma.ProviderProfileWhereInput = { isVerified: true };
 
@@ -299,12 +295,18 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
     }
   }
 
+  const orderBy: Prisma.ProviderProfileOrderByWithRelationInput =
+    sort === "price_asc" ? { basePrice: "asc" } :
+    sort === "price_desc" ? { basePrice: "desc" } :
+    { createdAt: "desc" };
+
   const providers = await prisma.providerProfile.findMany({
     where: whereClause,
-    orderBy: { createdAt: "desc" },
+    orderBy,
     include: {
       user: { select: { image: true } },
-      mediaLinks: { where: { type: "IMAGE" }, take: 1 }
+      mediaLinks: { where: { type: "IMAGE" }, take: 1 },
+      reviews: { select: { rating: true } }
     }
   });
 
@@ -317,20 +319,7 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
         </p>
         
         <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-          <select className="bg-sand/30 border border-ink/10 text-ink text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-primary/50 font-medium">
-            <option>Plus récents (Latest)</option>
-            <option>Prix croissant</option>
-            <option>Prix décroissant</option>
-          </select>
-          
-          <div className="flex items-center gap-1 border-l border-ink/10 pl-4">
-            <button className="p-1.5 bg-primary text-white rounded-md shadow-sm">
-              <Grid size={18} />
-            </button>
-            <button className="p-1.5 text-ink/40 hover:text-ink/70 hover:bg-sand rounded-md transition-colors">
-              <List size={18} />
-            </button>
-          </div>
+          <SearchSortSelect currentSort={sort} />
         </div>
       </div>
 
@@ -349,22 +338,26 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {providers.map((provider) => (
-            <ProviderCard 
-              key={provider.id}
-              id={provider.id}
-              name={provider.name}
-              category={provider.category}
-              location={provider.location}
-              basePrice={provider.basePrice}
-              currency={provider.currency}
-              image={provider.mediaLinks[0]?.url || provider.user?.image}
-              bio={provider.bio}
-              pole={provider.pole}
-              isOpen={true} // Simulation Open Now
-              availableDate={dateStr && !isNaN(parseISO(dateStr).getTime()) ? format(parseISO(dateStr), "dd/MM/yyyy") : undefined}
-            />
-          ))}
+          {providers.map((provider) => {
+            const summary = getRatingSummary(provider.reviews);
+            return (
+              <ProviderCard
+                key={provider.id}
+                id={provider.id}
+                name={provider.name}
+                category={provider.category}
+                location={provider.location}
+                basePrice={provider.basePrice}
+                currency={provider.currency}
+                image={provider.mediaLinks[0]?.url || provider.user?.image}
+                bio={provider.bio}
+                pole={provider.pole}
+                rating={summary.average}
+                reviewCount={summary.count}
+                availableDate={dateStr && !isNaN(parseISO(dateStr).getTime()) ? format(parseISO(dateStr), "dd/MM/yyyy") : undefined}
+              />
+            );
+          })}
         </div>
       )}
     </>

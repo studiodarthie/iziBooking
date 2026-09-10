@@ -4,11 +4,12 @@ import { redirect, notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { MapPin, Calendar, AlignLeft, ArrowLeft, Phone } from "lucide-react";
+import { MapPin, Calendar, AlignLeft, ArrowLeft, Phone, Star } from "lucide-react";
 import Link from "next/link";
 import { ChatBox } from "./ChatBox";
 
 import { BookingTimeline } from "./BookingTimeline";
+import { ReviewForm } from "./ReviewForm";
 
 export default async function BookingDetailsPage(props: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
@@ -30,7 +31,8 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
     include: {
       organizer: { select: { id: true, name: true, image: true } },
       providerProfile: { select: { id: true, name: true, userId: true, currency: true } },
-      messages: { orderBy: { createdAt: "asc" } }
+      messages: { orderBy: { createdAt: "asc" } },
+      review: true
     }
   });
 
@@ -128,6 +130,25 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
               {booking.totalAmount ? `${booking.totalAmount.toLocaleString('fr-FR')} ${booking.providerProfile.currency}` : "À définir"}
             </div>
           </div>
+
+          {/* Review: organizer can leave one once the booking is completed */}
+          {booking.status === "COMPLETED" && isOrganizer && (
+            booking.review ? (
+              <div className="bg-white rounded-2xl border border-ink/10 shadow-sm p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-ink/50 mb-3">Votre avis</h3>
+                <div className="flex gap-0.5 mb-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <Star key={n} size={18} className={booking.review!.rating >= n ? "fill-accent text-accent" : "text-ink/20"} />
+                  ))}
+                </div>
+                {booking.review.comment && (
+                  <p className="text-sm text-ink/70 whitespace-pre-wrap">{booking.review.comment}</p>
+                )}
+              </div>
+            ) : (
+              <ReviewForm bookingId={booking.id} />
+            )
+          )}
 
         </div>
 

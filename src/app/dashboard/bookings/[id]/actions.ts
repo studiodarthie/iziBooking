@@ -65,3 +65,41 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
     return { error: "Erreur lors de la mise à jour" };
   }
 }
+
+export async function submitReview(bookingId: string, rating: number, comment?: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) return { error: "Non autorisé" };
+
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return { error: "La note doit être comprise entre 1 et 5." };
+  }
+
+  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  if (!user) return { error: "Non autorisé" };
+
+  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  if (!booking) return { error: "Réservation introuvable" };
+
+  if (booking.organizerId !== user.id) return { error: "Non autorisé" };
+  if (booking.status !== "COMPLETED") {
+    return { error: "Vous ne pouvez laisser un avis qu'après la fin de la prestation." };
+  }
+
+  try {
+    await prisma.review.create({
+      data: {
+        bookingId,
+        providerProfileId: booking.providerProfileId,
+        organizerId: user.id,
+        rating,
+        comment: comment?.trim() || undefined,
+      }
+    });
+
+    revalidatePath(`/dashboard/bookings/${bookingId}`);
+    revalidatePath(`/p/${booking.providerProfileId}`);
+    return { success: true };
+  } catch {
+    return { error: "Erreur lors de l'envoi de l'avis" };
+  }
+}

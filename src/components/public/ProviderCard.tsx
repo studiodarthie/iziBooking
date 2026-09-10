@@ -10,16 +10,16 @@ type ProviderCardProps = {
   basePrice: number | null;
   currency: string;
   image?: string | null;
-  rating?: number;
+  rating?: number; // real average rating, 0 or undefined means no reviews yet
+  reviewCount?: number;
   availableDate?: string;
   bio?: string | null;
   pole?: string;
-  isOpen?: boolean; // For "Open Now" equivalent, maybe always true or based on hours
 };
 
-export function ProviderCard({ 
-  id, name, category, location, basePrice, currency, image, 
-  rating = 4.9, availableDate, bio, pole, isOpen = true
+export function ProviderCard({
+  id, name, category, location, basePrice, currency, image,
+  rating, reviewCount = 0, availableDate, bio, pole
 }: ProviderCardProps) {
   
   // Icon based on Pole
@@ -37,8 +37,8 @@ export function ProviderCard({
                     pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" : "Services";
 
   return (
-    <Link href={`/p/${id}`} className="group block h-full">
-      <div className="bg-white rounded-2xl border border-ink/10 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col">
+    <div className="group bg-white rounded-2xl border border-ink/10 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col">
+      <Link href={`/p/${id}`} className="contents">
         {/* Cover Image */}
         <div className="relative h-48 w-full bg-sand/50 overflow-hidden">
           {image ? (
@@ -67,13 +67,6 @@ export function ProviderCard({
               {category}
             </div>
           </div>
-
-          {/* Open Now Ribbon (Top Right) */}
-          {isOpen && (
-            <div className="absolute top-4 -right-8 bg-trust text-white text-[10px] font-bold uppercase tracking-wider py-1 px-10 transform rotate-45 shadow-sm z-10">
-              Disponible
-            </div>
-          )}
         </div>
 
         {/* Content */}
@@ -83,8 +76,14 @@ export function ProviderCard({
               {name}
             </h3>
             <div className="flex items-center gap-1 text-sm font-semibold text-ink shrink-0 ml-2 bg-sand/50 px-2 py-0.5 rounded-md">
-              <Star size={12} className="fill-accent text-accent" />
-              <span>{rating}</span>
+              {reviewCount > 0 && rating ? (
+                <>
+                  <Star size={12} className="fill-accent text-accent" />
+                  <span>{rating.toFixed(1)}</span>
+                </>
+              ) : (
+                <span className="text-ink/40 text-xs">Nouveau</span>
+              )}
             </div>
           </div>
 
@@ -108,24 +107,24 @@ export function ProviderCard({
               </div>
             )}
           </div>
-
-          <div className="mt-5 pt-4 border-t border-ink/10 flex items-center justify-between">
-            <div>
-              <span className="text-xs text-ink/50 block mb-0.5 uppercase tracking-wider font-semibold">À partir de</span>
-              {basePrice ? (
-                <span className="font-bold text-ink text-lg">{basePrice.toLocaleString("fr-FR")} {currency}</span>
-              ) : (
-                <span className="font-bold text-ink text-lg">Sur devis</span>
-              )}
-            </div>
-            
-            <button className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-bold rounded-xl text-sm hover:bg-primary/20 transition-colors">
-              <Calendar size={16} />
-              Réserver
-            </button>
-          </div>
         </div>
+      </Link>
+
+      <div className="px-5 pb-5 mt-auto pt-4 border-t border-ink/10 flex items-center justify-between">
+        <div>
+          <span className="text-xs text-ink/50 block mb-0.5 uppercase tracking-wider font-semibold">À partir de</span>
+          {basePrice ? (
+            <span className="font-bold text-ink text-lg">{basePrice.toLocaleString("fr-FR")} {currency}</span>
+          ) : (
+            <span className="font-bold text-ink text-lg">Sur devis</span>
+          )}
+        </div>
+
+        <Link href={`/book/${id}`} className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-bold rounded-xl text-sm hover:bg-primary/20 transition-colors">
+          <Calendar size={16} />
+          Réserver
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 }

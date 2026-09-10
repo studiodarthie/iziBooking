@@ -2,15 +2,26 @@
 
 import { useState } from "react";
 import { PublicGallery } from "@/components/public/PublicGallery";
+import { Star, User } from "lucide-react";
+import Image from "next/image";
 import type { Service, MediaLink } from "@prisma/client";
+
+type ReviewWithOrganizer = {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: Date;
+  organizer: { name: string | null; image: string | null };
+};
 
 interface ProviderTabsProps {
   bio: string | null;
   services: Service[];
   mediaLinks: MediaLink[];
+  reviews: ReviewWithOrganizer[];
 }
 
-export function ProviderTabs({ bio, services, mediaLinks }: ProviderTabsProps) {
+export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTabsProps) {
   const [activeTab, setActiveTab] = useState<"presentation" | "services" | "medias">("presentation");
 
   return (
@@ -59,12 +70,43 @@ export function ProviderTabs({ bio, services, mediaLinks }: ProviderTabsProps) {
               <p className="text-[#0d0d0d]/50 italic">Aucune description pour le moment.</p>
             )}
             
-            {/* Reviews Mockup (can be shown in presentation) */}
+            {/* Reviews */}
             <div className="mt-12">
-              <h2 className="text-xl font-heading font-bold text-[#0d0d0d] mb-6">Avis</h2>
-              <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm">
-                <p className="text-[#0d0d0d]/50 italic">Les avis apparaîtront ici dès que les clients auront laissé une note via iziBooking.</p>
-              </div>
+              <h2 className="text-xl font-heading font-bold text-[#0d0d0d] mb-6">
+                Avis {reviews.length > 0 && `(${reviews.length})`}
+              </h2>
+              {reviews.length === 0 ? (
+                <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm">
+                  <p className="text-[#0d0d0d]/50 italic">Les avis apparaîtront ici dès que les clients auront laissé une note via iziBooking.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="bg-white rounded-2xl p-5 border border-neutral-200 shadow-sm">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-9 h-9 rounded-full bg-sand overflow-hidden flex items-center justify-center shrink-0 relative">
+                          {review.organizer.image ? (
+                            <Image src={review.organizer.image} alt={review.organizer.name || "Client"} fill className="object-cover" />
+                          ) : (
+                            <User size={16} className="text-neutral-400" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-[#0d0d0d]">{review.organizer.name || "Client iziBooking"}</p>
+                          <div className="flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <Star key={n} size={12} className={review.rating >= n ? "fill-accent text-accent" : "text-neutral-200"} />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {review.comment && (
+                        <p className="text-sm text-[#0d0d0d]/70 whitespace-pre-wrap">{review.comment}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

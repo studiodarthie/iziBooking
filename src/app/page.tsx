@@ -2,16 +2,54 @@ import { Suspense } from "react";
 import { HomeHero } from "@/components/public/HomeHero";
 import { FeaturedProvidersList } from "@/components/public/FeaturedProvidersList";
 import { FeaturedProvidersSkeleton } from "@/components/public/FeaturedProvidersSkeleton";
-import { HomeCategories } from "@/components/public/HomeCategories";
+import { HomeCategories, type CategoryCount } from "@/components/public/HomeCategories";
 import { HomeAdvantages } from "@/components/public/HomeAdvantages";
 import { Testimonials } from "@/components/public/Testimonials";
 import { HomeFooter } from "@/components/public/HomeFooter";
+import prisma from "@/lib/prisma";
+import { getRatingSummary } from "@/lib/ratings";
 
-export default function Home() {
+export default async function Home() {
+  const featuredProvider = await prisma.providerProfile.findFirst({
+    where: { isVerified: true },
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: { select: { image: true } },
+      mediaLinks: { where: { type: "IMAGE" }, take: 1 },
+      reviews: { select: { rating: true } }
+    }
+  });
+
+  const poleLabels: { pole: "DIVERTISSEMENT" | "RECEPTION" | "IMAGE_SOUVENIR" | "SERVICES"; name: string }[] = [
+    { pole: "DIVERTISSEMENT", name: "Divertissement" },
+    { pole: "RECEPTION", name: "Réception & Traiteur" },
+    { pole: "IMAGE_SOUVENIR", name: "Photo & vidéo" },
+    { pole: "SERVICES", name: "Services" },
+  ];
+  const categoryCounts: CategoryCount[] = await Promise.all(
+    poleLabels.map(async ({ pole, name }) => ({
+      name,
+      count: await prisma.providerProfile.count({ where: { isVerified: true, pole } })
+    }))
+  );
+
+  const featured = featuredProvider ? (() => {
+    const summary = getRatingSummary(featuredProvider.reviews);
+    return {
+      id: featuredProvider.id,
+      name: featuredProvider.name,
+      category: featuredProvider.category,
+      location: featuredProvider.location,
+      image: featuredProvider.mediaLinks[0]?.url || featuredProvider.user?.image || null,
+      rating: summary.average,
+      reviewCount: summary.count,
+    };
+  })() : null;
+
   return (
     <div className="min-h-screen bg-sand text-ink font-sans flex flex-col">
       {/* Hero Section */}
-      <HomeHero />
+      <HomeHero featured={featured} />
 
       {/* Featured Providers Section */}
       <section className="py-16 md:py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
@@ -24,15 +62,6 @@ export default function Home() {
               Les réservations du moment
             </h2>
           </div>
-          <div className="flex gap-2">
-            {/* Visual arrows for mockup fidelity */}
-            <button className="w-10 h-10 flex items-center justify-center border border-divider text-ink bg-transparent rounded-full hover:bg-neutral-100 transition-colors">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center border-none text-accent bg-accent-100 rounded-full hover:bg-accent-200 transition-colors">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
         </div>
 
         {/* Dynamic List with Skeleton Loading */}
@@ -42,7 +71,7 @@ export default function Home() {
       </section>
 
       {/* Categories Section */}
-      <HomeCategories />
+      <HomeCategories categories={categoryCounts} />
 
       {/* Categories Links (Footer Grid) */}
       <section className="bg-trust py-16 px-4 md:px-8">

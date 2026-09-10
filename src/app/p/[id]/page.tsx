@@ -7,7 +7,8 @@ import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { ProviderCard } from "@/components/public/ProviderCard";
 import Image from "next/image";
-import { MapPin, Star, ShieldCheck, Mail, User, MessageCircle } from "lucide-react";
+import { MapPin, Star, ShieldCheck, User, MessageCircle, Mail } from "lucide-react";
+import { getRatingSummary } from "@/lib/ratings";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -24,6 +25,7 @@ export default async function PublicProviderPage(props: Props) {
         select: {
           image: true,
           name: true,
+          email: true,
         }
       },
       mediaLinks: true,
@@ -31,6 +33,10 @@ export default async function PublicProviderPage(props: Props) {
       blockedDates: {
         select: { date: true, id: true },
         where: { date: { gte: new Date() } }
+      },
+      reviews: {
+        orderBy: { createdAt: "desc" },
+        include: { organizer: { select: { name: true, image: true } } }
       }
     }
   });
@@ -38,6 +44,8 @@ export default async function PublicProviderPage(props: Props) {
   if (!profile) {
     notFound();
   }
+
+  const ratingSummary = getRatingSummary(profile.reviews);
 
   // Fetch similar providers (same category, exclude current)
   const similarProviders = await prisma.providerProfile.findMany({
@@ -49,7 +57,8 @@ export default async function PublicProviderPage(props: Props) {
     take: 3,
     include: {
       user: { select: { image: true } },
-      mediaLinks: { where: { type: "IMAGE" }, take: 1 }
+      mediaLinks: { where: { type: "IMAGE" }, take: 1 },
+      reviews: { select: { rating: true } }
     },
     orderBy: { createdAt: "desc" }
   });
@@ -124,7 +133,11 @@ export default async function PublicProviderPage(props: Props) {
               </div>
               <div className="flex items-center gap-1 text-[#C9982B]">
                 <Star size={16} className="fill-current" />
-                <span className="text-[#0d0d0d]/80">5.0 (0 avis)</span>
+                <span className="text-[#0d0d0d]/80">
+                  {ratingSummary.count > 0
+                    ? `${ratingSummary.average.toFixed(1)} (${ratingSummary.count} avis)`
+                    : "Nouveau sur iziBooking"}
+                </span>
               </div>
             </div>
           </div>
@@ -140,17 +153,18 @@ export default async function PublicProviderPage(props: Props) {
             )}
           </div>
 
-          <ProviderTabs 
+          <ProviderTabs
             bio={profile.bio}
             services={profile.services}
             mediaLinks={profile.mediaLinks}
+            reviews={profile.reviews}
           />
         </div>
 
         {/* Right Column: Sticky Widget & Buttons */}
         <div className="relative pt-4 md:pt-0">
           <div className="sticky top-24 space-y-4">
-            <BookingWidget profile={profile} />
+            <BookingWidget profile={profile} blockedDates={profile.blockedDates.map((b) => b.date)} />
             <div className="flex gap-3">
               {profile.whatsapp ? (
                 <a 
@@ -162,12 +176,15 @@ export default async function PublicProviderPage(props: Props) {
                   <MessageCircle size={18} />
                   WhatsApp
                 </a>
-              ) : (
-                <button className="flex-1 px-4 py-3.5 bg-white text-[#0d0d0d] font-semibold rounded-xl border border-neutral-200 hover:bg-neutral-50 transition-colors shadow-sm flex items-center justify-center gap-2">
+              ) : profile.user.email ? (
+                <a
+                  href={`mailto:${profile.user.email}?subject=${encodeURIComponent(`Demande via iziBooking - ${profile.name}`)}`}
+                  className="flex-1 px-4 py-3.5 bg-white text-[#0d0d0d] font-semibold rounded-xl border border-neutral-200 hover:bg-neutral-50 transition-colors shadow-sm flex items-center justify-center gap-2"
+                >
                   <Mail size={18} />
                   Contacter
-                </button>
-              )}
+                </a>
+              ) : null}
               <Link href={`/book/${profile.id}`} className="flex-1 px-4 py-3.5 bg-[#B5451B] text-white font-semibold rounded-xl hover:bg-[#9a3915] transition-colors shadow-lg shadow-[#B5451B]/20 flex items-center justify-center gap-2">
                 Réserver
               </Link>
@@ -181,26 +198,30 @@ export default async function PublicProviderPage(props: Props) {
         <div className="max-w-6xl mx-auto px-4 md:px-8 mt-24">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-heading font-bold text-[#0d0d0d]">Prestataires similaires</h2>
-            <Link href={`/search?category=${encodeURIComponent(profile.category)}`} className="text-[#B5451B] font-semibold hover:underline">
+            <Link href={`/search?q=${encodeURIComponent(profile.category)}`} className="text-[#B5451B] font-semibold hover:underline">
               Voir tout
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {similarProviders.map((provider) => (
-              <ProviderCard 
-                key={provider.id}
-                id={provider.id}
-                name={provider.name}
-                category={provider.category}
-                location={provider.location}
-                basePrice={provider.basePrice}
-                currency={provider.currency}
-                image={provider.mediaLinks[0]?.url || provider.user?.image}
-                bio={provider.bio}
-                pole={provider.pole}
-                isOpen={true}
-              />
-            ))}
+            {similarProviders.map((provider) => {
+              const summary = getRatingSummary(provider.reviews);
+              return (
+                <ProviderCard
+                  key={provider.id}
+                  id={provider.id}
+                  name={provider.name}
+                  category={provider.category}
+                  location={provider.location}
+                  basePrice={provider.basePrice}
+                  currency={provider.currency}
+                  image={provider.mediaLinks[0]?.url || provider.user?.image}
+                  bio={provider.bio}
+                  pole={provider.pole}
+                  rating={summary.average}
+                  reviewCount={summary.count}
+                />
+              );
+            })}
           </div>
         </div>
       )}
