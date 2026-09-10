@@ -8,9 +8,9 @@ import {
 } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toggleBlockedDate } from "@/app/dashboard/calendar/actions";
-import { 
-  Loader2, ChevronLeft, ChevronRight, 
-  Calendar as CalendarIcon, Users, 
+import {
+  Loader2, ChevronLeft, ChevronRight,
+  Users,
   List, LayoutGrid, CalendarDays, Clock,
   Filter
 } from "lucide-react";
@@ -141,7 +141,7 @@ export default function AvailabilityCalendar({
           </div>
           
           <button onClick={handleToday} className="px-4 py-2 text-sm font-bold bg-primary text-white rounded-lg shadow-sm hover:bg-primary/90 transition-colors">
-            Aujourd'hui
+            Aujourd’hui
           </button>
         </div>
 
@@ -263,7 +263,7 @@ export default function AvailabilityCalendar({
             <div className="w-6 h-6 rounded border border-primary/20 flex flex-col items-center justify-center">
               <span className="w-4 h-4 rounded-full bg-primary flex items-center justify-center"></span>
             </div>
-            <span>Aujourd'hui</span>
+            <span>Aujourd’hui</span>
           </li>
         </ul>
       </div>

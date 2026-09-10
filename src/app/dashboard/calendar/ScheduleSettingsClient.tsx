@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, CalendarOff, Save, CheckCircle2, AlertCircle } from "lucide-react";
+import { Clock, Save, CheckCircle2, AlertCircle } from "lucide-react";
 import { updateScheduleSettings } from "./actions";
 import { useRouter } from "next/navigation";
+import type { Prisma } from "@prisma/client";
 
-export default function ScheduleSettingsClient({ 
-  initialSchedule 
-}: { 
-  initialSchedule?: any 
+type ScheduleSettingWithHours = Prisma.ScheduleSettingGetPayload<{
+  include: { workingHours: true };
+}>;
+
+export default function ScheduleSettingsClient({
+  initialSchedule
+}: {
+  initialSchedule?: ScheduleSettingWithHours | null
 }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"hours" | "rules">("hours");
@@ -28,7 +33,7 @@ export default function ScheduleSettingsClient({
   const initializeWorkingHours = () => {
     if (initialSchedule?.workingHours && initialSchedule.workingHours.length > 0) {
       return defaultDays.map(day => {
-        const existing = initialSchedule.workingHours.find((wh: any) => wh.dayOfWeek === day.id);
+        const existing = initialSchedule.workingHours.find((wh) => wh.dayOfWeek === day.id);
         if (existing) {
           return { dayOfWeek: day.id, startTime: existing.startTime, endTime: existing.endTime, isActive: true };
         }
@@ -49,7 +54,7 @@ export default function ScheduleSettingsClient({
   const [bookingHorizon, setBookingHorizon] = useState(initialSchedule?.bookingHorizon || 180);
   const [timezone, setTimezone] = useState(initialSchedule?.timezone || "Africa/Douala");
 
-  const handleWorkingHourChange = (dayId: number, field: string, value: any) => {
+  const handleWorkingHourChange = (dayId: number, field: "startTime" | "endTime" | "isActive", value: string | boolean) => {
     setWorkingHours(prev => prev.map(wh => 
       wh.dayOfWeek === dayId ? { ...wh, [field]: value } : wh
     ));
@@ -152,7 +157,7 @@ export default function ScheduleSettingsClient({
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-ink mb-1">Délai minimum avant réservation</label>
-              <p className="text-xs text-ink/50 mb-3">Combien de temps à l'avance un client doit-il faire sa demande ?</p>
+              <p className="text-xs text-ink/50 mb-3">Combien de temps à l’avance un client doit-il faire sa demande ?</p>
               <select 
                 value={leadTimeHours}
                 onChange={(e) => setLeadTimeHours(Number(e.target.value))}
@@ -167,7 +172,7 @@ export default function ScheduleSettingsClient({
 
             <div>
               <label className="block text-sm font-semibold text-ink mb-1">Horizon de réservation</label>
-              <p className="text-xs text-ink/50 mb-3">Jusqu'à combien de temps à l'avance acceptez-vous des réservations ?</p>
+              <p className="text-xs text-ink/50 mb-3">Jusqu’à combien de temps à l’avance acceptez-vous des réservations ?</p>
               <select 
                 value={bookingHorizon}
                 onChange={(e) => setBookingHorizon(Number(e.target.value))}
@@ -201,7 +206,7 @@ export default function ScheduleSettingsClient({
               <CheckCircle2 className="w-5 h-5" /> Enregistré
             </span>
           ) : (
-            <span className="text-xs text-ink/40">N'oubliez pas d'enregistrer vos modifications.</span>
+            <span className="text-xs text-ink/40">N’oubliez pas d’enregistrer vos modifications.</span>
           )}
           <button 
             type="submit"
