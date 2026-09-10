@@ -11,7 +11,6 @@ type ProviderCardProps = {
   currency: string;
   image?: string | null;
   rating?: number;
-  reviewCount?: number;
   availableDate?: string;
   bio?: string | null;
   pole?: string;
@@ -20,7 +19,7 @@ type ProviderCardProps = {
 
 export function ProviderCard({ 
   id, name, category, location, basePrice, currency, image, 
-  rating = 4.9, reviewCount = 12, availableDate, bio, pole, isOpen = true 
+  rating = 4.9, availableDate, bio, pole, isOpen = true
 }: ProviderCardProps) {
   
   // Icon based on Pole

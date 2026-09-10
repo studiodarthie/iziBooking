@@ -1,16 +1,19 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowLeft, SlidersHorizontal, MapPin, Calendar, DollarSign, Search, ChevronDown, Grid, List, ChevronUp } from "lucide-react";
+import { MapPin, Calendar, Search, ChevronDown, Grid, List, ChevronUp } from "lucide-react";
 import prisma from "@/lib/prisma";
+import { Prisma, ProviderPole } from "@prisma/client";
 import { ProviderCard } from "@/components/public/ProviderCard";
 import { ProviderCardSkeleton } from "@/components/public/ProviderCardSkeleton";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { startOfDay, endOfDay, parseISO, format } from "date-fns";
 
+type SearchParams = { q?: string; loc?: string; pole?: string; minPrice?: string; maxPrice?: string; date?: string };
+
 // The layout and sidebar wrapper
 export default async function SearchPage(props: {
-  searchParams: Promise<{ q?: string; loc?: string; pole?: string; minPrice?: string; maxPrice?: string; date?: string }>
+  searchParams: Promise<SearchParams>
 }) {
   const searchParams = await props.searchParams;
   const q = searchParams.q || "";
@@ -232,7 +235,7 @@ function SearchGridSkeleton() {
 }
 
 // Data Fetching Component
-async function SearchResults({ searchParams }: { searchParams: any }) {
+async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
   const q = searchParams.q || "";
   const loc = searchParams.loc || "";
   const pole = searchParams.pole || "";
@@ -240,7 +243,7 @@ async function SearchResults({ searchParams }: { searchParams: any }) {
   const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice, 10) : undefined;
   const dateStr = searchParams.date || "";
 
-  const whereClause: any = { isVerified: true }; 
+  const whereClause: Prisma.ProviderProfileWhereInput = { isVerified: true };
 
   if (q) {
     whereClause.OR = [
@@ -254,8 +257,8 @@ async function SearchResults({ searchParams }: { searchParams: any }) {
     whereClause.location = { contains: loc, mode: "insensitive" };
   }
 
-  if (pole) {
-    whereClause.pole = pole;
+  if (pole && (Object.values(ProviderPole) as string[]).includes(pole)) {
+    whereClause.pole = pole as ProviderPole;
   }
 
   if (minPrice !== undefined || maxPrice !== undefined) {
@@ -338,10 +341,10 @@ async function SearchResults({ searchParams }: { searchParams: any }) {
           </div>
           <h3 className="text-lg font-bold text-ink mb-2">Aucun résultat</h3>
           <p className="text-ink/60 max-w-sm">
-            Nous n'avons trouvé aucun prestataire correspondant à vos critères. Essayez de modifier vos filtres ou votre recherche.
+            Nous n’avons trouvé aucun prestataire correspondant à vos critères. Essayez de modifier vos filtres ou votre recherche.
           </p>
           <Link href="/search" className="mt-6 px-6 py-2.5 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors shadow-sm">
-            Voir tout l'annuaire
+            Voir tout l’annuaire
           </Link>
         </div>
       ) : (

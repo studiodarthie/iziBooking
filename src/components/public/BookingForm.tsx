@@ -4,8 +4,9 @@ import { useState } from "react";
 import { submitBooking } from "@/app/book/[id]/actions";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Info } from "lucide-react";
+import type { Service } from "@prisma/client";
 
-export function BookingForm({ providerId, services }: { providerId: string, services: any[] }) {
+export function BookingForm({ providerId, services }: { providerId: string, services: Service[] }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null); // null means "Sur-mesure"
@@ -104,11 +105,11 @@ export function BookingForm({ providerId, services }: { providerId: string, serv
 
       {/* 2. Détails de l'événement */}
       <section>
-        <h3 className="text-xl font-heading font-bold text-ink mb-6">2. Détails de l'événement</h3>
+        <h3 className="text-xl font-heading font-bold text-ink mb-6">2. Détails de l’événement</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Date de l'événement *</label>
+            <label className="block text-sm font-semibold text-ink mb-2">Date de l’événement *</label>
             <input 
               required
               type="date"
@@ -118,7 +119,7 @@ export function BookingForm({ providerId, services }: { providerId: string, serv
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Type d'événement *</label>
+            <label className="block text-sm font-semibold text-ink mb-2">Type d’événement *</label>
             <select
               required
               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white"
@@ -128,7 +129,7 @@ export function BookingForm({ providerId, services }: { providerId: string, serv
               <option value="">Sélectionner...</option>
               <option value="Mariage">Mariage</option>
               <option value="Anniversaire">Anniversaire</option>
-              <option value="Soirée d'entreprise">Soirée d'entreprise</option>
+              <option value="Soirée d'entreprise">Soirée d’entreprise</option>
               <option value="Concert / Festival">Concert / Festival</option>
               <option value="Autre">Autre</option>
             </select>

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { updateProviderSettings } from "@/app/dashboard/settings/actions";
 import { Loader2 } from "lucide-react";
+import type { ProviderProfile } from "@prisma/client";
 
-export default function ProfileSettingsForm({ initialData }: { initialData: any }) {
+export default function ProfileSettingsForm({ initialData }: { initialData: ProviderProfile }) {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error", text: string } | null>(null);
 
@@ -21,7 +22,7 @@ export default function ProfileSettingsForm({ initialData }: { initialData: any 
       } else {
         setMessage({ type: "error", text: res.error || "Une erreur est survenue." });
       }
-    } catch (err) {
+    } catch {
       setMessage({ type: "error", text: "Une erreur est survenue." });
     } finally {
       setIsLoading(false);

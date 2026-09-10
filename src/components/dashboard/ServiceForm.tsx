@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Plus, X, Save } from "lucide-react";
 import { createService, updateService, deleteService } from "@/app/dashboard/services/actions";
 import { useRouter } from "next/navigation";
+import type { Service } from "@prisma/client";
 
-export function ServiceForm({ service, onCancel }: { service?: any, onCancel: () => void }) {
+export function ServiceForm({ service, onCancel }: { service?: Service | null, onCancel: () => void }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -155,7 +156,7 @@ export function ServiceForm({ service, onCancel }: { service?: any, onCancel: ()
   );
 }
 
-export function ServiceListClient({ initialServices }: { initialServices: any[] }) {
+export function ServiceListClient({ initialServices }: { initialServices: Service[] }) {
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -165,7 +166,7 @@ export function ServiceListClient({ initialServices }: { initialServices: any[] 
     <div>
       <div className="flex justify-between items-center mb-6">
         <p className="text-ink/60">
-          Présentez vos différentes offres. Les clients pourront s'en inspirer pour leur demande de devis.
+          Présentez vos différentes offres. Les clients pourront s’en inspirer pour leur demande de devis.
         </p>
         {!isCreating && !editingId && (
           <button 

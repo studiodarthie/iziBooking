@@ -2,19 +2,12 @@
 
 import { useState } from "react";
 import { PublicGallery } from "@/components/public/PublicGallery";
-
-interface Service {
-  id: string;
-  name: string;
-  category: string | null;
-  description: string | null;
-  startingPrice: number | null;
-}
+import type { Service, MediaLink } from "@prisma/client";
 
 interface ProviderTabsProps {
   bio: string | null;
   services: Service[];
-  mediaLinks: any[];
+  mediaLinks: MediaLink[];
 }
 
 export function ProviderTabs({ bio, services, mediaLinks }: ProviderTabsProps) {
@@ -104,7 +97,7 @@ export function ProviderTabs({ bio, services, mediaLinks }: ProviderTabsProps) {
               </div>
             ) : (
               <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm text-center">
-                <p className="text-neutral-500 italic">Aucun service n'a encore été ajouté.</p>
+                <p className="text-neutral-500 italic">Aucun service n’a encore été ajouté.</p>
               </div>
             )}
           </div>
