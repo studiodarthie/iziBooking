@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { BookingStatus, Prisma } from "@prisma/client";
+import { notifyNewMessage } from "@/lib/email";
 
 export async function sendMessage(bookingId: string, content: string) {
   const session = await getServerSession(authOptions);
@@ -14,15 +15,35 @@ export async function sendMessage(bookingId: string, content: string) {
   if (!user) return { error: "Utilisateur non trouvé" };
 
   if (!content.trim()) return { error: "Le message ne peut pas être vide" };
+  const trimmedContent = content.trim();
 
   try {
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        organizer: { select: { id: true, email: true } },
+        providerProfile: { select: { user: { select: { id: true, email: true } } } }
+      }
+    });
+    if (!booking) return { error: "Réservation introuvable" };
+
     await prisma.message.create({
       data: {
         bookingId,
         senderId: user.id,
-        content: content.trim()
+        content: trimmedContent
       }
     });
+
+    const recipient = user.id === booking.organizer.id ? booking.providerProfile.user : booking.organizer;
+    if (recipient?.email) {
+      await notifyNewMessage({
+        recipientEmail: recipient.email,
+        senderName: user.name || "Un utilisateur",
+        content: trimmedContent,
+        bookingId,
+      });
+    }
 
     revalidatePath(`/dashboard/bookings/${bookingId}`);
     return { success: true };

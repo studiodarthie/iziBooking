@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { notifyNewBooking } from "@/lib/email";
 
 export async function getUnavailableDates(providerProfileId: string) {
   const [blockedDates, bookings] = await Promise.all([
@@ -148,6 +149,20 @@ export async function submitBooking(data: {
         }
       });
     });
+
+    const providerProfile = await prisma.providerProfile.findUnique({
+      where: { id: data.providerProfileId },
+      include: { user: { select: { email: true } } }
+    });
+    if (providerProfile?.user?.email) {
+      await notifyNewBooking({
+        providerEmail: providerProfile.user.email,
+        organizerName: user.name || "Un organisateur",
+        eventType: data.eventType,
+        eventDate: data.eventDate,
+        bookingId: booking.id,
+      });
+    }
 
     return { success: true, bookingId: booking.id };
   } catch (error) {
