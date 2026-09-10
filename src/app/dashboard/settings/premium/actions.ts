@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { initiateSubscriptionPayment, isTranzakConfigured } from "@/lib/tranzak";
+import { initiateTranzakPayment, isTranzakConfigured } from "@/lib/tranzak";
 
 const PREMIUM_PRICE_XAF = 15000;
 const PREMIUM_PERIOD_DAYS = 30;
@@ -42,7 +42,7 @@ export async function startPremiumCheckout() {
 
   try {
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-    const result = await initiateSubscriptionPayment({
+    const result = await initiateTranzakPayment({
       amount: PREMIUM_PRICE_XAF,
       currencyCode: "XAF",
       description: "Abonnement Premium iziBooking (30 jours)",

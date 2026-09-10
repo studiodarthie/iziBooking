@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Check, AlertCircle } from "lucide-react";
-import { updateBookingStatus } from "./actions";
-import type { BookingStatus } from "@prisma/client";
+import { Check, AlertCircle, ShieldCheck } from "lucide-react";
+import { updateBookingStatus, confirmDirectDeposit, initiateOnlineDeposit } from "./actions";
+import type { BookingStatus, PaymentMethod } from "@prisma/client";
 
 interface BookingTimelineProps {
   bookingId: string;
@@ -11,11 +11,14 @@ interface BookingTimelineProps {
   isProvider: boolean;
   totalAmount: number | null;
   couponCode?: string;
+  tranzakConfigured: boolean;
 }
 
-export function BookingTimeline({ bookingId, status, isProvider, totalAmount, couponCode }: BookingTimelineProps) {
+export function BookingTimeline({ bookingId, status, isProvider, totalAmount, couponCode, tranzakConfigured }: BookingTimelineProps) {
   const [loading, setLoading] = useState(false);
   const [proposedAmount, setProposedAmount] = useState<string>(totalAmount ? totalAmount.toString() : "");
+  const [showDirectConfirm, setShowDirectConfirm] = useState(false);
+  const [directMethod, setDirectMethod] = useState<PaymentMethod>("MOBILE_MONEY");
 
   // Map status to steps
   const steps = [
@@ -46,9 +49,24 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount, co
     setLoading(false);
   };
 
-  const handleConfirmDeposit = () => {
-    if (!confirm("Confirmez-vous avoir réglé l’acompte au prestataire (Mobile Money, virement, etc.) ?")) return;
-    handleUpdate("DEPOSIT_PAID");
+  const handleOnlinePayment = async () => {
+    setLoading(true);
+    const res = await initiateOnlineDeposit(bookingId);
+    if (res.success && res.paymentPageUrl) {
+      window.location.href = res.paymentPageUrl;
+      return;
+    }
+    setLoading(false);
+    alert(res.error || "Une erreur s'est produite.");
+  };
+
+  const handleDirectConfirm = async () => {
+    if (!confirm("Confirmez-vous avoir réglé l’acompte directement au prestataire (hors plateforme) ?")) return;
+    setLoading(true);
+    const res = await confirmDirectDeposit(bookingId, directMethod);
+    setLoading(false);
+    if (res.error) alert(res.error);
+    else setShowDirectConfirm(false);
   };
 
   return (
@@ -123,17 +141,50 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount, co
 
                     {/* Step 2: ACCEPTED */}
                     {step.id === "ACCEPTED" && isCurrent && !isProvider && (
-                      <div className="mt-3 p-3 bg-accent/10 rounded-xl border border-accent/20">
-                        <p className="text-xs text-ink/70 mb-3">
-                          Le devis a été validé. Réglez l’acompte directement auprès du prestataire (Mobile Money, virement, espèces...), puis confirmez ici.
+                      <div className="mt-3 p-3 bg-accent/10 rounded-xl border border-accent/20 space-y-3">
+                        <p className="text-xs text-ink/70">
+                          Le devis a été validé. Réglez l’acompte pour sécuriser votre date.
                         </p>
-                        <button
-                          disabled={loading}
-                          onClick={handleConfirmDeposit}
-                          className="w-full py-2 bg-accent-600 hover:bg-accent-700 text-white font-bold text-xs rounded-lg transition-colors disabled:opacity-50"
-                        >
-                          J’ai réglé l’acompte
-                        </button>
+
+                        {tranzakConfigured && (
+                          <button
+                            disabled={loading}
+                            onClick={handleOnlinePayment}
+                            className="w-full py-2.5 bg-trust hover:bg-trust/90 text-white font-bold text-xs rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
+                          >
+                            <ShieldCheck size={14} /> Payer en ligne maintenant (sécurisé)
+                          </button>
+                        )}
+
+                        {!showDirectConfirm ? (
+                          <button
+                            disabled={loading}
+                            onClick={() => setShowDirectConfirm(true)}
+                            className="w-full text-center text-[11px] text-ink/50 hover:text-ink/80 underline underline-offset-2"
+                          >
+                            J’ai déjà réglé directement au prestataire (hors plateforme)
+                          </button>
+                        ) : (
+                          <div className="pt-2 border-t border-accent/20 space-y-2">
+                            <select
+                              value={directMethod}
+                              onChange={(e) => setDirectMethod(e.target.value as PaymentMethod)}
+                              className="w-full px-2 py-1.5 text-xs bg-white border border-ink/20 rounded-lg focus:outline-none focus:border-primary"
+                            >
+                              <option value="MOBILE_MONEY">Mobile Money</option>
+                              <option value="CASH">Espèces</option>
+                              <option value="BANK_TRANSFER">Virement bancaire</option>
+                              <option value="OTHER">Autre</option>
+                            </select>
+                            <button
+                              disabled={loading}
+                              onClick={handleDirectConfirm}
+                              className="w-full py-2 bg-accent-600 hover:bg-accent-700 text-white font-bold text-xs rounded-lg transition-colors disabled:opacity-50"
+                            >
+                              Confirmer le paiement direct
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                     {step.id === "ACCEPTED" && isCurrent && isProvider && (

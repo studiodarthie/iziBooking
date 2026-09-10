@@ -313,11 +313,25 @@ model Payment {
   status      PaymentStatus @default(PENDING)
   type        PaymentType   @default(DEPOSIT) // Acompte ou solde
   
-  reference   String?       // ID de transaction externe (CinetPay, Orange Money, etc.)
+  reference   String?       @unique // ID de transaction externe (Tranzak requestId, etc.)
   notes       String?       @db.Text
-  
+
+  // Vrai uniquement quand l'argent est passé par la plateforme (paiement en ligne Tranzak) —
+  // dans ce cas seulement il doit être reversé manuellement au prestataire.
+  collectedByPlatform Boolean      @default(false)
+  commissionAmount    Float?       // Commission plateforme, calculée au moment de l'encaissement
+  payoutStatus        PayoutStatus @default(NOT_APPLICABLE)
+  payoutAt            DateTime?
+  payoutNote          String?      // Référence du reversement manuel (ex: "MoMo TX123456")
+
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+}
+
+enum PayoutStatus {
+  NOT_APPLICABLE
+  PENDING
+  PAID
 }
 
 enum PaymentMethod {

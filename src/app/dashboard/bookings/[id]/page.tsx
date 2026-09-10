@@ -10,6 +10,7 @@ import { ChatBox } from "./ChatBox";
 
 import { BookingTimeline } from "./BookingTimeline";
 import { ReviewForm } from "./ReviewForm";
+import { isTranzakConfigured } from "@/lib/tranzak";
 
 export default async function BookingDetailsPage(props: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
@@ -187,6 +188,7 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
             isProvider={isProvider}
             totalAmount={booking.totalAmount}
             couponCode={booking.coupon?.code}
+            tranzakConfigured={isTranzakConfigured()}
           />
         </div>
 

@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Users, BarChart3, LogOut, ShieldCheck } from "lucide-react";
+import { Users, BarChart3, LogOut, ShieldCheck, Banknote } from "lucide-react";
 
 export default async function AdminLayout({
   children,
@@ -58,6 +58,15 @@ export default async function AdminLayout({
                     >
                       <Users className="h-6 w-6 shrink-0" />
                       Prestataires
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/admin/payouts"
+                      className="group flex gap-x-3 rounded-xl p-3 text-sm font-bold leading-6 hover:bg-sand/10 hover:text-white text-sand/80 transition-all"
+                    >
+                      <Banknote className="h-6 w-6 shrink-0" />
+                      Reversements
                     </Link>
                   </li>
                 </ul>

@@ -44,7 +44,7 @@ async function getAccessToken(): Promise<string> {
   return cachedToken.token;
 }
 
-export async function initiateSubscriptionPayment(params: {
+export async function initiateTranzakPayment(params: {
   amount: number;
   currencyCode: string;
   description: string;

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyTranzakWebhookAuth } from "@/lib/tranzak";
+import { getCommissionRate } from "@/lib/plan";
 
 // Notification Tranzak (TPN). Doc : eventType "REQUEST.COMPLETED" est envoyé pour toute
 // transaction terminée (succès OU échec) — le vrai résultat est dans resource.status.
@@ -34,42 +35,78 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "resourceId manquant" }, { status: 400 });
   }
 
+  const status = payload.resource?.status;
+
   const subscriptionPayment = await prisma.subscriptionPayment.findUnique({
     where: { tranzakReference: requestId },
   });
 
-  if (!subscriptionPayment) {
-    // Rien à faire ici (référence inconnue) — on acquitte pour éviter des retentatives infinies.
+  if (subscriptionPayment) {
+    // Idempotence : Tranzak peut renvoyer plusieurs fois la même notification.
+    if (subscriptionPayment.status === "COMPLETED" || subscriptionPayment.status === "FAILED") {
+      return NextResponse.json({ success: true });
+    }
+
+    if (status === "SUCCESSFUL") {
+      await prisma.$transaction([
+        prisma.subscriptionPayment.update({
+          where: { id: subscriptionPayment.id },
+          data: { status: "COMPLETED" },
+        }),
+        prisma.providerProfile.update({
+          where: { id: subscriptionPayment.providerProfileId },
+          data: { plan: "PREMIUM", planExpiresAt: subscriptionPayment.periodEnd },
+        }),
+      ]);
+    } else if (status === "FAILED" || status === "CANCELLED") {
+      await prisma.subscriptionPayment.update({
+        where: { id: subscriptionPayment.id },
+        data: { status: "FAILED" },
+      });
+    }
+    // Tout autre statut intermédiaire (ex: PENDING) : on acquitte sans rien changer,
+    // une notification ultérieure confirmera l'issue finale.
+
+    return NextResponse.json({ success: true });
+  }
+
+  // Sinon, il pourrait s'agir d'un acompte de réservation payé en ligne.
+  const bookingPayment = await prisma.payment.findUnique({
+    where: { reference: requestId },
+    include: { booking: { include: { providerProfile: true } } },
+  });
+
+  if (!bookingPayment) {
+    // Rien à faire ici (référence inconnue d'aucun des deux côtés) — on acquitte pour
+    // éviter des retentatives infinies de la part de Tranzak.
     console.warn(`Webhook Tranzak : référence inconnue ${requestId}`);
     return NextResponse.json({ success: true });
   }
 
-  // Idempotence : Tranzak peut renvoyer plusieurs fois la même notification.
-  if (subscriptionPayment.status === "COMPLETED" || subscriptionPayment.status === "FAILED") {
+  if (bookingPayment.status === "COMPLETED" || bookingPayment.status === "FAILED") {
     return NextResponse.json({ success: true });
   }
 
-  const status = payload.resource?.status;
-
   if (status === "SUCCESSFUL") {
+    const commissionRate = getCommissionRate(bookingPayment.booking.providerProfile);
+    const commissionAmount = bookingPayment.amount * commissionRate;
+
     await prisma.$transaction([
-      prisma.subscriptionPayment.update({
-        where: { id: subscriptionPayment.id },
-        data: { status: "COMPLETED" },
+      prisma.payment.update({
+        where: { id: bookingPayment.id },
+        data: { status: "COMPLETED", commissionAmount, payoutStatus: "PENDING" },
       }),
-      prisma.providerProfile.update({
-        where: { id: subscriptionPayment.providerProfileId },
-        data: { plan: "PREMIUM", planExpiresAt: subscriptionPayment.periodEnd },
+      prisma.booking.update({
+        where: { id: bookingPayment.bookingId },
+        data: { status: "DEPOSIT_PAID" },
       }),
     ]);
   } else if (status === "FAILED" || status === "CANCELLED") {
-    await prisma.subscriptionPayment.update({
-      where: { id: subscriptionPayment.id },
+    await prisma.payment.update({
+      where: { id: bookingPayment.id },
       data: { status: "FAILED" },
     });
   }
-  // Tout autre statut intermédiaire (ex: PENDING) : on acquitte sans rien changer,
-  // une notification ultérieure confirmera l'issue finale.
 
   return NextResponse.json({ success: true });
 }
