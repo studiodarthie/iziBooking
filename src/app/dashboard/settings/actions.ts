@@ -53,3 +53,34 @@ export async function updateProviderSettings(formData: FormData) {
     return { success: false, error: "Erreur lors de la mise à jour." };
   }
 }
+
+export async function updateOrganizerName(name: string) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.email) {
+    return { success: false, error: "Vous devez être connecté." };
+  }
+
+  if (!name.trim()) {
+    return { success: false, error: "Le nom ne peut pas être vide." };
+  }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!user) {
+      return { success: false, error: "Utilisateur introuvable." };
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { name: name.trim() },
+    });
+
+    revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Erreur lors de la mise à jour." };
+  }
+}
