@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Users, BarChart3, LogOut, ShieldCheck, Banknote, UserCog, AlertTriangle } from "lucide-react";
+import { AdminUserMenu } from "@/components/admin/AdminUserMenu";
 
 export default async function AdminLayout({
   children,
@@ -111,12 +112,7 @@ export default async function AdminLayout({
       <div className="flex flex-1 flex-col lg:pl-64 w-full h-full">
         <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-ink/5 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <div className="flex flex-1 justify-end gap-x-4 self-stretch lg:gap-x-6">
-            <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <span className="text-sm font-bold text-ink">Mode Administrateur</span>
-              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                {user.name?.charAt(0) || "A"}
-              </div>
-            </div>
+            <AdminUserMenu name={user.name} email={user.email!} image={user.image} />
           </div>
         </header>
 
