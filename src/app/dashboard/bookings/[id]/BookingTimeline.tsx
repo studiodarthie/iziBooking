@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, AlertCircle, Phone, Smartphone, Loader2 } from "lucide-react";
+import { Check, AlertCircle } from "lucide-react";
 import { updateBookingStatus } from "./actions";
 import type { BookingStatus } from "@prisma/client";
 
@@ -15,12 +15,6 @@ interface BookingTimelineProps {
 export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: BookingTimelineProps) {
   const [loading, setLoading] = useState(false);
   const [proposedAmount, setProposedAmount] = useState<string>(totalAmount ? totalAmount.toString() : "");
-
-  // Payment mock state
-  const [showPayment, setShowPayment] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"orange" | "mtn">("orange");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [paymentLoading, setPaymentLoading] = useState(false);
 
   // Map status to steps
   const steps = [
@@ -51,16 +45,9 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: 
     setLoading(false);
   };
 
-  const handleSimulatePayment = async () => {
-    if (!phoneNumber || phoneNumber.length < 9) return;
-    setPaymentLoading(true);
-    
-    // Simulate API delay (waiting for USSD validation)
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    await updateBookingStatus(bookingId, "DEPOSIT_PAID");
-    setPaymentLoading(false);
-    setShowPayment(false);
+  const handleConfirmDeposit = () => {
+    if (!confirm("Confirmez-vous avoir réglé l’acompte au prestataire (Mobile Money, virement, etc.) ?")) return;
+    handleUpdate("DEPOSIT_PAID");
   };
 
   return (
@@ -131,73 +118,16 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: 
                     {/* Step 2: ACCEPTED */}
                     {step.id === "ACCEPTED" && isCurrent && !isProvider && (
                       <div className="mt-3 p-3 bg-accent/10 rounded-xl border border-accent/20">
-                        <p className="text-xs text-ink/70 mb-3">Le devis a été validé. Payez l’acompte (10%) pour bloquer la date.</p>
-                        
-                        {!showPayment ? (
-                          <button 
-                            disabled={loading}
-                            onClick={() => setShowPayment(true)}
-                            className="w-full py-2 bg-accent-600 hover:bg-accent-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2"
-                          >
-                            <Smartphone size={16} /> Payer par Mobile Money
-                          </button>
-                        ) : (
-                          <div className="mt-2 pt-2 border-t border-accent/20 space-y-3">
-                            <div className="flex gap-2">
-                              <button 
-                                onClick={() => setPaymentMethod("orange")}
-                                className={`flex-1 py-1.5 text-xs font-bold rounded-md border ${paymentMethod === "orange" ? "bg-orange-500 text-white border-orange-600" : "bg-white text-ink/70 border-ink/20"}`}
-                              >
-                                OM
-                              </button>
-                              <button 
-                                onClick={() => setPaymentMethod("mtn")}
-                                className={`flex-1 py-1.5 text-xs font-bold rounded-md border ${paymentMethod === "mtn" ? "bg-yellow-400 text-ink border-yellow-500" : "bg-white text-ink/70 border-ink/20"}`}
-                              >
-                                MTN
-                              </button>
-                            </div>
-                            
-                            <div className="relative">
-                              <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
-                                <Phone size={14} className="text-ink/40" />
-                              </div>
-                              <input 
-                                type="tel"
-                                placeholder="Numéro de téléphone"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                className="w-full pl-8 pr-3 py-2 text-sm bg-white border border-ink/20 rounded-lg focus:outline-none focus:border-accent-500"
-                              />
-                            </div>
-                            
-                            <div className="flex gap-2">
-                              <button 
-                                onClick={() => setShowPayment(false)}
-                                disabled={paymentLoading}
-                                className="flex-1 py-2 text-xs font-bold text-ink bg-white border border-ink/20 rounded-lg hover:bg-ink/5 transition-colors"
-                              >
-                                Annuler
-                              </button>
-                              <button 
-                                onClick={handleSimulatePayment}
-                                disabled={paymentLoading || phoneNumber.length < 9}
-                                className="flex-1 py-2 text-xs font-bold text-white bg-accent-600 rounded-lg hover:bg-accent-700 transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
-                              >
-                                {paymentLoading ? (
-                                  <><Loader2 size={14} className="animate-spin" /> En cours...</>
-                                ) : (
-                                  "Valider"
-                                )}
-                              </button>
-                            </div>
-                            {paymentLoading && (
-                              <p className="text-[10px] text-center text-ink/60 animate-pulse">
-                                Veuillez confirmer le paiement sur votre téléphone...
-                              </p>
-                            )}
-                          </div>
-                        )}
+                        <p className="text-xs text-ink/70 mb-3">
+                          Le devis a été validé. Réglez l’acompte directement auprès du prestataire (Mobile Money, virement, espèces...), puis confirmez ici.
+                        </p>
+                        <button
+                          disabled={loading}
+                          onClick={handleConfirmDeposit}
+                          className="w-full py-2 bg-accent-600 hover:bg-accent-700 text-white font-bold text-xs rounded-lg transition-colors disabled:opacity-50"
+                        >
+                          J’ai réglé l’acompte
+                        </button>
                       </div>
                     )}
                     {step.id === "ACCEPTED" && isCurrent && isProvider && (

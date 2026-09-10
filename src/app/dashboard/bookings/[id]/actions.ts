@@ -35,6 +35,19 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) return { error: "Non autorisé" };
 
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: { providerProfile: true }
+  });
+  if (!user) return { error: "Non autorisé" };
+
+  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  if (!booking) return { error: "Réservation introuvable" };
+
+  const isProvider = user.providerProfile?.id === booking.providerProfileId;
+  const isOrganizer = user.id === booking.organizerId;
+  if (!isProvider && !isOrganizer) return { error: "Non autorisé" };
+
   const data: Prisma.BookingUpdateInput = { status };
   if (totalAmount !== undefined) {
     data.totalAmount = totalAmount;
