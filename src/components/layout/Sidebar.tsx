@@ -13,6 +13,7 @@ import {
   Clock,
   List,
   Tag,
+  Crown,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -42,6 +43,7 @@ const PROVIDER_SECTIONS = [
     title: "PARAMÈTRES",
     items: [
       { name: "Général", href: "/dashboard/settings", icon: Settings },
+      { name: "Premium", href: "/dashboard/settings/premium", icon: Crown },
     ]
   }
 ];
