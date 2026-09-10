@@ -16,3 +16,6 @@ export function isPremium(profile: PlanFields): boolean {
 export function getCommissionRate(profile: PlanFields): number {
   return isPremium(profile) ? 0.06 : 0.12;
 }
+
+export const FREE_PHOTO_LIMIT = 3;
+export const FREE_SERVICE_LIMIT = 2;

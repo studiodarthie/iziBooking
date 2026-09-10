@@ -45,7 +45,8 @@ export default async function AdminProvidersPage(props: {
         select: { bookings: true }
       }
     },
-    orderBy: { createdAt: "desc" }
+    // Priorité aux prestataires Premium, puis aux profils non encore vérifiés (les plus anciens d'abord).
+    orderBy: [{ plan: "desc" }, { isVerified: "asc" }, { createdAt: "asc" }]
   });
 
   return (

@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { isPremium, FREE_SERVICE_LIMIT } from "@/lib/plan";
 
 export async function createService(data: {
   name: string;
@@ -12,18 +13,22 @@ export async function createService(data: {
   startingPrice?: number;
 }) {
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user?.email) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-    include: { providerProfile: true }
+    include: { providerProfile: { include: { _count: { select: { services: true } } } } }
   });
 
   if (!user || user.role !== "PROVIDER" || !user.providerProfile) {
     return { success: false, error: "Profil non autorisé." };
+  }
+
+  if (!isPremium(user.providerProfile) && user.providerProfile._count.services >= FREE_SERVICE_LIMIT) {
+    return { success: false, error: `Le forfait gratuit est limité à ${FREE_SERVICE_LIMIT} services. Passez Premium pour en ajouter sans limite.` };
   }
 
   try {

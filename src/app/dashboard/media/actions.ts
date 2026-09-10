@@ -5,10 +5,11 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { MediaType } from "@prisma/client";
+import { isPremium, FREE_PHOTO_LIMIT } from "@/lib/plan";
 
 export async function addMediaToProfile(url: string, format: string) {
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user?.email) {
     throw new Error("Vous devez être connecté.");
   }
@@ -27,6 +28,15 @@ export async function addMediaToProfile(url: string, format: string) {
     type = "VIDEO";
   } else if (["mp3", "wav", "audio"].includes(format)) {
     type = "AUDIO";
+  }
+
+  if (type === "IMAGE" && !isPremium(user.providerProfile)) {
+    const photoCount = await prisma.mediaLink.count({
+      where: { providerProfileId: user.providerProfile.id, type: "IMAGE" }
+    });
+    if (photoCount >= FREE_PHOTO_LIMIT) {
+      throw new Error(`Le forfait gratuit est limité à ${FREE_PHOTO_LIMIT} photos. Passez Premium pour en ajouter sans limite.`);
+    }
   }
 
   await prisma.mediaLink.create({

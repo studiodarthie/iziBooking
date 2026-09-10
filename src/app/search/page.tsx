@@ -295,10 +295,13 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
     }
   }
 
-  const orderBy: Prisma.ProviderProfileOrderByWithRelationInput =
+  const secondarySort: Prisma.ProviderProfileOrderByWithRelationInput =
     sort === "price_asc" ? { basePrice: "asc" } :
     sort === "price_desc" ? { basePrice: "desc" } :
     { createdAt: "desc" };
+
+  // Les prestataires Premium remontent toujours en premier, avant le tri choisi par l'utilisateur.
+  const orderBy: Prisma.ProviderProfileOrderByWithRelationInput[] = [{ plan: "desc" }, secondarySort];
 
   const providers = await prisma.providerProfile.findMany({
     where: whereClause,

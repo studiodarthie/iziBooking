@@ -12,10 +12,12 @@ type MediaLink = {
   url: string;
 };
 
-export default function MediaClient({ initialMedia }: { initialMedia: MediaLink[] }) {
+export default function MediaClient({ initialMedia, isPremium, photoLimit }: { initialMedia: MediaLink[]; isPremium: boolean; photoLimit: number }) {
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [media, setMedia] = useState<MediaLink[]>(initialMedia);
+  const photoCount = media.filter(m => m.type === "IMAGE").length;
+  const photoLimitReached = !isPremium && photoCount >= photoLimit;
 
   const handleSuccess = async (result: CloudinaryUploadWidgetResults) => {
     if (typeof result.info !== "object" || !result.info) return;
@@ -23,17 +25,19 @@ export default function MediaClient({ initialMedia }: { initialMedia: MediaLink[
     try {
       const url = result.info.secure_url;
       const format = result.info.resource_type === "video" ? "video" : result.info.format;
-      
+
       // On the server, it creates and revalidates
       await addMediaToProfile(url, format);
-      
+
       // Temporarily add to UI before full refresh (or just let server action refresh)
       // For immediate feedback:
       let type = "IMAGE";
       if (["mp4", "mov", "video"].includes(format)) type = "VIDEO";
       else if (["mp3", "wav", "audio"].includes(format)) type = "AUDIO";
-      
+
       setMedia(prev => [{ id: "temp-" + Date.now(), url, type }, ...prev]);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Erreur lors de l'ajout du média.");
     } finally {
       setIsUploading(false);
     }
@@ -61,6 +65,14 @@ export default function MediaClient({ initialMedia }: { initialMedia: MediaLink[
           <p className="mt-1 text-sm text-ink/70">
             Gérez vos photos, vidéos et extraits audios pour votre profil artiste.
           </p>
+          {!isPremium && (
+            <p className="mt-1 text-xs font-medium text-ink/50">
+              {photoCount}/{photoLimit} photos utilisées (forfait gratuit).{" "}
+              {photoLimitReached && (
+                <a href="/dashboard/settings/premium" className="text-primary underline">Passer Premium pour des photos illimitées</a>
+              )}
+            </p>
+          )}
         </div>
 
         <CldUploadWidget
