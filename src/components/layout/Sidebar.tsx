@@ -12,6 +12,7 @@ import {
   Image as ImageIcon,
   Clock,
   List,
+  Tag,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -33,6 +34,7 @@ const PROVIDER_SECTIONS = [
     title: "CONFIGURATION MÉTIER",
     items: [
       { name: "Services", href: "/dashboard/services", icon: List },
+      { name: "Codes promo", href: "/dashboard/coupons", icon: Tag },
       { name: "Médiathèque", href: "/dashboard/media", icon: ImageIcon },
     ]
   },

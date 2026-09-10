@@ -23,6 +23,38 @@ export async function getUnavailableDates(providerProfileId: string) {
   return dates.map(d => d.toISOString().split("T")[0]);
 }
 
+export async function validateCoupon(providerProfileId: string, code: string) {
+  const coupon = await prisma.coupon.findUnique({
+    where: { providerProfileId_code: { providerProfileId, code: code.trim().toUpperCase() } }
+  });
+
+  if (!coupon || !coupon.isActive) {
+    return { valid: false, error: "Ce code n'existe pas ou n'est plus actif." };
+  }
+
+  const now = new Date();
+  if (coupon.validFrom && now < coupon.validFrom) {
+    return { valid: false, error: "Ce code n'est pas encore valide." };
+  }
+  if (coupon.validUntil && now > coupon.validUntil) {
+    return { valid: false, error: "Ce code a expiré." };
+  }
+  if (coupon.usageLimit !== null && coupon.usageCount >= coupon.usageLimit) {
+    return { valid: false, error: "Ce code a atteint sa limite d'utilisation." };
+  }
+
+  return {
+    valid: true,
+    coupon: {
+      id: coupon.id,
+      code: coupon.code,
+      discountType: coupon.discountType,
+      discountValue: coupon.discountValue,
+      usageLimit: coupon.usageLimit,
+    }
+  };
+}
+
 export async function submitBooking(data: {
   providerProfileId: string;
   eventDate: Date;
@@ -32,6 +64,7 @@ export async function submitBooking(data: {
   budget?: number;
   details?: string;
   serviceId?: string;
+  couponCode?: string;
 }) {
   const session = await getServerSession(authOptions);
 
@@ -69,24 +102,58 @@ export async function submitBooking(data: {
     return { success: false, error: "Cette date n'est plus disponible pour ce prestataire. Merci d'en choisir une autre." };
   }
 
+  let couponId: string | undefined;
+  if (data.couponCode) {
+    const validation = await validateCoupon(data.providerProfileId, data.couponCode);
+    if (!validation.valid || !validation.coupon) {
+      return { success: false, error: validation.error || "Code promo invalide." };
+    }
+    couponId = validation.coupon.id;
+  }
+
   try {
-    const booking = await prisma.booking.create({
-      data: {
-        organizerId: user.id,
-        providerProfileId: data.providerProfileId,
-        eventDate: data.eventDate,
-        eventType: data.eventType,
-        eventLocation: data.eventLocation,
-        clientWhatsApp: data.clientWhatsApp,
-        budget: data.budget,
-        details: data.details,
-        serviceId: data.serviceId,
-        status: "PENDING"
+    const booking = await prisma.$transaction(async (tx) => {
+      if (couponId) {
+        // Incrément atomique : la comparaison usageCount < usageLimit se fait au niveau de la
+        // requête SQL elle-même, donc deux organisateurs ne peuvent jamais consommer tous les
+        // deux le dernier usage disponible (un seul des deux updateMany touchera une ligne).
+        // Si la réservation échoue plus bas, la transaction annule aussi cet incrément.
+        const coupon = await tx.coupon.findUniqueOrThrow({ where: { id: couponId } });
+        const claim = await tx.coupon.updateMany({
+          where: {
+            id: couponId,
+            isActive: true,
+            ...(coupon.usageLimit !== null ? { usageCount: { lt: coupon.usageLimit } } : {})
+          },
+          data: { usageCount: { increment: 1 } }
+        });
+        if (claim.count === 0) {
+          throw new Error("COUPON_EXHAUSTED");
+        }
       }
+
+      return tx.booking.create({
+        data: {
+          organizerId: user.id,
+          providerProfileId: data.providerProfileId,
+          eventDate: data.eventDate,
+          eventType: data.eventType,
+          eventLocation: data.eventLocation,
+          clientWhatsApp: data.clientWhatsApp,
+          budget: data.budget,
+          details: data.details,
+          serviceId: data.serviceId,
+          couponId,
+          status: "PENDING"
+        }
+      });
     });
 
     return { success: true, bookingId: booking.id };
   } catch (error) {
+    if (error instanceof Error && error.message === "COUPON_EXHAUSTED") {
+      return { success: false, error: "Ce code vient d'atteindre sa limite d'utilisation. Merci de retirer le code." };
+    }
     console.error("Error creating booking:", error);
     return { success: false, error: "Erreur lors de la soumission de la demande." };
   }

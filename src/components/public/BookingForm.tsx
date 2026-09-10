@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { submitBooking } from "@/app/book/[id]/actions";
+import { submitBooking, validateCoupon } from "@/app/book/[id]/actions";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Info } from "lucide-react";
+import { CheckCircle, Info, Tag } from "lucide-react";
 import type { Service } from "@prisma/client";
 
 export function BookingForm({ providerId, services, unavailableDates }: { providerId: string, services: Service[], unavailableDates: string[] }) {
@@ -20,6 +20,23 @@ export function BookingForm({ providerId, services, unavailableDates }: { provid
     details: ""
   });
 
+  const [couponCode, setCouponCode] = useState("");
+  const [couponState, setCouponState] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
+  const [couponMessage, setCouponMessage] = useState("");
+
+  const handleCheckCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponState("checking");
+    const res = await validateCoupon(providerId, couponCode.trim());
+    if (res.valid) {
+      setCouponState("valid");
+      setCouponMessage("Code valide — la remise sera appliquée une fois le devis établi par le prestataire.");
+    } else {
+      setCouponState("invalid");
+      setCouponMessage(res.error || "Code invalide.");
+    }
+  };
+
   const unavailableSet = new Set(unavailableDates);
   const isDateUnavailable = formData.eventDate !== "" && unavailableSet.has(formData.eventDate);
   const todayStr = new Date().toISOString().split("T")[0];
@@ -34,6 +51,10 @@ export function BookingForm({ providerId, services, unavailableDates }: { provid
       alert("Cette date n'est pas disponible pour ce prestataire. Merci d'en choisir une autre.");
       return;
     }
+    if (couponCode.trim() && couponState !== "valid") {
+      alert("Vérifiez le code promo avant d'envoyer votre demande, ou videz le champ.");
+      return;
+    }
 
     setLoading(true);
     const data = {
@@ -44,7 +65,8 @@ export function BookingForm({ providerId, services, unavailableDates }: { provid
       clientWhatsApp: formData.clientWhatsApp,
       budget: formData.budget ? Number(formData.budget) : undefined,
       details: formData.details,
-      serviceId: selectedServiceId || undefined
+      serviceId: selectedServiceId || undefined,
+      couponCode: couponState === "valid" ? couponCode.trim() : undefined
     };
 
     const res = await submitBooking(data);
@@ -195,6 +217,45 @@ export function BookingForm({ providerId, services, unavailableDates }: { provid
               <span className="absolute right-4 top-3 text-ink/50 font-medium">FCFA</span>
             </div>
           </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-semibold text-ink mb-2">Code promo (optionnel)</label>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Tag size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
+              <input
+                type="text"
+                placeholder="Ex: BIENVENUE20"
+                className={`w-full pl-11 pr-4 py-3 rounded-xl border uppercase focus:ring-1 outline-none ${
+                  couponState === "invalid"
+                    ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                    : couponState === "valid"
+                    ? "border-success focus:border-success focus:ring-success"
+                    : "border-neutral-200 focus:border-primary focus:ring-primary"
+                }`}
+                value={couponCode}
+                onChange={e => {
+                  setCouponCode(e.target.value);
+                  setCouponState("idle");
+                  setCouponMessage("");
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleCheckCoupon}
+              disabled={!couponCode.trim() || couponState === "checking"}
+              className="px-5 py-3 rounded-xl border border-neutral-200 font-semibold text-ink hover:bg-sand/50 transition-colors disabled:opacity-50 whitespace-nowrap"
+            >
+              {couponState === "checking" ? "..." : "Vérifier"}
+            </button>
+          </div>
+          {couponMessage && (
+            <p className={`text-xs mt-1.5 ${couponState === "valid" ? "text-success" : "text-red-500"}`}>
+              {couponMessage}
+            </p>
+          )}
         </div>
 
         <div>

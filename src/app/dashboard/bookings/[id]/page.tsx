@@ -32,7 +32,8 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
       organizer: { select: { id: true, name: true, image: true } },
       providerProfile: { select: { id: true, name: true, userId: true, currency: true } },
       messages: { orderBy: { createdAt: "asc" } },
-      review: true
+      review: true,
+      coupon: { select: { code: true } }
     }
   });
 
@@ -129,6 +130,15 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
             <div className="text-3xl font-bold text-ink">
               {booking.totalAmount ? `${booking.totalAmount.toLocaleString('fr-FR')} ${booking.providerProfile.currency}` : "À définir"}
             </div>
+            {booking.coupon && booking.discountAmount ? (
+              <p className="text-xs text-success font-medium mt-2">
+                Code {booking.coupon.code} appliqué : -{booking.discountAmount.toLocaleString('fr-FR')} {booking.providerProfile.currency}
+              </p>
+            ) : booking.coupon ? (
+              <p className="text-xs text-ink/50 font-medium mt-2">
+                Code {booking.coupon.code} sera appliqué dès que le montant sera fixé.
+              </p>
+            ) : null}
           </div>
 
           {/* Review: organizer can leave one once the booking is completed */}
@@ -171,11 +181,12 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
 
         {/* Right Panel: Timeline (25%) */}
         <div className="w-full lg:w-[25%] shrink-0 min-h-[400px]">
-          <BookingTimeline 
+          <BookingTimeline
             bookingId={booking.id}
             status={booking.status}
             isProvider={isProvider}
             totalAmount={booking.totalAmount}
+            couponCode={booking.coupon?.code}
           />
         </div>
 

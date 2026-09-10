@@ -10,9 +10,10 @@ interface BookingTimelineProps {
   status: string;
   isProvider: boolean;
   totalAmount: number | null;
+  couponCode?: string;
 }
 
-export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: BookingTimelineProps) {
+export function BookingTimeline({ bookingId, status, isProvider, totalAmount, couponCode }: BookingTimelineProps) {
   const [loading, setLoading] = useState(false);
   const [proposedAmount, setProposedAmount] = useState<string>(totalAmount ? totalAmount.toString() : "");
 
@@ -93,6 +94,11 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: 
                     {step.id === "PENDING" && isCurrent && isProvider && (
                       <div className="mt-3 p-3 bg-sand/30 rounded-xl border border-ink/5">
                         <p className="text-xs text-ink/70 mb-3">Veuillez étudier la demande et proposer un montant final.</p>
+                        {couponCode && (
+                          <p className="text-xs text-accent-700 font-medium mb-3">
+                            Code promo {couponCode} appliqué par le client — la remise sera déduite automatiquement de ce montant.
+                          </p>
+                        )}
                         <div className="flex flex-col gap-2">
                           <input 
                             type="number" 

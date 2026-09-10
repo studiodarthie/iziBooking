@@ -41,7 +41,10 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
   });
   if (!user) return { error: "Non autorisé" };
 
-  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: { coupon: true }
+  });
   if (!booking) return { error: "Réservation introuvable" };
 
   const isProvider = user.providerProfile?.id === booking.providerProfileId;
@@ -50,7 +53,16 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
 
   const data: Prisma.BookingUpdateInput = { status };
   if (totalAmount !== undefined) {
-    data.totalAmount = totalAmount;
+    if (booking.coupon) {
+      const rawDiscount = booking.coupon.discountType === "PERCENTAGE"
+        ? totalAmount * (booking.coupon.discountValue / 100)
+        : booking.coupon.discountValue;
+      const discount = Math.min(rawDiscount, totalAmount);
+      data.discountAmount = discount;
+      data.totalAmount = totalAmount - discount;
+    } else {
+      data.totalAmount = totalAmount;
+    }
   }
 
   try {
