@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Briefcase, Sparkles, MapPin, DollarSign, UploadCloud, CheckCircle, ChevronRight, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { submitProviderProfile, submitOrganizerProfile } from "./actions";
-import { CldUploadWidget } from "next-cloudinary";
+import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
 
 type Role = "ORGANIZER" | "PROVIDER" | null;
 
@@ -204,7 +204,7 @@ export default function OnboardingPage() {
               <div className="space-y-4">
                 <div>
                   <label htmlFor="pole" className="block text-sm font-medium text-ink mb-1">
-                    Pôle d'activité principal
+                    Pôle d’activité principal
                   </label>
                   <select
                     id="pole"
@@ -221,7 +221,7 @@ export default function OnboardingPage() {
 
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-ink mb-1">
-                    Nom de scène ou d'entreprise *
+                    Nom de scène ou d’entreprise *
                   </label>
                   <input
                     type="text"
@@ -362,7 +362,8 @@ export default function OnboardingPage() {
                   <CldUploadWidget
                     uploadPreset="izibooking_preset"
                     signatureEndpoint="/api/cloudinary/sign"
-                    onSuccess={(result: any) => {
+                    onSuccess={(result: CloudinaryUploadWidgetResults) => {
+                      if (typeof result.info !== "object" || !result.info) return;
                       setFormData({ ...formData, image: result.info.secure_url });
                     }}
                   >

@@ -1,7 +1,7 @@
 "use client";
 
-import { Image as ImageIcon, Plus, Video, Music, Loader2, Trash2 } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary";
+import { Image as ImageIcon, Plus, Music, Loader2, Trash2 } from "lucide-react";
+import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { addMediaToProfile, deleteMedia } from "./actions";
 import { useState } from "react";
 import Image from "next/image";
@@ -17,7 +17,8 @@ export default function MediaClient({ initialMedia }: { initialMedia: MediaLink[
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [media, setMedia] = useState<MediaLink[]>(initialMedia);
 
-  const handleSuccess = async (result: any) => {
+  const handleSuccess = async (result: CloudinaryUploadWidgetResults) => {
+    if (typeof result.info !== "object" || !result.info) return;
     setIsUploading(true);
     try {
       const url = result.info.secure_url;

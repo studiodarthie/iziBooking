@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { MediaType } from "@prisma/client";
 
 export async function addMediaToProfile(url: string, format: string) {
   const session = await getServerSession(authOptions);
@@ -21,7 +22,7 @@ export async function addMediaToProfile(url: string, format: string) {
     throw new Error("Profil prestataire non trouvé.");
   }
 
-  let type = "IMAGE";
+  let type: MediaType = "IMAGE";
   if (["mp4", "mov", "video"].includes(format)) {
     type = "VIDEO";
   } else if (["mp3", "wav", "audio"].includes(format)) {
@@ -32,7 +33,7 @@ export async function addMediaToProfile(url: string, format: string) {
     data: {
       providerProfileId: user.providerProfile.id,
       url,
-      type: type as any,
+      type,
     }
   });
 
