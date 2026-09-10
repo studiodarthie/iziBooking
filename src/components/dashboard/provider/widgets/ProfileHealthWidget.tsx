@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Image as ImageIcon, CreditCard, Calendar, Star } from "lucide-react";
+import { ChevronRight, Image as ImageIcon, CreditCard, Calendar } from "lucide-react";
 
 export function ProfileHealthWidget({ score = 75 }: { score?: number }) {
   // Logic to determine color based on score
@@ -49,7 +49,7 @@ export function ProfileHealthWidget({ score = 75 }: { score?: number }) {
         </div>
 
         <p className="text-sm text-ink/70 text-center mb-6">
-          Un profil complet attire jusqu'à <strong className="text-ink">3x plus de réservations</strong>. Complétez ces étapes :
+          Un profil complet attire jusqu’à <strong className="text-ink">3x plus de réservations</strong>. Complétez ces étapes :
         </p>
 
         <div className="w-full space-y-3">

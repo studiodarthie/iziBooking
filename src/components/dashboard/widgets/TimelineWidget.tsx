@@ -53,7 +53,7 @@ export function TimelineWidget({ events }: { events: TimelineEvent[] }) {
 
       <div className="flex-1 px-6 pb-6 pt-2">
         <div className="relative border-l border-ink/10 ml-16 space-y-6">
-          {events.map((event, index) => (
+          {events.map((event) => (
             <div key={event.id} className="relative pl-6">
               {/* Timeline dot */}
               <div className={`absolute -left-1.5 top-2 w-3 h-3 rounded-full ${getStatusDot(event.status)} ring-4 ring-white`}></div>

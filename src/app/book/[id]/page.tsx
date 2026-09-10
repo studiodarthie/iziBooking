@@ -2,8 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, User } from "lucide-react";
+import { User } from "lucide-react";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { BookingForm } from "@/components/public/BookingForm";
 

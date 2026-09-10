@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { PublicGallery } from "@/components/public/PublicGallery";
 import { BookingWidget } from "@/components/public/BookingWidget";
 import { ProviderTabs } from "@/components/public/ProviderTabs";
 import { PublicNavbar } from "@/components/public/PublicNavbar";

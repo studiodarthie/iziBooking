@@ -36,7 +36,7 @@ export function BookingWidget({ profile }: BookingWidgetProps) {
         </div>
         {/* Mockup dates */}
         <div className="grid grid-cols-7 gap-1">
-          {[12, 13, 14, 15, 16, 17, 18].map((day, i) => (
+          {[12, 13, 14, 15, 16, 17, 18].map((day) => (
             <div 
               key={day} 
               className={`flex items-center justify-center h-8 rounded text-xs font-semibold

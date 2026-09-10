@@ -1,5 +1,4 @@
 import { CheckCircle2, Plus, PenSquare } from "lucide-react";
-import Link from "next/link";
 
 export function ProviderSkillsWidget({ category = "DJ" }: { category?: string }) {
   // Mock data for skills
@@ -24,7 +23,7 @@ export function ProviderSkillsWidget({ category = "DJ" }: { category?: string })
 
       <div className="flex-1 px-6 pb-6">
         <p className="text-xs text-ink/60 mb-4">
-          Vous pouvez ajouter jusqu'à 5 services clés pour la catégorie <strong className="text-ink">{category}</strong>.
+          Vous pouvez ajouter jusqu’à 5 services clés pour la catégorie <strong className="text-ink">{category}</strong>.
         </p>
 
         <ul className="space-y-3">
