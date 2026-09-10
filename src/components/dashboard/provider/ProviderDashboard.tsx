@@ -19,7 +19,7 @@ import {
   AreaChart,
   Area
 } from 'recharts';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { DashboardUser } from "@/types/dashboard";
@@ -28,9 +28,14 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
   const profile = user.providerProfile;
   const bookings = profile?.bookings || [];
   const services = profile?.services || [];
-  
+
   const [copied, setCopied] = useState(false);
-  const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/p/${profile?.id}` : "";
+  const [publicUrl, setPublicUrl] = useState("");
+  useEffect(() => {
+    // window.location is unavailable during SSR; computing it in render caused a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPublicUrl(`${window.location.origin}/p/${profile?.id}`);
+  }, [profile?.id]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(publicUrl);
