@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ad-hoc local dev/debug scripts, not part of the app runtime.
+    "*.js",
+    "*.mjs",
   ]),
 ]);
 
