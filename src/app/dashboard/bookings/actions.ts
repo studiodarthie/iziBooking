@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { BookingStatus } from "@prisma/client";
+import { BookingStatus, Prisma } from "@prisma/client";
 
 export async function updateBookingStatus(id: string, status: BookingStatus, totalAmount?: number) {
   const session = await getServerSession(authOptions);
@@ -28,7 +28,7 @@ export async function updateBookingStatus(id: string, status: BookingStatus, tot
       return { success: false, error: "Réservation introuvable ou non autorisée." };
     }
 
-    const dataToUpdate: any = { status };
+    const dataToUpdate: Prisma.BookingUpdateInput = { status };
     if (totalAmount !== undefined) {
       dataToUpdate.totalAmount = totalAmount;
     }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Check, AlertCircle, Phone, Smartphone, Loader2 } from "lucide-react";
 import { updateBookingStatus } from "./actions";
+import type { BookingStatus } from "@prisma/client";
 
 interface BookingTimelineProps {
   bookingId: string;
@@ -44,7 +45,7 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: 
   const currentIndex = getStepIndex(status);
   const isCancelled = status === "CANCELLED";
 
-  const handleUpdate = async (newStatus: string, amount?: number) => {
+  const handleUpdate = async (newStatus: BookingStatus, amount?: number) => {
     setLoading(true);
     await updateBookingStatus(bookingId, newStatus, amount);
     setLoading(false);
@@ -130,7 +131,7 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: 
                     {/* Step 2: ACCEPTED */}
                     {step.id === "ACCEPTED" && isCurrent && !isProvider && (
                       <div className="mt-3 p-3 bg-accent/10 rounded-xl border border-accent/20">
-                        <p className="text-xs text-ink/70 mb-3">Le devis a été validé. Payez l'acompte (10%) pour bloquer la date.</p>
+                        <p className="text-xs text-ink/70 mb-3">Le devis a été validé. Payez l’acompte (10%) pour bloquer la date.</p>
                         
                         {!showPayment ? (
                           <button 
@@ -200,13 +201,13 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: 
                       </div>
                     )}
                     {step.id === "ACCEPTED" && isCurrent && isProvider && (
-                      <p className="text-xs text-ink/60 mt-1">En attente du paiement de l'acompte par le client.</p>
+                      <p className="text-xs text-ink/60 mt-1">En attente du paiement de l’acompte par le client.</p>
                     )}
 
                     {/* Step 3: DEPOSIT_PAID */}
                     {step.id === "DEPOSIT_PAID" && isCurrent && isProvider && (
                       <div className="mt-3 p-3 bg-success/10 rounded-xl border border-success/20">
-                        <p className="text-xs text-ink/70 mb-3">L'événement a-t-il eu lieu avec succès ? Validez pour clôturer.</p>
+                        <p className="text-xs text-ink/70 mb-3">L’événement a-t-il eu lieu avec succès ? Validez pour clôturer.</p>
                         <button 
                           disabled={loading}
                           onClick={() => handleUpdate("COMPLETED")}
@@ -217,7 +218,7 @@ export function BookingTimeline({ bookingId, status, isProvider, totalAmount }: 
                       </div>
                     )}
                     {step.id === "DEPOSIT_PAID" && isCurrent && !isProvider && (
-                      <p className="text-xs text-ink/60 mt-1">La date est réservée. Validation finale par le prestataire après l'événement.</p>
+                      <p className="text-xs text-ink/60 mt-1">La date est réservée. Validation finale par le prestataire après l’événement.</p>
                     )}
                     
                     {/* Actions d'annulation (si pas encore complété) */}

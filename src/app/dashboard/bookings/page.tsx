@@ -6,9 +6,8 @@ import { BookingKanban } from "@/components/dashboard/BookingKanban";
 import { ListTodo } from "lucide-react";
 
 export default async function BookingsPage() {
-  /*
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user?.email) {
     redirect("/login");
   }
@@ -35,9 +34,6 @@ export default async function BookingsPage() {
     },
     orderBy: { createdAt: 'desc' }
   });
-  */
-
-  const bookings: any[] = [];
 
   return (
     <div className="flex flex-col h-full space-y-6">
@@ -50,7 +46,7 @@ export default async function BookingsPage() {
             <h1 className="text-3xl font-heading font-bold text-ink">Réservations & Devis</h1>
           </div>
           <p className="mt-2 text-ink/60">
-            Gérez vos demandes de devis et suivez l'état de vos réservations de bout en bout.
+            Gérez vos demandes de devis et suivez l’état de vos réservations de bout en bout.
           </p>
         </div>
       </div>

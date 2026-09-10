@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { sendMessage, updateBookingStatus } from "./actions";
 import { Send, CheckCircle2, XCircle, FileText } from "lucide-react";
+import type { BookingStatus } from "@prisma/client";
 
 type Message = {
   id: string;
@@ -52,7 +53,7 @@ export function ChatBox({
     setLoading(false);
   };
 
-  const handleStatusChange = async (newStatus: string, price?: number) => {
+  const handleStatusChange = async (newStatus: BookingStatus, price?: number) => {
     setStatusLoading(true);
     await updateBookingStatus(bookingId, newStatus, price);
     setStatusLoading(false);
@@ -65,7 +66,7 @@ export function ChatBox({
       {/* Sticky Header / Actions */}
       <div className="bg-sand/30 border-b border-ink/10 p-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          <h3 className="font-heading font-bold text-ink">Espace d'échange</h3>
+          <h3 className="font-heading font-bold text-ink">Espace d’échange</h3>
           <span className="text-xs font-semibold px-2 py-1 rounded-full bg-white border border-ink/10 text-ink/70">
             {bookingStatus}
           </span>

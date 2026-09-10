@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { BookingStatus, Prisma } from "@prisma/client";
 
 export async function sendMessage(bookingId: string, content: string) {
   const session = await getServerSession(authOptions);
@@ -25,16 +26,16 @@ export async function sendMessage(bookingId: string, content: string) {
 
     revalidatePath(`/dashboard/bookings/${bookingId}`);
     return { success: true };
-  } catch (err) {
+  } catch {
     return { error: "Erreur lors de l'envoi du message" };
   }
 }
 
-export async function updateBookingStatus(bookingId: string, status: any, totalAmount?: number) {
+export async function updateBookingStatus(bookingId: string, status: BookingStatus, totalAmount?: number) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) return { error: "Non autorisé" };
 
-  const data: any = { status };
+  const data: Prisma.BookingUpdateInput = { status };
   if (totalAmount !== undefined) {
     data.totalAmount = totalAmount;
   }
@@ -47,7 +48,7 @@ export async function updateBookingStatus(bookingId: string, status: any, totalA
 
     revalidatePath(`/dashboard/bookings/${bookingId}`);
     return { success: true };
-  } catch (err) {
+  } catch {
     return { error: "Erreur lors de la mise à jour" };
   }
 }

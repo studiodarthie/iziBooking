@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Calendar as CalendarIcon, MapPin, User, Check, X, MoreHorizontal } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, User, MoreHorizontal } from "lucide-react";
 import { updateBookingStatus } from "@/app/dashboard/bookings/actions";
 import { useRouter } from "next/navigation";
+import type { BookingStatus } from "@prisma/client";
 
 type Booking = {
   id: string;
@@ -31,7 +32,7 @@ export function BookingKanban({ initialBookings }: { initialBookings: Booking[] 
   const completedBookings = initialBookings.filter(b => b.status === "COMPLETED");
   const cancelledBookings = initialBookings.filter(b => b.status === "CANCELLED");
 
-  const handleAction = async (id: string, status: any, totalAmount?: number) => {
+  const handleAction = async (id: string, status: BookingStatus, totalAmount?: number) => {
     setLoadingId(id);
     const res = await updateBookingStatus(id, status, totalAmount);
     setLoadingId(null);
