@@ -1,7 +1,25 @@
 "use client";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Music, Mail, Globe } from "lucide-react";
+
+const ERROR_MESSAGES: Record<string, string> = {
+  TooManyRequests: "Trop de demandes de connexion. Réessayez dans quelques minutes.",
+  AccessDenied: "Accès refusé. Contactez le support si le problème persiste.",
+  EmailSignin: "Impossible d’envoyer le lien de connexion. Réessayez.",
+};
+
+function LoginError() {
+  const code = useSearchParams().get("error");
+  if (!code) return null;
+  return (
+    <p role="alert" className="text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+      {ERROR_MESSAGES[code] ?? "La connexion a échoué. Réessayez."}
+    </p>
+  );
+}
 
 export default function LoginPage() {
   return (
@@ -23,6 +41,9 @@ export default function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-background py-8 px-4 shadow-xl shadow-ink/5 sm:rounded-2xl sm:px-10 border border-ink/5">
           <div className="space-y-6">
+            <Suspense fallback={null}>
+              <LoginError />
+            </Suspense>
             <button
               onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               className="w-full flex justify-center items-center gap-3 py-4 px-4 border-2 border-ink/10 rounded-xl shadow-sm text-sm font-bold text-ink bg-background hover:bg-ink/5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"

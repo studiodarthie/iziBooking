@@ -2,25 +2,9 @@
 
 import { headers } from "next/headers";
 import { sendContactRequest } from "@/lib/email";
+import { clientIp, rateLimit } from "@/lib/ratelimit";
 
 export type ContactState = { status: "idle" | "success" | "error"; message?: string };
-
-// Limitation simple par IP (en mémoire : efficace par instance, suffisant contre le spam basique).
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 3;
-const hits = new Map<string, number[]>();
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_WINDOW) {
-    hits.set(key, recent);
-    return true;
-  }
-  recent.push(now);
-  hits.set(key, recent);
-  return false;
-}
 
 export async function submitContact(_prev: ContactState, formData: FormData): Promise<ContactState> {
   // Champ piège : les robots le remplissent, pas les humains.
@@ -44,8 +28,7 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
   }
 
   const h = await headers();
-  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (isRateLimited(ip)) {
+  if (!(await rateLimit(`contact:${clientIp(h)}`, 3, 600))) {
     return { status: "error", message: "Trop de messages envoyés. Réessayez dans quelques minutes." };
   }
 

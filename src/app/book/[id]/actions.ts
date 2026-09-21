@@ -1,5 +1,6 @@
 "use server";
 
+import { rateLimit } from "@/lib/ratelimit";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
@@ -82,6 +83,9 @@ export async function submitBooking(data: {
   }
   if (user.isBanned) {
     return { success: false, error: "Votre compte a été suspendu. Contactez le support pour plus d'informations." };
+  }
+  if (!(await rateLimit(`booking:${user.id}`, 10, 3600))) {
+    return { success: false, error: "Trop de demandes envoyées. Réessayez dans un moment." };
   }
 
   const dayStart = new Date(data.eventDate);

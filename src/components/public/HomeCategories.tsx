@@ -11,7 +11,8 @@ const CATEGORY_STYLES: Record<string, { icon: typeof Utensils; tint: string; tex
   "Services": { icon: Users, tint: "bg-accent-200/60 group-hover:bg-accent-400", text: "text-accent-700" },
 };
 
-export type CategoryCount = { name: string; count: number };
+/** count = null quand la base est indisponible : on n'affiche alors aucun compteur. */
+export type CategoryCount = { name: string; count: number | null };
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -48,9 +49,11 @@ export function HomeCategories({ categories }: { categories: CategoryCount[] }) 
                   <Icon size={28} strokeWidth={1.8} />
                 </div>
                 <div className="font-heading font-bold text-ink mt-4 text-[15px]">{cat.name}</div>
-                <div className="text-xs text-neutral-600 mt-1">
-                  {cat.count} prestataire{cat.count > 1 ? "s" : ""}
-                </div>
+                {cat.count !== null && (
+                  <div className="text-xs text-neutral-600 mt-1">
+                    {cat.count} prestataire{cat.count > 1 ? "s" : ""}
+                  </div>
+                )}
               </motion.div>
             </Link>
           );

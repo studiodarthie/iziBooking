@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { notifyContactMessage } from "@/lib/email";
+import { rateLimit } from "@/lib/ratelimit";
 
 export async function sendContactMessage(providerProfileId: string, content: string) {
   const session = await getServerSession(authOptions);
@@ -22,6 +23,10 @@ export async function sendContactMessage(providerProfileId: string, content: str
   }
   if (user.isBanned) {
     return { success: false, error: "Votre compte a été suspendu. Contactez le support pour plus d'informations." };
+  }
+
+  if (!(await rateLimit(`message:${user.id}`, 10, 600))) {
+    return { success: false, error: "Trop de messages envoyés. Réessayez dans quelques minutes." };
   }
 
   const providerProfile = await prisma.providerProfile.findUnique({

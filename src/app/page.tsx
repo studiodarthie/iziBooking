@@ -10,6 +10,11 @@ import { HomeAdvantages } from "@/components/public/HomeAdvantages";
 import { Testimonials, type Testimonial } from "@/components/public/Testimonials";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import prisma from "@/lib/prisma";
+import { safeDb } from "@/lib/safe-db";
+
+// Page régénérée toutes les 2 minutes : les nouveaux prestataires et témoignages y apparaissent
+// sans redéploiement, et une coupure de la base ne fait pas planter la page.
+export const revalidate = 120;
 
 export default async function Home() {
   const poleLabels: { pole: "DIVERTISSEMENT" | "RECEPTION" | "IMAGE_SOUVENIR" | "SERVICES"; name: string }[] = [
@@ -21,19 +26,26 @@ export default async function Home() {
   const categoryCounts: CategoryCount[] = await Promise.all(
     poleLabels.map(async ({ pole, name }) => ({
       name,
-      count: await prisma.providerProfile.count({ where: { isVerified: true, pole, user: { isBanned: false } } })
+      count: await safeDb<number | null>(
+        () => prisma.providerProfile.count({ where: { isVerified: true, pole, user: { isBanned: false } } }),
+        null
+      ),
     }))
   );
 
-  const reviews = await prisma.review.findMany({
-    where: { rating: { gte: 4 }, comment: { not: null } },
-    orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
-    take: 3,
-    include: {
-      organizer: { select: { name: true, image: true } },
-      providerProfile: { select: { name: true } }
-    }
-  });
+  const reviews = await safeDb(
+    () =>
+      prisma.review.findMany({
+        where: { rating: { gte: 4 }, comment: { not: null } },
+        orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+        take: 3,
+        include: {
+          organizer: { select: { name: true, image: true } },
+          providerProfile: { select: { name: true } },
+        },
+      }),
+    []
+  );
 
   const testimonials: Testimonial[] = reviews.map((r) => ({
     id: r.id,

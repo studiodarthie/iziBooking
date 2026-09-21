@@ -3,12 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star, MapPin } from "lucide-react";
 import { getRatingSummary } from "@/lib/ratings";
+import { safeDb } from "@/lib/safe-db";
 
 export async function FeaturedProvidersList() {
   // Simulate delay for skeleton demonstration (remove in production if desired)
   // await new Promise(resolve => setTimeout(resolve, 1500));
 
-  const providers = await prisma.providerProfile.findMany({
+  const providers = await safeDb(() => prisma.providerProfile.findMany({
     where: { isVerified: true, user: { isBanned: false } },
     orderBy: { createdAt: "desc" },
     take: 8,
@@ -24,7 +25,15 @@ export async function FeaturedProvidersList() {
       },
       reviews: { select: { rating: true } }
     }
-  });
+  }), null);
+
+  if (providers === null) {
+    return (
+      <div className="col-span-full py-12 text-center text-ink/60 bg-white rounded-xl shadow-sm border border-divider">
+        Les prestataires sont momentanément indisponibles. Rechargez la page dans un instant.
+      </div>
+    );
+  }
 
   if (providers.length === 0) {
     return (
