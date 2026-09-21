@@ -37,8 +37,12 @@ export async function FeaturedProvidersList() {
 
   if (providers.length === 0) {
     return (
-      <div className="col-span-full py-12 text-center text-ink/50 bg-white rounded-xl shadow-sm border border-divider">
-        Aucun prestataire mis en avant pour le moment.
+      <div className="col-span-full py-14 px-6 text-center bg-white rounded-2xl shadow-sm border border-divider">
+        <p className="font-heading font-bold text-2xl text-ink">Les premiers prestataires arrivent bientôt</p>
+        <p className="text-neutral-700 mt-2">Artiste, traiteur, photographe… rejoignez iziBooking dès maintenant.</p>
+        <Link href="/onboarding" className="inline-block mt-5 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-6 py-3 transition-colors">
+          Créer mon profil gratuitement
+        </Link>
       </div>
     );
   }
@@ -50,12 +54,18 @@ export async function FeaturedProvidersList() {
         return (
           <div key={provider.id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group">
             <Link href={`/p/${provider.id}`} className="absolute inset-0 z-0">
-              <Image
-                src={provider.mediaLinks[0]?.url || provider.user?.image || "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800"}
-                alt={provider.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+              {provider.mediaLinks[0]?.url || provider.user?.image ? (
+                <Image
+                  src={(provider.mediaLinks[0]?.url || provider.user?.image) as string}
+                  alt={provider.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent-700 flex items-center justify-center font-heading font-extrabold text-6xl text-white/90">
+                  {provider.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
             </Link>
 

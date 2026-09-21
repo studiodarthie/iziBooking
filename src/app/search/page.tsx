@@ -316,7 +316,11 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-xl border border-ink/10 mb-6 shadow-sm gap-4">
         <p className="text-ink/70 font-medium text-sm">
-          Affichage de <span className="font-bold text-ink">1–{providers.length}</span> sur <span className="font-bold text-ink">{providers.length}</span> résultats
+          {providers.length === 0 ? (
+            "Aucun résultat"
+          ) : (
+            <>Affichage de <span className="font-bold text-ink">1–{providers.length}</span> sur <span className="font-bold text-ink">{providers.length}</span> résultats</>
+          )}
         </p>
         
         <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">

@@ -51,7 +51,7 @@ export function HomeCategories({ categories }: { categories: CategoryCount[] }) 
                 <div className="font-heading font-bold text-ink mt-4 text-[15px]">{cat.name}</div>
                 {cat.count !== null && (
                   <div className="text-xs text-neutral-600 mt-1">
-                    {cat.count} prestataire{cat.count > 1 ? "s" : ""}
+                    {cat.count === 0 ? "Bientôt disponible" : `${cat.count} prestataire${cat.count > 1 ? "s" : ""}`}
                   </div>
                 )}
               </motion.div>
