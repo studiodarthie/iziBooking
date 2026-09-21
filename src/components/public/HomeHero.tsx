@@ -25,14 +25,15 @@ export function HomeHero() {
   return (
     <div className="relative overflow-hidden bg-[#3A1508] text-white">
       <Image
-        src="/images/home/traditional-dance.jpg"
+        src="/images/home/hero-artist.jpg"
         alt=""
         fill
         priority
         sizes="100vw"
-        className="object-cover object-center opacity-45"
+        className="object-cover object-[85%_center]"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#B5451B]/90 via-[#8E3414]/85 to-[#3A1508]/95" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#6E240C]/90 via-[#8E3414]/72 to-[#B5451B]/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#3A1508]/55 via-transparent to-[#3A1508]/85" />
       <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-accent/30 blur-[120px] pointer-events-none" />
 
       <PublicNavbar overlay />
@@ -52,8 +53,8 @@ export function HomeHero() {
             <span className="text-accent-2-300">réservable en un clic.</span>
           </h1>
 
-          <p className="mt-6 text-white/85 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            DJ, groupes, traiteurs, photographes… Comparez, échangez et réservez avec paiement mobile money sécurisé.
+          <p className="mt-6 text-white text-lg md:text-xl max-w-3xl mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(58,21,8,0.6)]">
+            Vous cherchez un artiste, instrumentiste, performeur, DJ, groupe de danse, traiteur, photographe pro, make-up artist, vidéaste… ? Sur iziBooking, comparez, échangez et réservez en toute sécurité pour la réussite de votre événement.
           </p>
 
           <form

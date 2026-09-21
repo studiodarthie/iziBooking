@@ -3,6 +3,7 @@ import { HomeHero } from "@/components/public/HomeHero";
 import { FeaturedProvidersList } from "@/components/public/FeaturedProvidersList";
 import { FeaturedProvidersSkeleton } from "@/components/public/FeaturedProvidersSkeleton";
 import { HomeCategories, type CategoryCount } from "@/components/public/HomeCategories";
+import { HomeEventBlock } from "@/components/public/HomeEventBlock";
 import { HomeHowItWorks } from "@/components/public/HomeHowItWorks";
 import { HomeCTA } from "@/components/public/HomeCTA";
 import { HomeAppBanner } from "@/components/public/HomeAppBanner";
@@ -85,6 +86,8 @@ export default async function Home() {
         </Suspense>
       </section>
       </div>
+
+      <HomeEventBlock />
 
       <HomeHowItWorks />
 

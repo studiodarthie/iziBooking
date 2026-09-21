@@ -52,28 +52,23 @@ export async function FeaturedProvidersList() {
       {providers.map((provider) => {
         const summary = getRatingSummary(provider.reviews);
         return (
-          <div key={provider.id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group">
+          <div key={provider.id} className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group">
             <Link href={`/p/${provider.id}`} className="absolute inset-0 z-0">
               {provider.mediaLinks[0]?.url || provider.user?.image ? (
                 <Image
                   src={(provider.mediaLinks[0]?.url || provider.user?.image) as string}
                   alt={provider.name}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                  className="object-cover object-[center_18%] group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent-700 flex items-center justify-center font-heading font-extrabold text-6xl text-white/90">
                   {provider.name.charAt(0).toUpperCase()}
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
             </Link>
-
-            <span className="absolute top-2 left-2 z-10 bg-white/90 text-ink text-[10px] font-semibold px-2 py-0.5 rounded pointer-events-none">
-              {provider.pole === "DIVERTISSEMENT" ? "Divertissement" :
-               provider.pole === "RECEPTION" ? "Réception" :
-               provider.pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" : "Services"}
-            </span>
 
             {summary.count > 0 && (
               <div className="absolute top-2 right-2 z-10 bg-white/90 text-ink flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded pointer-events-none">
@@ -83,6 +78,11 @@ export async function FeaturedProvidersList() {
             )}
 
             <div className="absolute bottom-0 inset-x-0 z-10 p-3 pointer-events-none">
+              <span className="inline-block mb-1.5 bg-white/90 text-ink text-[10px] font-semibold px-2 py-0.5 rounded">
+                {provider.pole === "DIVERTISSEMENT" ? "Divertissement" :
+                 provider.pole === "RECEPTION" ? "Réception" :
+                 provider.pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" : "Services"}
+              </span>
               <h3 className="font-heading font-bold text-sm text-white truncate">{provider.name}</h3>
               <div className="flex items-center gap-1 text-[11px] text-white/70 mt-0.5 truncate">
                 <MapPin size={10} className="shrink-0" /> {provider.location}

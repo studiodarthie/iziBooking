@@ -11,7 +11,6 @@ const PHOTO_CREDITS = [
   { title: "Danse traditionnelle sur scène", author: "MediaMOF", url: "https://commons.wikimedia.org/wiki/File:Traditional_Dance_Performance_at_Cultural_Event_in_Nigeria_49.jpg" },
   { title: "Danseurs en costumes traditionnels", author: "MediaMOF", url: "https://commons.wikimedia.org/wiki/File:Traditional_Dance_Performance_at_Cultural_Event_in_Nigeria_186.jpg" },
   { title: "Première danse des mariés (Nigeria)", author: "Sani Oumar", url: "https://commons.wikimedia.org/wiki/File:A_moment_of_joy_-_Bride_and_her_groom_dancing_at_their_wedding_party_in_northern_Nigeria_(1).jpg" },
-  { title: "Cortège de mariage", author: "Frederic PAPY", url: "https://commons.wikimedia.org/wiki/File:African_wedding_procession.jpg" },
 ];
 
 const sections: LegalSection[] = [

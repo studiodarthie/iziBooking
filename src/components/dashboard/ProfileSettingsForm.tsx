@@ -4,6 +4,7 @@ import { useState } from "react";
 import { updateProviderSettings } from "@/app/dashboard/settings/actions";
 import { Loader2 } from "lucide-react";
 import type { ProviderProfile } from "@prisma/client";
+import { OCCASIONS } from "@/lib/filters";
 
 export default function ProfileSettingsForm({ initialData }: { initialData: ProviderProfile }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -75,6 +76,21 @@ export default function ProfileSettingsForm({ initialData }: { initialData: Prov
               className="block w-full rounded-xl border-ink/20 bg-transparent px-4 py-3 text-ink focus:border-primary focus:ring-primary sm:text-sm transition-colors" />
           </div>
         </div>
+
+        <fieldset className="space-y-3 pt-2">
+          <legend className="block text-sm font-medium text-ink">Occasions que vous assurez</legend>
+          <p className="text-xs text-ink/60">Les organisateurs peuvent filtrer le catalogue par occasion.</p>
+          <div className="flex flex-wrap gap-2">
+            {OCCASIONS.map((o) => (
+              <label key={o} className="cursor-pointer">
+                <input type="checkbox" name="occasions" value={o} defaultChecked={initialData?.occasions?.includes(o)} className="peer sr-only" />
+                <span className="inline-block rounded-full border border-ink/20 px-4 py-2 text-sm text-ink/80 transition-colors peer-checked:bg-primary peer-checked:border-primary peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-primary">
+                  {o}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
         <div className="space-y-2 pt-2">
           <label htmlFor="bio" className="block text-sm font-medium text-ink">Biographie / Présentation</label>

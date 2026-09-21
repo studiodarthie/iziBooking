@@ -39,23 +39,24 @@ export function ProviderCard({
   return (
     <div className="group bg-white rounded-2xl border border-ink/10 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col">
       <Link href={`/p/${id}`} className="contents">
-        {/* Cover Image */}
-        <div className="relative h-48 w-full bg-sand/50 overflow-hidden">
+        {/* Cover Image : format portrait, cadrage haut pour ne jamais couper les visages */}
+        <div className="relative aspect-[4/5] w-full bg-sand/50 overflow-hidden">
           {image ? (
-            <Image 
-              src={image} 
+            <Image
+              src={image}
               alt={name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 100vw"
+              className="object-cover object-[center_18%] transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-ink/20 font-heading text-4xl font-bold bg-primary/5">
+            <div className="absolute inset-0 flex items-center justify-center text-white/90 font-heading text-7xl font-extrabold bg-gradient-to-br from-primary to-accent-700">
               {name.charAt(0).toUpperCase()}
             </div>
           )}
-          
-          {/* Pill Badges (Top Left) */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+
+          {/* Pastilles en bas de l'image, sur un dégradé : le visage reste dégagé */}
+          <div className="absolute inset-x-0 bottom-0 z-10 flex flex-wrap gap-2 px-4 pb-4 pt-20 bg-gradient-to-t from-black/70 via-black/25 to-transparent">
             {pole && (
               <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold text-ink shadow-sm flex items-center gap-1.5 w-fit">
                 {getPoleIcon()}

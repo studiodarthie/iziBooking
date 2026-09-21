@@ -93,6 +93,7 @@ model ProviderProfile {
   bio         String?  @db.Text
   category    String   // ex: Chanteur, DJ, Traiteur, Photographe...
   specialty   String?  // Généralisation de musicGenre
+  occasions   String[] @default([]) // Occasions assurées : Mariage, Festival, Fête d'entreprise…
   location    String   // Ville, Pays
   isVerified  Boolean  @default(false)
   

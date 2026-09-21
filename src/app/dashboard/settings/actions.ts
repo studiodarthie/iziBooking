@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { OCCASIONS } from "@/lib/filters";
 
 export async function updateProviderSettings(formData: FormData) {
   const session = await getServerSession(authOptions);
@@ -29,6 +30,8 @@ export async function updateProviderSettings(formData: FormData) {
   const currency = formData.get("currency") as string;
   const whatsapp = formData.get("whatsapp") as string;
 
+  const occasions = formData.getAll("occasions").map(String).filter((o) => OCCASIONS.includes(o));
+
   const basePrice = basePriceStr ? parseFloat(basePriceStr) : null;
 
   try {
@@ -39,6 +42,7 @@ export async function updateProviderSettings(formData: FormData) {
         location,
         category,
         specialty,
+        occasions,
         bio,
         basePrice,
         currency,

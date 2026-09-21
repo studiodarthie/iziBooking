@@ -1,4 +1,6 @@
 import { locationTerms } from "@/lib/countries";
+import { GENRES, OCCASIONS, parseBudget } from "@/lib/filters";
+import { CatalogFilterBar } from "@/components/public/CatalogFilterBar";
 import Link from "next/link";
 import { Suspense } from "react";
 import { MapPin, Calendar, Search, ChevronDown, ChevronUp } from "lucide-react";
@@ -12,7 +14,7 @@ import { SearchSortSelect } from "@/components/public/SearchSortSelect";
 import { getRatingSummary } from "@/lib/ratings";
 import { startOfDay, endOfDay, parseISO, format } from "date-fns";
 
-type SearchParams = { q?: string; loc?: string; pole?: string; minPrice?: string; maxPrice?: string; date?: string; sort?: string };
+type SearchParams = { q?: string; loc?: string; pole?: string; minPrice?: string; maxPrice?: string; date?: string; sort?: string; occasion?: string; genre?: string; budget?: string };
 
 // The layout and sidebar wrapper
 export default async function SearchPage(props: {
@@ -45,7 +47,13 @@ export default async function SearchPage(props: {
         description="Artistes, traiteurs, photographes, décorateurs… Filtrez par catégorie, pays et budget pour réserver en confiance."
       />
 
-      <div className="flex-1 max-w-[1600px] w-full mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8 -mt-10 md:-mt-16 relative z-20">
+      <div className="max-w-[1600px] w-full mx-auto px-4 md:px-8 -mt-16 md:-mt-20 relative z-30">
+        <Suspense fallback={<div className="h-16 rounded-2xl bg-white border border-ink/10" />}>
+          <CatalogFilterBar />
+        </Suspense>
+      </div>
+
+      <div className="flex-1 max-w-[1600px] w-full mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8 relative z-20">
         
         {/* Sidebar Filters */}
         <aside className="w-full md:w-72 shrink-0">
@@ -57,6 +65,9 @@ export default async function SearchPage(props: {
             </div>
 
             <form action="/search" method="GET" className="divide-y divide-ink/5">
+              {(["occasion", "genre", "budget"] as const).map((k) =>
+                searchParams[k] ? <input key={k} type="hidden" name={k} value={searchParams[k]} /> : null
+              )}
               
               {/* Keyword Search */}
               <div className="p-5">
@@ -230,8 +241,9 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
   const q = searchParams.q || "";
   const loc = searchParams.loc || "";
   const pole = searchParams.pole || "";
-  const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice, 10) : undefined;
-  const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice, 10) : undefined;
+  const budget = parseBudget(searchParams.budget);
+  const minPrice = searchParams.minPrice ? parseInt(searchParams.minPrice, 10) : budget.min;
+  const maxPrice = searchParams.maxPrice ? parseInt(searchParams.maxPrice, 10) : budget.max;
   const dateStr = searchParams.date || "";
   const sort = searchParams.sort || "recent";
 
@@ -248,6 +260,18 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
   if (loc) {
     whereClause.AND = [
       { OR: locationTerms(loc).map((t) => ({ location: { contains: t, mode: "insensitive" as const } })) },
+    ];
+  }
+
+  if (searchParams.occasion && OCCASIONS.includes(searchParams.occasion)) {
+    whereClause.occasions = { has: searchParams.occasion };
+  }
+
+  if (searchParams.genre && GENRES.includes(searchParams.genre)) {
+    const genre = searchParams.genre;
+    whereClause.AND = [
+      ...((whereClause.AND as Prisma.ProviderProfileWhereInput[] | undefined) ?? []),
+      { OR: [{ specialty: { contains: genre, mode: "insensitive" } }, { category: { contains: genre, mode: "insensitive" } }, { bio: { contains: genre, mode: "insensitive" } }] },
     ];
   }
 

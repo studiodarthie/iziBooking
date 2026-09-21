@@ -104,7 +104,7 @@ export default async function PublicProviderPage(props: Props) {
                 src={profile.user.image} 
                 alt={profile.user.name || profile.name} 
                 fill 
-                className="object-cover"
+                className="object-cover object-[center_20%]"
               />
             ) : (
               <User size={64} className="text-neutral-300" />
