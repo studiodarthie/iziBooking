@@ -42,8 +42,8 @@ export function PublicNavbar({ theme = "light", showTopbar = false }: PublicNavb
 
       <nav className={`relative z-50 flex items-center justify-between px-4 md:px-8 py-5 border-b ${isDark ? 'border-white/5' : 'border-ink/5 bg-white'}`}>
         <div>
-          <Link href="/" className={`font-heading font-bold text-xl md:text-2xl tracking-tight ${isDark ? 'text-white' : 'text-ink'}`}>
-            izi<span className={isDark ? "" : "text-primary"}>Booking</span>
+          <Link href="/" aria-label="iziBooking - Accueil" className="block">
+            <Image src={isDark ? "/logo-white.png" : "/logo.png"} alt="iziBooking" width={1576} height={317} priority className="h-8 md:h-9 w-auto" />
           </Link>
         </div>
         <div className="flex items-center gap-4">
@@ -100,7 +100,7 @@ export function PublicNavbar({ theme = "light", showTopbar = false }: PublicNavb
       {isMobileMenuOpen && (
         <div className={`fixed inset-0 z-[100] flex flex-col p-6 lg:hidden ${isDark ? 'bg-[#0d0d0d]' : 'bg-white'}`}>
           <div className="flex items-center justify-between mb-10">
-            <span className={`font-heading font-bold text-xl ${isDark ? 'text-white' : 'text-ink'}`}>iziBooking</span>
+            <Image src={isDark ? "/logo-white.png" : "/logo.png"} alt="iziBooking" width={1576} height={317} className="h-8 w-auto" />
             <button onClick={() => setIsMobileMenuOpen(false)} className={isDark ? 'text-white/80 hover:text-white' : 'text-ink/70 hover:text-ink'}>
               <X size={24} />
             </button>

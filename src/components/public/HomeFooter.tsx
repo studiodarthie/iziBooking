@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 
 export function HomeFooter() {
@@ -7,7 +8,7 @@ export function HomeFooter() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row gap-12 md:gap-16 lg:gap-24">
           <div className="flex-[1.4]">
-            <div className="text-white font-heading font-bold text-2xl mb-4 tracking-tight">iziBooking</div>
+            <Image src="/logo-white.png" alt="iziBooking" width={1576} height={317} className="h-9 w-auto mb-5" />
             <p className="text-sm max-w-[32ch] leading-relaxed">
               La scène africaine, réservable en un clic. Le pont entre les talents et les événements inoubliables.
             </p>

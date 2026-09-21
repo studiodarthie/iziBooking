@@ -3,9 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Search, Star, ChevronDown, MapPin, Wallet, Sparkles } from "lucide-react";
+import { Search, Star, ChevronDown, MapPin, Wallet, Sparkles, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CEMAC_COUNTRIES } from "@/lib/countries";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 
 const CATEGORIES_BY_POLE: Record<string, string[]> = {
@@ -49,165 +50,165 @@ export function HomeHero({ featured }: { featured: HeroFeaturedProvider | null }
     router.push(`/search?${params.toString()}`);
   };
 
+  const field = "h-12 bg-white hover:border-neutral-500 transition-colors border border-neutral-400 rounded-xl text-ink font-medium text-[14px] placeholder:text-neutral-700 placeholder:font-normal focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 w-full";
+
   return (
-    <div className="relative overflow-hidden bg-[#0d0d0d] flex flex-col lg:min-h-screen">
-      {/* Background Image */}
-      <Image
-        src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1920"
-        alt="Artiste en scène"
-        fill
-        priority
-        className="object-cover object-[center_25%] opacity-15 mix-blend-luminosity z-0"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0d0d0d] via-[#0d0d0d]/80 to-transparent z-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent z-10"></div>
+    <div className="relative overflow-hidden bg-gradient-to-b from-[#FBDDBF] via-[#FCE6CE] to-[#FCEFDD]">
+      {/* Decorative blobs */}
+      <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/35 blur-3xl pointer-events-none" />
+      <div className="absolute top-40 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/45 blur-3xl pointer-events-none" />
 
-      <PublicNavbar theme="dark" showTopbar />
+      <PublicNavbar theme="light" />
 
-      {/* Hero Content */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16 lg:py-24 lg:flex-1 lg:flex lg:items-center">
-        <div className="grid lg:grid-cols-[1fr_560px] gap-10 lg:gap-16 w-full items-center">
-
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 pt-10 md:pt-16 pb-28 md:pb-36">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <span className="text-[#C9982B] uppercase text-[12px] font-bold tracking-[0.1em] mb-4 inline-block">
-              DÉCOUVREZ LES MEILLEURS PRESTATAIRES PRÈS DE VOUS
+            <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-6">
+              <Sparkles size={14} /> Artistes & prestataires vérifiés
             </span>
-            <h1 className="text-white font-heading font-extrabold text-[clamp(30px,4.4vw,54px)] leading-[1.1] mb-8">
-              La scène africaine,<br/>
-              <span className="text-[#C9982B] relative inline-block mt-2">
+            <h1 className="text-ink font-heading font-extrabold text-[clamp(30px,3.5vw,48px)] leading-[1.05]">
+              La scène africaine,<br />
+              <span className="text-primary inline-block sm:whitespace-nowrap mt-1 px-2 -mx-2 rounded-lg bg-[linear-gradient(transparent_50%,rgba(201,152,43,0.35)_50%,rgba(201,152,43,0.35)_82%,transparent_82%)] [box-decoration-break:clone]">
                 réservable en un clic.
-                <svg className="absolute -bottom-5 left-0 w-[60%]" viewBox="0 0 318 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 10.5C28 10.5 35 1 56 1C77 1 84.5 13.5 117.5 13.5C150.5 13.5 167 1.5 190.5 1.5C214 1.5 222 13.5 254 13.5C286 13.5 292.5 5 317 5" stroke="#B5451B" strokeWidth="4" strokeLinecap="round"/>
-                </svg>
               </span>
             </h1>
+            <p className="text-neutral-700 mt-6 text-base md:text-lg max-w-xl leading-relaxed">
+              DJ, groupes, traiteurs, photographes, décorateurs… Comparez, échangez et réservez en toute confiance, avec paiement mobile money sécurisé.
+            </p>
 
             {/* Search Form */}
-            <form onSubmit={handleSearch} className="flex flex-col gap-3 max-w-xl mt-10 md:mt-12">
-              <input 
-                name="q"
-                type="text" 
-                placeholder="Que recherchez-vous ?" 
-                className="h-14 px-5 bg-[#232323] border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:border-accent/50 w-full text-sm font-medium"
-              />
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="p-4 md:p-5 mt-8 rounded-3xl bg-white border border-neutral-300 shadow-xl shadow-primary/10 max-w-2xl">
+              <form onSubmit={handleSearch} className="flex flex-col gap-3">
                 <div className="relative">
-                  <Sparkles size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
-                  <select
-                    name="pole"
-                    value={selectedPole}
-                    onChange={(e) => setSelectedPole(e.target.value)}
-                    className="h-12 pl-9 pr-8 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none truncate"
-                  >
-                    <option value="">Divertissement</option>
-                    <option value="DIVERTISSEMENT">Divertissement</option>
-                    <option value="RECEPTION">Réception</option>
-                    <option value="IMAGE_SOUVENIR">Photo & Vidéo</option>
-                    <option value="SERVICES">Services</option>
-                  </select>
-                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
-                </div>
-
-                <div className="relative">
-                  <select
-                    name="category"
-                    disabled={!selectedPole}
-                    className={`h-12 pl-3 pr-8 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none truncate ${!selectedPole ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    <option value="">Occasion</option>
-                    {selectedPole && CATEGORIES_BY_POLE[selectedPole]?.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
-                </div>
-
-                <div className="relative">
-                  <MapPin size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                  <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
                   <input
-                    name="loc"
+                    name="q"
                     type="text"
-                    placeholder="Pays"
-                    className="h-12 pl-9 pr-3 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] placeholder:text-white/50 focus:outline-none focus:border-accent/50 w-full"
+                    placeholder="Que recherchez-vous ? (Ex : DJ mariage, photographe…)"
+                    className={`${field} h-14 pl-11 pr-4 font-medium`}
                   />
                 </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="relative">
+                    <Sparkles size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
+                    <select
+                      name="pole"
+                      value={selectedPole}
+                      onChange={(e) => setSelectedPole(e.target.value)}
+                      className={`${field} pl-9 pr-8 cursor-pointer appearance-none truncate`}
+                    >
+                      <option value="">Univers</option>
+                      <option value="DIVERTISSEMENT">Divertissement</option>
+                      <option value="RECEPTION">Réception</option>
+                      <option value="IMAGE_SOUVENIR">Photo & Vidéo</option>
+                      <option value="SERVICES">Services</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
+                  </div>
 
-                <div className="relative">
-                  <Wallet size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
-                  <select name="budget" className="h-12 pl-9 pr-8 bg-[#232323] border border-white/10 rounded-lg text-white/90 text-[13px] focus:outline-none focus:border-accent/50 w-full cursor-pointer appearance-none truncate">
-                    <option value="">Budget</option>
-                    <option value="50000">{'< 50k FCFA'}</option>
-                    <option value="150000">50k - 150k</option>
-                    <option value="400000">150k - 400k</option>
-                    <option value="400001">{'> 400k FCFA'}</option>
-                  </select>
-                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                  <div className="relative">
+                    <select
+                      name="category"
+                      disabled={!selectedPole}
+                      className={`${field} pl-3 pr-8 cursor-pointer appearance-none truncate ${!selectedPole ? "bg-neutral-100 text-neutral-700 cursor-not-allowed" : ""}`}
+                    >
+                      <option value="">Catégorie</option>
+                      {selectedPole && CATEGORIES_BY_POLE[selectedPole]?.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
+                  </div>
+
+                  <div className="relative">
+                    <MapPin size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
+                    <select name="loc" className={`${field} pl-9 pr-8 cursor-pointer appearance-none truncate`}>
+                      <option value="">Pays</option>
+                      {CEMAC_COUNTRIES.map((c) => (
+                        <option key={c.name} value={c.name}>{c.name}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
+                  </div>
+
+                  <div className="relative">
+                    <Wallet size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
+                    <select name="budget" className={`${field} pl-9 pr-8 cursor-pointer appearance-none truncate`}>
+                      <option value="">Budget</option>
+                      <option value="50000">{'< 50k FCFA'}</option>
+                      <option value="150000">50k - 150k</option>
+                      <option value="400000">150k - 400k</option>
+                      <option value="400001">{'> 400k FCFA'}</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-800 pointer-events-none" />
+                  </div>
                 </div>
-              </div>
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit" 
-                className="h-14 bg-[#B5451B] text-white font-bold rounded-xl flex items-center justify-center gap-2 mt-2 hover:bg-[#953817] transition-colors w-full text-sm"
-              >
-                Rechercher <Search size={16} />
-              </motion.button>
-            </form>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  className="h-14 bg-primary hover:bg-accent-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-colors w-full text-sm shadow-lg shadow-primary/30"
+                >
+                  Rechercher <Search size={16} />
+                </motion.button>
+              </form>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mt-5 items-center text-[13px] text-neutral-800">
+              <span className="font-semibold">Populaire :</span>
+              {["DJ", "Traiteurs", "Photographes", "Décoration"].map((t) => (
+                <Link key={t} href={`/search?q=${encodeURIComponent(t)}`} className="px-3 py-1 rounded-full bg-white border border-neutral-400 text-ink font-medium hover:border-primary hover:text-primary transition-colors">
+                  {t}
+                </Link>
+              ))}
+            </div>
           </motion.div>
 
-          {/* Hero Featured Card */}
-          {featured && (
-            <Link href={`/p/${featured.id}`} className="hidden lg:block group">
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-                className="relative rounded-3xl overflow-hidden bg-[#1c1c1c] h-[520px] w-full max-w-[480px] ml-auto border border-white/5 shadow-2xl"
-              >
-                <div className="absolute inset-0 z-0">
-                  {featured.image ? (
-                    <Image
-                      src={featured.image}
-                      alt={featured.name}
-                      fill
-                      className="object-cover opacity-60 mix-blend-luminosity transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-[#232323]" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#161616] via-[#161616]/60 to-transparent"></div>
-                </div>
+          {/* Photo collage */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+            className="relative hidden lg:block h-[560px]"
+          >
+            <div className="absolute top-0 right-0 w-[62%] h-[360px] rounded-[2rem] overflow-hidden shadow-2xl rotate-2">
+              <Image src="/images/home/traditional-dance.jpg" alt="Danse traditionnelle sur scène" fill priority className="object-cover" />
+            </div>
+            <div className="absolute bottom-0 left-0 w-[52%] h-[300px] rounded-[2rem] overflow-hidden shadow-2xl -rotate-3 border-4 border-white">
+              <Image src="/images/home/wedding-dance.jpg" alt="Première danse des mariés" fill className="object-cover object-left" />
+            </div>
+            <div className="absolute bottom-6 right-6 w-[42%] h-[210px] rounded-[2rem] overflow-hidden shadow-2xl rotate-3 border-4 border-white">
+              <Image src="/images/home/procession.jpg" alt="Cortège de mariage en tenues traditionnelles" fill className="object-cover" />
+            </div>
 
-                <div className="absolute top-5 left-5 bg-white text-black text-xs font-bold px-2 py-1 rounded-sm z-10">
-                  {featured.category}
-                </div>
+            <div className="absolute top-[52%] left-[18%] bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 z-10">
+              <span className="w-10 h-10 rounded-full bg-trust-tint text-trust flex items-center justify-center"><ShieldCheck size={20} /></span>
+              <div>
+                <div className="font-bold text-sm text-ink leading-tight">Paiement sécurisé</div>
+                <div className="text-[11px] text-neutral-600">Acompte protégé</div>
+              </div>
+            </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
-                  <div className="font-heading text-2xl font-bold mb-1">{featured.name}</div>
-                  <div className="flex items-center gap-1.5 text-sm text-white/60 mb-5">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    {featured.location}
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-[#2A2A2A] rounded-lg p-2 text-center border border-white/5 flex items-center justify-center gap-1.5">
-                      <Star size={14} className="fill-[#C9982B] text-[#C9982B]" />
-                      <div className="font-bold text-sm">
-                        {featured.reviewCount > 0 ? featured.rating.toFixed(1) : "Nouveau"}
-                      </div>
-                    </div>
-                    <div className="bg-[#2A2A2A] rounded-lg p-2 text-center border border-white/5">
-                      <div className="font-bold text-sm">{featured.reviewCount}</div>
-                      <div className="text-[9px] text-white/50 uppercase tracking-wider mt-0.5">Avis</div>
-                    </div>
+            {featured && (
+              <Link href={`/p/${featured.id}`} className="absolute top-4 left-4 bg-white rounded-2xl shadow-xl p-3 pr-5 flex items-center gap-3 z-10 hover:-translate-y-0.5 transition-transform max-w-[250px]">
+                <span className="relative w-12 h-12 rounded-xl overflow-hidden bg-primary/10 shrink-0 flex items-center justify-center font-bold text-primary">
+                  {featured.image ? <Image src={featured.image} alt={featured.name} fill className="object-cover" /> : featured.name.charAt(0)}
+                </span>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm text-ink truncate">{featured.name}</div>
+                  <div className="text-[11px] text-neutral-600 truncate">{featured.category} · {featured.location}</div>
+                  <div className="flex items-center gap-1 text-[11px] font-semibold text-ink mt-0.5">
+                    <Star size={11} className="fill-accent text-accent" />
+                    {featured.reviewCount > 0 ? featured.rating.toFixed(1) : "Nouveau"}
                   </div>
                 </div>
-              </motion.div>
-            </Link>
-          )}
+              </Link>
+            )}
+          </motion.div>
         </div>
       </div>
     </div>

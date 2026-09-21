@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Calendar,
   Settings,
   LogOut,
-  Music,
   CheckCircle,
   Image as ImageIcon,
   Clock,
@@ -63,13 +63,8 @@ export function Sidebar({ role = "PROVIDER", unreadMessages = 0 }: { role?: stri
     <div className="flex h-full w-72 flex-col border-r border-primary/20 bg-primary text-white shadow-lg">
       {/* Logo */}
       <div className="flex h-20 shrink-0 items-center px-6 border-b border-white/10">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-primary transition-transform group-hover:scale-105 shadow-sm">
-            <Music size={20} />
-          </div>
-          <span className="text-xl font-heading font-bold tracking-tight text-white">
-            iziBooking
-          </span>
+        <Link href="/" aria-label="iziBooking - Accueil">
+          <Image src="/logo-white.png" alt="iziBooking" width={1576} height={317} className="h-8 w-auto" />
         </Link>
       </div>
 

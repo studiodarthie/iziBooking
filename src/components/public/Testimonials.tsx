@@ -17,10 +17,14 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
   if (testimonials.length === 0) return null;
 
   return (
-    <section id="temoignages" className="bg-accent-100 py-16 md:py-24">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+    <section id="temoignages" className="relative py-16 md:py-24 bg-[#FCEFDD] overflow-hidden">
+      {/* Decorative blurred backgrounds */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+      
+      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
         <div className="text-center max-w-xl mx-auto mb-12">
-          <span className="text-accent text-xs font-bold tracking-[0.08em] uppercase">Ce qu’ils en disent</span>
+          <span className="text-primary text-xs font-bold tracking-[0.08em] uppercase">Ce qu’ils en disent</span>
           <h2 className="font-heading font-bold text-3xl md:text-4xl text-ink mt-3">
             Des organisateurs déjà conquis
           </h2>
@@ -34,7 +38,7 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="bg-white rounded-2xl p-6 shadow-sm flex flex-col"
+              className="bg-white/80 backdrop-blur-sm rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-300"
             >
               <div className="flex gap-0.5 text-accent mb-4">
                 {[1, 2, 3, 4, 5].map((n) => (
@@ -42,8 +46,8 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
                 ))}
               </div>
               <p className="text-ink leading-relaxed flex-1">« {t.comment} »</p>
-              <div className="flex items-center gap-3 mt-6 pt-4 border-t border-divider">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent/20 flex items-center justify-center text-sm font-bold text-accent shrink-0">
+              <div className="flex items-center gap-3 mt-6 pt-5 border-t border-divider">
+                <div className="relative w-11 h-11 rounded-full overflow-hidden bg-accent/10 flex items-center justify-center text-sm font-bold text-accent shrink-0 ring-2 ring-offset-2 ring-accent/20">
                   {t.organizerImage ? (
                     <Image src={t.organizerImage} alt={t.organizerName} fill className="object-cover" />
                   ) : (

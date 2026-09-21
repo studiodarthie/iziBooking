@@ -83,7 +83,7 @@
   --color-neutral-900: var(--color-neutral-900);
   
   --font-sans: var(--font-inter), sans-serif;
-  --font-heading: var(--font-plus-jakarta-sans), sans-serif;
+  --font-heading: var(--font-magistral), var(--font-inter), sans-serif;
   --font-mono: var(--font-inter), monospace;
 }
 
@@ -91,4 +91,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-heading);
+  }
 }

@@ -1,3 +1,4 @@
+import { locationTerms } from "@/lib/countries";
 import Link from "next/link";
 import { Suspense } from "react";
 import { MapPin, Calendar, Search, ChevronDown, ChevronUp } from "lucide-react";
@@ -250,7 +251,9 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
   }
 
   if (loc) {
-    whereClause.location = { contains: loc, mode: "insensitive" };
+    whereClause.AND = [
+      { OR: locationTerms(loc).map((t) => ({ location: { contains: t, mode: "insensitive" as const } })) },
+    ];
   }
 
   if (pole && (Object.values(ProviderPole) as string[]).includes(pole)) {

@@ -28,7 +28,7 @@ const advantages = [
 
 export function HomeAdvantages() {
   return (
-    <section className="bg-surface py-16 md:py-24">
+    <section className="bg-white py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex items-center gap-4 justify-center mb-12">
           <div className="flex-1 max-w-[120px] h-px bg-divider"></div>
