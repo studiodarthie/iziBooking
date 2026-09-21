@@ -76,20 +76,20 @@ export default async function PublicProviderPage(props: Props) {
 
   return (
     <div className="min-h-screen bg-[#FBF6EE] pb-20 font-sans text-[#0d0d0d]">
-      <div className="bg-[#0d0d0d]">
+      {/* Header : même fond que l'accueil, hauteur inchangée (navbar + bandeau) */}
+      <div className="relative overflow-hidden bg-[#3A1508]">
+        <Image
+          src="/images/home/traditional-dance.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-45"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#B5451B]/90 via-[#8E3414]/85 to-[#3A1508]/95" />
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-accent/30 blur-[120px] pointer-events-none" />
         <PublicNavbar />
-      </div>
-
-      {/* Banner */}
-      <div 
-        className="h-48 md:h-72 w-full bg-[#1a1a1a] relative overflow-hidden"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%23ffffff' stroke-width='1.5' fill='none' opacity='0.06'%3E%3C!-- Adinkrahene --%3E%3Ccircle cx='30' cy='30' r='14' /%3E%3Ccircle cx='30' cy='30' r='8' /%3E%3Ccircle cx='30' cy='30' r='2' /%3E%3C!-- Eban --%3E%3Crect x='76' y='16' width='28' height='28' transform='rotate(45 90 30)' /%3E%3Crect x='83' y='23' width='14' height='14' transform='rotate(45 90 30)' /%3E%3C!-- Mmusuyidee --%3E%3Cpath d='M20 90 L40 90 M30 80 L30 100' /%3E%3Ccircle cx='30' cy='90' r='12' /%3E%3C!-- Nsaa --%3E%3Cpath d='M90 76 L104 90 L90 104 L76 90 Z' /%3E%3Cpath d='M90 83 L97 90 L90 97 L83 90 Z' /%3E%3C!-- Grid Dots --%3E%3Ccircle cx='60' cy='60' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='0' cy='60' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='60' cy='0' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='120' cy='60' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='60' cy='120' r='1.5' fill='%23ffffff' /%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundSize: '120px 120px',
-          backgroundRepeat: 'repeat'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0d0d]/10 via-transparent to-[#0d0d0d]/80 z-10" />
+        <div className="h-48 md:h-72" />
       </div>
 
       {/* Main Content Layout */}
