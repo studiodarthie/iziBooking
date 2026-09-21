@@ -77,7 +77,7 @@ export default async function PublicProviderPage(props: Props) {
   return (
     <div className="min-h-screen bg-[#FBF6EE] pb-20 font-sans text-[#0d0d0d]">
       <div className="bg-[#0d0d0d]">
-        <PublicNavbar theme="dark" />
+        <PublicNavbar />
       </div>
 
       {/* Banner */}

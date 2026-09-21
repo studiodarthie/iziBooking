@@ -48,7 +48,7 @@ export default async function BookingPage(props: Props) {
 
   return (
     <div className="min-h-screen bg-[#FBF6EE] font-sans text-ink">
-      <PublicNavbar theme="light" />
+      <PublicNavbar />
 
       <main className="max-w-4xl mx-auto px-4 py-12 md:py-16">
         

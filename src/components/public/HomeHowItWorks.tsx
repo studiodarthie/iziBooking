@@ -12,7 +12,7 @@ const steps = [
 
 export function HomeHowItWorks() {
   return (
-    <section className="py-16 md:py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
+    <section id="comment-ca-marche" className="py-16 md:py-24 px-4 md:px-8 max-w-7xl mx-auto w-full scroll-mt-4">
       <div className="text-center max-w-xl mx-auto mb-14">
         <span className="text-primary text-xs font-bold tracking-[0.08em] uppercase">Comment ça marche</span>
         <h2 className="font-heading font-bold text-3xl md:text-4xl text-ink mt-3">Réservez en 4 étapes simples</h2>

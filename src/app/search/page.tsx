@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 import { Prisma, ProviderPole } from "@prisma/client";
 import { ProviderCard } from "@/components/public/ProviderCard";
 import { ProviderCardSkeleton } from "@/components/public/ProviderCardSkeleton";
-import { PublicNavbar } from "@/components/public/PublicNavbar";
+import { PageHero } from "@/components/public/PageHero";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { SearchSortSelect } from "@/components/public/SearchSortSelect";
 import { getRatingSummary } from "@/lib/ratings";
@@ -33,22 +33,17 @@ export default async function SearchPage(props: {
   ];
 
   return (
-    <div className="min-h-screen bg-sand/30 font-sans flex flex-col">
-      <div className="bg-[#0d0d0d]">
-        <PublicNavbar theme="dark" />
-      </div>
-
-      {/* Banner */}
-      <div 
-        className="h-32 md:h-40 w-full bg-[#1a1a1a] relative overflow-hidden"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%23ffffff' stroke-width='1.5' fill='none' opacity='0.06'%3E%3C!-- Adinkrahene --%3E%3Ccircle cx='30' cy='30' r='14' /%3E%3Ccircle cx='30' cy='30' r='8' /%3E%3Ccircle cx='30' cy='30' r='2' /%3E%3C!-- Eban --%3E%3Crect x='76' y='16' width='28' height='28' transform='rotate(45 90 30)' /%3E%3Crect x='83' y='23' width='14' height='14' transform='rotate(45 90 30)' /%3E%3C!-- Mmusuyidee --%3E%3Cpath d='M20 90 L40 90 M30 80 L30 100' /%3E%3Ccircle cx='30' cy='90' r='12' /%3E%3C!-- Nsaa --%3E%3Cpath d='M90 76 L104 90 L90 104 L76 90 Z' /%3E%3Cpath d='M90 83 L97 90 L90 97 L83 90 Z' /%3E%3C!-- Grid Dots --%3E%3Ccircle cx='60' cy='60' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='0' cy='60' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='60' cy='0' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='120' cy='60' r='1.5' fill='%23ffffff' /%3E%3Ccircle cx='60' cy='120' r='1.5' fill='%23ffffff' /%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundSize: '120px 120px',
-          backgroundRepeat: 'repeat'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0d0d]/10 via-transparent to-[#0d0d0d]/80 z-10" />
-      </div>
+    <div className="min-h-screen bg-[#FCEFDD] font-sans flex flex-col">
+      <PageHero
+        overlap
+        eyebrow="Catalogue"
+        title={
+          <>
+            Trouvez le prestataire <span className="text-primary">idéal.</span>
+          </>
+        }
+        description="Artistes, traiteurs, photographes, décorateurs… Filtrez par catégorie, pays et budget pour réserver en confiance."
+      />
 
       <div className="flex-1 max-w-[1600px] w-full mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8 -mt-10 md:-mt-16 relative z-20">
         

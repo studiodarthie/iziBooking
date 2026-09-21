@@ -105,3 +105,42 @@ export async function notifyNewMessage(params: {
     ),
   });
 }
+
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/** Message du formulaire de contact public, envoyé à l'équipe. Retourne false si l'envoi échoue. */
+export async function sendContactRequest(params: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}): Promise<boolean> {
+  const to = "hello@izibooking.app";
+  if (!process.env.EMAIL_SERVER_HOST) {
+    console.warn(`SMTP non configuré — message de contact de ${params.email} non envoyé`);
+    return false;
+  }
+
+  try {
+    await getTransport().sendMail({
+      from: process.env.EMAIL_FROM,
+      to,
+      replyTo: `${params.name.replace(/[<>"\r\n]/g, "")} <${params.email}>`,
+      subject: `[Contact] ${params.subject.replace(/[\r\n]/g, " ")}`,
+      html: `
+        <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #232323;">
+          <p style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #B5451B; margin: 0 0 12px;">Nouveau message de contact</p>
+          <p style="margin: 0 0 4px;"><strong>${escapeHtml(params.name)}</strong> &lt;${escapeHtml(params.email)}&gt;</p>
+          <p style="margin: 0 0 16px; color: #666;">Sujet : ${escapeHtml(params.subject)}</p>
+          <div style="font-size: 14px; line-height: 1.6; white-space: pre-wrap; border-left: 3px solid #C9982B; padding-left: 12px;">${escapeHtml(params.message)}</div>
+        </div>
+      `,
+    });
+    return true;
+  } catch (error) {
+    console.error("Erreur d'envoi du message de contact:", error);
+    return false;
+  }
+}

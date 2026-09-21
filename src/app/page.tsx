@@ -5,23 +5,13 @@ import { FeaturedProvidersSkeleton } from "@/components/public/FeaturedProviders
 import { HomeCategories, type CategoryCount } from "@/components/public/HomeCategories";
 import { HomeHowItWorks } from "@/components/public/HomeHowItWorks";
 import { HomeCTA } from "@/components/public/HomeCTA";
+import { HomeAppBanner } from "@/components/public/HomeAppBanner";
 import { HomeAdvantages } from "@/components/public/HomeAdvantages";
 import { Testimonials, type Testimonial } from "@/components/public/Testimonials";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import prisma from "@/lib/prisma";
-import { getRatingSummary } from "@/lib/ratings";
 
 export default async function Home() {
-  const featuredProvider = await prisma.providerProfile.findFirst({
-    where: { isVerified: true, user: { isBanned: false } },
-    orderBy: { createdAt: "desc" },
-    include: {
-      user: { select: { image: true } },
-      mediaLinks: { where: { type: "IMAGE" }, take: 1 },
-      reviews: { select: { rating: true } }
-    }
-  });
-
   const poleLabels: { pole: "DIVERTISSEMENT" | "RECEPTION" | "IMAGE_SOUVENIR" | "SERVICES"; name: string }[] = [
     { pole: "DIVERTISSEMENT", name: "Divertissement" },
     { pole: "RECEPTION", name: "Réception & Traiteur" },
@@ -54,23 +44,10 @@ export default async function Home() {
     providerName: r.providerProfile.name,
   }));
 
-  const featured = featuredProvider ? (() => {
-    const summary = getRatingSummary(featuredProvider.reviews);
-    return {
-      id: featuredProvider.id,
-      name: featuredProvider.name,
-      category: featuredProvider.category,
-      location: featuredProvider.location,
-      image: featuredProvider.mediaLinks[0]?.url || featuredProvider.user?.image || null,
-      rating: summary.average,
-      reviewCount: summary.count,
-    };
-  })() : null;
-
   return (
     <div className="min-h-screen bg-white text-ink font-sans flex flex-col">
       {/* Hero Section */}
-      <HomeHero featured={featured} />
+      <HomeHero />
 
       <div className="w-full bg-[#FCEFDD]">
       {/* Categories Section */}
@@ -154,6 +131,8 @@ export default async function Home() {
       <Testimonials testimonials={testimonials} />
 
       <HomeCTA />
+
+      <HomeAppBanner />
 
       {/* Footer */}
       <HomeFooter />
