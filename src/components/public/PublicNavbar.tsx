@@ -33,8 +33,8 @@ export function PublicNavbar({ theme = "light", showTopbar = false }: PublicNavb
             <a href="tel:+237600000000" className="flex items-center gap-1.5 hover:text-white transition-colors">
               <Phone size={13} /> Appelez-nous : +237 6 00 00 00 00
             </a>
-            <a href="mailto:contact@izibooking.africa" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Mail size={13} /> contact@izibooking.africa
+            <a href="mailto:hello@izibooking.app" className="flex items-center gap-1.5 hover:text-white transition-colors">
+              <Mail size={13} /> hello@izibooking.app
             </a>
           </div>
         </div>

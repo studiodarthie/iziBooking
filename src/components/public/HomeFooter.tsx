@@ -13,8 +13,8 @@ export function HomeFooter() {
               La scène africaine, réservable en un clic. Le pont entre les talents et les événements inoubliables.
             </p>
             <div className="mt-8">
-              <a href="mailto:contact@izibooking.africa" className="text-sm text-neutral-300 hover:text-accent transition-colors">
-                contact@izibooking.africa
+              <a href="mailto:hello@izibooking.app" className="text-sm text-neutral-300 hover:text-accent transition-colors">
+                hello@izibooking.app
               </a>
             </div>
           </div>
