@@ -62,7 +62,7 @@ export async function askCoach(params: {
 
   const response = await client.messages.create({
     model: MODEL,
-    max_tokens: 800,
+    max_tokens: 1200,
     system: `${COACH_SYSTEM_PROMPT}\n\nContexte du prestataire qui te parle :\n${contextBlock(params.provider)}`,
     messages,
   });
@@ -114,7 +114,7 @@ export async function generateQuoteDraft(params: {
   const client = getClient();
   const response = await client.messages.create({
     model: MODEL,
-    max_tokens: 500,
+    max_tokens: 900,
     system: `${COACH_SYSTEM_PROMPT}\n\nTâche précise : rédige un texte de devis/proposition commerciale en français pour cette demande de réservation, à envoyer tel quel à l'organisateur. Structure-le clairement (contexte, prestation proposée, prix indicatif basé sur le prix de base du prestataire si disponible sinon demande le budget, conditions de réservation). Reste réaliste : si des informations manquent, indique-le et demande-les plutôt que d'inventer un prix précis. Réponds uniquement avec le texte du devis, prêt à être copié.`,
     messages: [{
       role: "user",
