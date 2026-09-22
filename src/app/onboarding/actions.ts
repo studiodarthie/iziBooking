@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { ProviderPole } from "@prisma/client";
 import { TRIAL_DAYS } from "@/lib/plan";
+import { notifyNewProviderSignup } from "@/lib/email";
 
 export async function submitProviderProfile(formData: FormData) {
   const session = await getServerSession(authOptions);
@@ -41,6 +42,13 @@ export async function submitProviderProfile(formData: FormData) {
   const servicePrice = formData.get("servicePrice") as string;
   const workingDaysStr = formData.get("workingDays") as string;
 
+  // Vérifié avant l'upsert : seul un profil qui n'existait pas encore déclenche la notification
+  // (on ne veut pas alerter l'équipe à chaque modification ultérieure du profil).
+  const existingProfile = await prisma.providerProfile.findUnique({
+    where: { userId: user.id },
+    select: { id: true },
+  });
+
   // Create or update the provider profile
   const profile = await prisma.providerProfile.upsert({
     where: { userId: user.id },
@@ -68,6 +76,16 @@ export async function submitProviderProfile(formData: FormData) {
       planExpiresAt: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000),
     }
   });
+
+  // Notifie l'équipe uniquement à la création du profil (pas à chaque modification).
+  if (!existingProfile) {
+    notifyNewProviderSignup({
+      providerId: profile.id,
+      providerName: profile.name,
+      category: profile.category,
+      location: profile.location,
+    }).catch(() => {}); // best-effort, ne doit jamais bloquer l'onboarding
+  }
 
   // Si on a une image, on met à jour le User
   if (image) {

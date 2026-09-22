@@ -189,3 +189,27 @@ export async function sendContactRequest(params: {
     return false;
   }
 }
+
+/** Notifie l'équipe iziBooking (hello@) qu'un nouveau prestataire vient de finaliser son profil. */
+export async function notifyNewProviderSignup(params: {
+  providerId: string;
+  providerName: string;
+  category: string;
+  location: string;
+}) {
+  await sendEmail({
+    to: "hello@izibooking.app",
+    subject: `Nouveau prestataire inscrit — ${params.providerName}`,
+    html: emailShell(
+      "Nouveau prestataire",
+      `<p><strong>${escapeHtml(params.providerName)}</strong> vient de créer son profil sur iziBooking.</p>
+       <p style="margin: 12px 0; padding: 12px 16px; background: #F4E9D8; border-radius: 10px;">
+         Catégorie : <strong>${escapeHtml(params.category)}</strong><br/>
+         Localisation : <strong>${escapeHtml(params.location)}</strong>
+       </p>
+       <p>Pensez à vérifier son profil pour qu'il apparaisse en priorité dans les résultats.</p>`,
+      `${BASE_URL}/admin/providers`,
+      "Voir dans l'admin"
+    ),
+  });
+}
