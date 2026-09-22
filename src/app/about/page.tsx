@@ -71,7 +71,7 @@ export default function AboutPage() {
               <Link href="/search" className="inline-flex items-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-6 py-3 transition-colors shadow-lg shadow-primary/30">
                 Trouver un prestataire <ArrowRight size={18} />
               </Link>
-              <Link href="/onboarding" className="inline-flex items-center gap-2 bg-white border border-neutral-400 text-ink font-semibold rounded-full px-6 py-3 hover:border-primary hover:text-primary transition-colors">
+              <Link href="/inscription" className="inline-flex items-center gap-2 bg-white border border-neutral-400 text-ink font-semibold rounded-full px-6 py-3 hover:border-primary hover:text-primary transition-colors">
                 Devenir prestataire
               </Link>
             </div>
@@ -193,7 +193,7 @@ export default function AboutPage() {
               <li className="flex gap-3"><span className="text-accent-2-300 font-bold">✓</span> Un calendrier, des demandes qualifiées et vos acomptes garantis.</li>
               <li className="flex gap-3"><span className="text-accent-2-300 font-bold">✓</span> Des avis clients qui construisent votre réputation.</li>
             </ul>
-            <Link href="/onboarding" className="inline-flex items-center gap-2 mt-7 bg-white text-trust font-bold rounded-full px-6 py-3 hover:bg-accent-2-100 transition-colors">
+            <Link href="/inscription" className="inline-flex items-center gap-2 mt-7 bg-white text-trust font-bold rounded-full px-6 py-3 hover:bg-accent-2-100 transition-colors">
               Créer mon profil <ArrowRight size={18} />
             </Link>
           </div>

@@ -95,7 +95,7 @@ export function HomeHero() {
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-x-8 gap-y-3 text-sm text-white/85">
             <span className="flex items-center gap-2"><ShieldCheck size={16} className="text-accent-2-300" /> Profils vérifiés</span>
             <span className="flex items-center gap-2"><SmartphoneNfc size={16} className="text-accent-2-300" /> Mobile money accepté</span>
-            <Link href="/onboarding" className="flex items-center gap-1.5 font-semibold text-white hover:text-accent-2-300 transition-colors">
+            <Link href="/inscription" className="flex items-center gap-1.5 font-semibold text-white hover:text-accent-2-300 transition-colors">
               Vous êtes prestataire ? Inscrivez-vous <ArrowRight size={15} />
             </Link>
           </div>

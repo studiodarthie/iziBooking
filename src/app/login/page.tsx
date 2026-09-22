@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { Music, Mail, Globe } from "lucide-react";
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -100,6 +101,13 @@ export default function LoginPage() {
                 </button>
               </div>
             </form>
+
+            <p className="text-center text-sm text-ink/60 mt-6">
+              Pas encore de compte ?{" "}
+              <Link href="/inscription" className="text-primary font-semibold hover:underline">
+                Créer un compte
+              </Link>
+            </p>
           </div>
         </div>
       </div>

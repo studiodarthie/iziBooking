@@ -106,7 +106,7 @@ export default function TarifsPage() {
                 </li>
               ))}
             </ul>
-            <Link href="/onboarding" className="mt-8 inline-flex items-center justify-center gap-2 border border-neutral-400 text-ink font-bold rounded-full px-6 py-3 hover:border-primary hover:text-primary transition-colors">
+            <Link href="/inscription" className="mt-8 inline-flex items-center justify-center gap-2 border border-neutral-400 text-ink font-bold rounded-full px-6 py-3 hover:border-primary hover:text-primary transition-colors">
               Créer mon profil gratuitement
             </Link>
           </div>

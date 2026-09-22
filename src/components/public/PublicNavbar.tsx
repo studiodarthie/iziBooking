@@ -52,7 +52,7 @@ export function PublicNavbar({ overlay = false }: { overlay?: boolean }) {
                 <Link href="/login" aria-label="Connexion" className="w-10 h-10 rounded-xl flex items-center justify-center text-ink/80 hover:bg-neutral-100 transition-colors">
                   <User size={18} />
                 </Link>
-                <Link href="/onboarding" className="hidden md:inline-flex h-10 items-center bg-primary hover:bg-accent-600 text-white text-sm font-bold rounded-xl px-4 transition-colors">
+                <Link href="/inscription" className="hidden md:inline-flex h-10 items-center bg-primary hover:bg-accent-600 text-white text-sm font-bold rounded-xl px-4 transition-colors">
                   Inscription gratuite
                 </Link>
               </>
@@ -77,7 +77,7 @@ export function PublicNavbar({ overlay = false }: { overlay?: boolean }) {
             <Link href={user ? "/dashboard" : "/login"} onClick={() => setOpen(false)} className="text-lg font-medium text-ink/80">
               {user ? "Mon tableau de bord" : "Connexion"}
             </Link>
-            <Link href="/onboarding" onClick={() => setOpen(false)} className="text-lg font-bold text-primary">Inscription gratuite</Link>
+            <Link href="/inscription" onClick={() => setOpen(false)} className="text-lg font-bold text-primary">Inscription gratuite</Link>
           </div>
         </div>
       )}

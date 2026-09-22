@@ -41,7 +41,7 @@ export async function FeaturedProvidersList() {
       <div className="col-span-full py-14 px-6 text-center bg-white rounded-2xl shadow-sm border border-divider">
         <p className="font-heading font-bold text-2xl text-ink">Les premiers prestataires arrivent bientôt</p>
         <p className="text-neutral-700 mt-2">Artiste, traiteur, photographe… rejoignez iziBooking dès maintenant.</p>
-        <Link href="/onboarding" className="inline-block mt-5 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-6 py-3 transition-colors">
+        <Link href="/inscription" className="inline-block mt-5 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-6 py-3 transition-colors">
           Créer mon profil gratuitement
         </Link>
       </div>

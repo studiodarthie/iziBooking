@@ -16,7 +16,7 @@ export function HomeCTA() {
             Créez votre profil gratuitement, recevez des demandes qualifiées et encaissez vos acomptes en toute sécurité.
           </p>
           <div className="flex flex-wrap gap-3 mt-8">
-            <Link href="/onboarding" className="inline-flex items-center gap-2 bg-white text-primary font-bold rounded-full px-6 py-3 hover:bg-accent-2-100 transition-colors">
+            <Link href="/inscription" className="inline-flex items-center gap-2 bg-white text-primary font-bold rounded-full px-6 py-3 hover:bg-accent-2-100 transition-colors">
               Inscription gratuite <ArrowRight size={18} />
             </Link>
             <Link href="/search" className="inline-flex items-center gap-2 border border-white/60 text-white font-semibold rounded-full px-6 py-3 hover:bg-white/10 transition-colors">
