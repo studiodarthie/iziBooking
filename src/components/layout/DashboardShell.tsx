@@ -33,7 +33,7 @@ export function DashboardShell({
             onClick={() => setIsMobileNavOpen(false)}
           />
           <div className="relative flex w-72 max-w-[80vw]">
-            <Sidebar role={role} unreadMessages={unreadMessages} />
+            <Sidebar role={role} unreadMessages={unreadMessages} onNavigate={() => setIsMobileNavOpen(false)} />
             <button
               onClick={() => setIsMobileNavOpen(false)}
               className="absolute top-5 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"

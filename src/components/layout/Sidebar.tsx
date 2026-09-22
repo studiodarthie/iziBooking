@@ -58,7 +58,17 @@ const ORGANIZER_NAVIGATION = [
   { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
 ];
 
-export function Sidebar({ role = "PROVIDER", unreadMessages = 0 }: { role?: string; unreadMessages?: number }) {
+export function Sidebar({
+  role = "PROVIDER",
+  unreadMessages = 0,
+  onNavigate,
+}: {
+  role?: string;
+  unreadMessages?: number;
+  /** Appelé au clic sur un lien — utilisé pour refermer le menu mobile, qui sinon reste
+   * ouvert par-dessus la page après une navigation côté client. */
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
   
   return (
@@ -89,6 +99,7 @@ export function Sidebar({ role = "PROVIDER", unreadMessages = 0 }: { role?: stri
                       <li key={item.name}>
                         <Link
                           href={item.href}
+                          onClick={onNavigate}
                           className={`group flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                             isActive
                               ? "bg-white/20 text-white shadow-sm"
@@ -130,6 +141,7 @@ export function Sidebar({ role = "PROVIDER", unreadMessages = 0 }: { role?: stri
                   <li key={item.name}>
                     <Link
                       href={item.href}
+                      onClick={onNavigate}
                       className={`group flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
                         isActive
                           ? "bg-white/20 text-white shadow-sm"
