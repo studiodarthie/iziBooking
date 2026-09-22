@@ -29,8 +29,14 @@ export default async function DashboardLayout({
     redirect("/api/auth/signout?callbackUrl=/login?banned=1");
   }
 
-  // Si l'utilisateur n'a pas encore de profil prestataire et n'est pas un organisateur
-  // Mais ici, nous voulons que le dashboard se rende avec le rôle du user (user.role)
+  // Rôle PROVIDER mais onboarding jamais terminé (abandonné en cours de route) :
+  // sans ce garde-fou, le menu prestataire s'affiche quand même et chaque sous-page
+  // (Coach IA, Services, Premium…) rebondit silencieusement vers /dashboard, sans
+  // explication pour l'utilisateur.
+  if (user.role === "PROVIDER" && !user.providerProfile) {
+    redirect("/onboarding");
+  }
+
   // Onboarding est géré lors de la création du compte via next-auth "newUser"
 
   const unreadMessages = user.providerProfile
