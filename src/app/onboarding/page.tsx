@@ -1,12 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Briefcase, Sparkles, MapPin, DollarSign, UploadCloud, CheckCircle, ChevronRight, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Briefcase, Sparkles, MapPin, DollarSign, UploadCloud, CheckCircle, ChevronRight, ArrowLeft, ArrowUpRight, Gift, ShieldCheck, Wallet, Search, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { submitProviderProfile, submitOrganizerProfile } from "./actions";
 import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
+import { TRIAL_DAYS } from "@/lib/plan";
 
 type Role = "ORGANIZER" | "PROVIDER" | null;
+
+/** Habillage commun à tout le tunnel d'onboarding : dégradé de marque + halos, logo en tête. */
+function OnboardingBackground({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#FBDDBF] via-[#FCE6CE] to-[#FCEFDD] font-sans">
+      <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/25 blur-3xl pointer-events-none" />
+      <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/35 blur-3xl pointer-events-none" />
+      <div className="relative z-10 flex justify-center pt-8 pb-2">
+        <Link href="/" aria-label="iziBooking - Accueil">
+          <Image src="/logo.png" alt="iziBooking" width={1576} height={317} className="h-7 w-auto" />
+        </Link>
+      </div>
+      <div className="relative z-10">{children}</div>
+    </div>
+  );
+}
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -89,45 +109,103 @@ export default function OnboardingPage() {
   // STEP 1: CHOOSE ROLE
   // -------------------------------------------------------------
   if (step === 1 || !role) {
+    const ROLE_CARDS: {
+      role: "ORGANIZER" | "PROVIDER";
+      icon: typeof Briefcase;
+      title: string;
+      description: string;
+      features: { icon: typeof Search; label: string }[];
+      tint: string;
+      textTint: string;
+      hoverBg: string;
+      ring: string;
+    }[] = [
+      {
+        role: "ORGANIZER",
+        icon: Briefcase,
+        title: "Je suis Organisateur",
+        description: "Je cherche des prestataires pour mes événements.",
+        features: [
+          { icon: Search, label: "Recherche et mise en relation gratuites" },
+          { icon: ShieldCheck, label: "Prestataires vérifiés à la main" },
+          { icon: Wallet, label: "Paiement sécurisé, en ligne ou mobile money" },
+        ],
+        tint: "bg-trust/10 group-hover:bg-trust",
+        textTint: "text-trust",
+        hoverBg: "hover:border-trust",
+        ring: "focus:ring-trust",
+      },
+      {
+        role: "PROVIDER",
+        icon: Sparkles,
+        title: "Je suis Prestataire",
+        description: "Je propose mes services (Artiste, Traiteur, Photo...).",
+        features: [
+          { icon: MessageCircle, label: "Profil public et demandes en illimité" },
+          { icon: Gift, label: `${TRIAL_DAYS} jours de Premium offerts à l'inscription` },
+          { icon: Wallet, label: "Vos gains reversés en toute sécurité" },
+        ],
+        tint: "bg-primary/10 group-hover:bg-primary",
+        textTint: "text-primary",
+        hoverBg: "hover:border-primary",
+        ring: "focus:ring-primary",
+      },
+    ];
+
     return (
-      <div className="min-h-screen bg-sand flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-heading font-extrabold text-ink">
-            Bienvenue sur iziBooking
-          </h2>
-          <p className="mt-2 text-center text-sm text-ink/60">
+      <OnboardingBackground>
+        <div className="flex flex-col items-center px-4 pb-16 pt-4">
+          <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
+            Inscription
+          </span>
+          <h1 className="text-center font-heading font-extrabold text-[clamp(30px,4vw,44px)] leading-[1.1] text-ink max-w-xl">
+            Bienvenue sur <span className="text-primary">iziBooking</span>
+          </h1>
+          <p className="mt-3 text-center text-neutral-700 max-w-md">
             Pour commencer, dites-nous comment vous souhaitez utiliser la plateforme.
           </p>
-        </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-xl">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <button
-              onClick={() => handleRoleSelect("ORGANIZER")}
-              disabled={isPending}
-              className="relative rounded-2xl border-2 border-ink/10 bg-white p-8 text-center hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all hover:shadow-lg group disabled:opacity-50"
-            >
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-ink/5 group-hover:bg-primary/10 transition-colors mb-4">
-                <Briefcase className="h-8 w-8 text-ink/70 group-hover:text-primary transition-colors" />
-              </div>
-              <h3 className="text-lg font-bold text-ink">Je suis Organisateur</h3>
-              <p className="mt-2 text-sm text-ink/60">Je cherche des prestataires pour mes événements.</p>
-            </button>
+          <div className="mt-10 w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {ROLE_CARDS.map((card, i) => (
+              <motion.button
+                key={card.role}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08, duration: 0.4 }}
+                whileHover={{ y: -6 }}
+                onClick={() => handleRoleSelect(card.role)}
+                disabled={isPending}
+                className={`group relative rounded-3xl border-2 border-white bg-white p-8 text-left shadow-lg shadow-black/5 ${card.hoverBg} hover:shadow-2xl hover:shadow-black/10 focus:outline-none focus:ring-2 ${card.ring} focus:ring-offset-2 transition-all disabled:opacity-50`}
+              >
+                <ArrowUpRight size={18} className="absolute top-6 right-6 text-neutral-300 group-hover:text-ink transition-colors" />
 
-            <button
-              onClick={() => handleRoleSelect("PROVIDER")}
-              disabled={isPending}
-              className="relative rounded-2xl border-2 border-ink/10 bg-white p-8 text-center hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all hover:shadow-lg group disabled:opacity-50"
-            >
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-ink/5 group-hover:bg-primary/10 transition-colors mb-4">
-                <Sparkles className="h-8 w-8 text-ink/70 group-hover:text-primary transition-colors" />
-              </div>
-              <h3 className="text-lg font-bold text-ink">Je suis Prestataire</h3>
-              <p className="mt-2 text-sm text-ink/60">Je propose mes services (Artiste, Traiteur, Photo...).</p>
-            </button>
+                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl transition-colors duration-300 mb-5 ${card.tint} ${card.textTint} group-hover:text-white`}>
+                  <card.icon className="h-8 w-8" />
+                </div>
+
+                <h3 className="font-heading font-bold text-xl text-ink">{card.title}</h3>
+                <p className="mt-1.5 text-sm text-neutral-600">{card.description}</p>
+
+                <ul className="mt-5 space-y-2.5 border-t border-ink/10 pt-4">
+                  {card.features.map((f) => (
+                    <li key={f.label} className="flex items-center gap-2.5 text-[13px] text-neutral-700">
+                      <f.icon size={15} className={`shrink-0 ${card.textTint}`} />
+                      {f.label}
+                    </li>
+                  ))}
+                </ul>
+              </motion.button>
+            ))}
           </div>
+
+          <p className="mt-8 text-xs text-neutral-500">
+            Déjà un compte ?{" "}
+            <Link href="/login" className="text-primary font-semibold hover:underline">
+              Se connecter
+            </Link>
+          </p>
         </div>
-      </div>
+      </OnboardingBackground>
     );
   }
 
@@ -136,13 +214,14 @@ export default function OnboardingPage() {
   // -------------------------------------------------------------
   if (role === "ORGANIZER") {
     return (
-      <div className="min-h-screen bg-sand flex flex-col py-12 sm:px-6 lg:px-8 font-sans">
+      <OnboardingBackground>
+      <div className="flex flex-col py-4 px-4 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <button onClick={handleBack} className="flex items-center text-ink/60 hover:text-ink text-sm font-medium mb-8 transition-colors">
             <ArrowLeft size={16} className="mr-1" /> Retour
           </button>
-          
-          <div className="bg-white py-10 px-6 shadow-xl shadow-ink/5 sm:rounded-2xl sm:px-10 border border-ink/5 text-center">
+
+          <div className="bg-white py-10 px-6 shadow-xl shadow-black/5 sm:rounded-3xl sm:px-10 border border-white text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-6">
               <CheckCircle className="h-8 w-8 text-primary" />
             </div>
@@ -162,6 +241,7 @@ export default function OnboardingPage() {
           </div>
         </div>
       </div>
+      </OnboardingBackground>
     );
   }
 
@@ -169,9 +249,10 @@ export default function OnboardingPage() {
   // PROVIDER FLOW
   // -------------------------------------------------------------
   const totalSteps = 6;
-  
+
   return (
-    <div className="min-h-screen bg-sand flex flex-col py-12 sm:px-6 lg:px-8 font-sans">
+    <OnboardingBackground>
+    <div className="flex flex-col py-4 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
         <button onClick={handleBack} className="flex items-center text-ink/60 hover:text-ink text-sm font-medium mb-6 transition-colors">
           <ArrowLeft size={16} className="mr-1" /> Retour
@@ -183,16 +264,16 @@ export default function OnboardingPage() {
             <span>Étape {step - 1} sur {totalSteps - 1}</span>
             <span>{Math.round(((step - 1) / (totalSteps - 1)) * 100)}%</span>
           </div>
-          <div className="w-full bg-ink/10 rounded-full h-2">
-            <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300 ease-in-out" 
+          <div className="w-full bg-white/60 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-300 ease-in-out"
               style={{ width: `${((step - 1) / (totalSteps - 1)) * 100}%` }}
             />
           </div>
         </div>
 
-        <div className="bg-white py-8 px-4 shadow-xl shadow-ink/5 sm:rounded-2xl sm:px-10 border border-ink/5">
-          
+        <div className="bg-white py-8 px-4 shadow-xl shadow-black/5 sm:rounded-3xl sm:px-10 border border-white">
+
           {/* STEP 2: IDENTITÉ */}
           {step === 2 && (
             <div className="space-y-6">
@@ -503,5 +584,6 @@ export default function OnboardingPage() {
         </div>
       </div>
     </div>
+    </OnboardingBackground>
   );
 }
