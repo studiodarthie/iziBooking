@@ -158,7 +158,7 @@ export function Navbar({ user, onMenuClick }: NavbarProps) {
                 <div className="pt-1 border-t border-ink/10">
                   <button
                     type="button"
-                    onClick={() => signOut()}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                     className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
                   >
                     <LogOut size={16} />

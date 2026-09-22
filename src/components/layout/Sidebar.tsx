@@ -167,7 +167,7 @@ export function Sidebar({
         {/* Bottom action */}
         <div className="shrink-0 p-4 border-t border-white/10 mt-auto">
           <button 
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/" })}
             className="group flex w-full items-center gap-x-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 transition-all hover:bg-white/10 hover:text-red-300"
           >
             <LogOut className="h-5 w-5 shrink-0 text-white/50 group-hover:text-red-300" />
