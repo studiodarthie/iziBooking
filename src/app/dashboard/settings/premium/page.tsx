@@ -13,6 +13,7 @@ const PREMIUM_BENEFITS = [
   "Mise en avant dans les résultats de recherche",
   "Badge Premium visible sur votre profil",
   "Statistiques de profil (vues, demandes reçues)",
+  "Coach IA illimité (tarifs, réponses, devis)",
   "File de vérification admin prioritaire",
 ];
 

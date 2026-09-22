@@ -15,6 +15,7 @@ import {
   Tag,
   Crown,
   Mail,
+  Sparkles,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -39,6 +40,7 @@ const PROVIDER_SECTIONS = [
       { name: "Services", href: "/dashboard/services", icon: List },
       { name: "Codes promo", href: "/dashboard/coupons", icon: Tag },
       { name: "Médiathèque", href: "/dashboard/media", icon: ImageIcon },
+      { name: "Coach IA", href: "/dashboard/coach", icon: Sparkles, badge: "Nouveau" },
     ]
   },
   {
@@ -104,6 +106,11 @@ export function Sidebar({ role = "PROVIDER", unreadMessages = 0 }: { role?: stri
                           {item.href === "/dashboard/messages" && unreadMessages > 0 && (
                             <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[11px] font-bold text-white">
                               {unreadMessages}
+                            </span>
+                          )}
+                          {"badge" in item && item.badge && (
+                            <span className="text-[10px] font-bold bg-accent-2-500 text-ink px-2 py-0.5 rounded-full">
+                              {item.badge}
                             </span>
                           )}
                         </Link>

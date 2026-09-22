@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { OCCASIONS } from "@/lib/filters";
+import { generateBioDraft, checkAiQuota, isAiConfigured } from "@/lib/ai";
+import { isPremium } from "@/lib/plan";
 
 export async function updateProviderSettings(formData: FormData) {
   const session = await getServerSession(authOptions);
@@ -86,5 +88,61 @@ export async function updateOrganizerName(name: string) {
   } catch (error) {
     console.error(error);
     return { success: false, error: "Erreur lors de la mise à jour." };
+  }
+}
+
+export async function generateBioAction(input: {
+  name: string;
+  category: string;
+  specialty?: string;
+  location: string;
+  basePrice?: number | null;
+  currency: string;
+  bio?: string;
+}): Promise<{ success: true; bio: string } | { success: false; error: string }> {
+  if (!isAiConfigured()) {
+    return { success: false, error: "Le Coach IA n'est pas encore configuré." };
+  }
+
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) return { success: false, error: "Non autorisé." };
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: { providerProfile: true },
+  });
+  if (!user || user.role !== "PROVIDER" || !user.providerProfile) {
+    return { success: false, error: "Profil prestataire requis." };
+  }
+
+  const premium = isPremium(user.providerProfile);
+  const allowed = await checkAiQuota(user.id, premium);
+  if (!allowed) {
+    return {
+      success: false,
+      error: premium
+        ? "Quota mensuel atteint. Réessayez le mois prochain."
+        : "Vous avez utilisé vos 3 générations gratuites ce mois-ci. Passez en Premium pour un accès illimité.",
+    };
+  }
+
+  if (!input.name.trim() || !input.category.trim() || !input.location.trim()) {
+    return { success: false, error: "Renseignez au moins le nom, la catégorie et la localisation avant de générer une bio." };
+  }
+
+  try {
+    const bio = await generateBioDraft({
+      name: input.name,
+      category: input.category,
+      specialty: input.specialty,
+      location: input.location,
+      basePrice: input.basePrice,
+      currency: input.currency,
+      bio: input.bio,
+    });
+    return { success: true, bio };
+  } catch (error) {
+    console.error("Erreur génération bio IA:", error);
+    return { success: false, error: "Le Coach IA est momentanément indisponible. Réessayez dans un instant." };
   }
 }

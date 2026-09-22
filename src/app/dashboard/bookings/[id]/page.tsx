@@ -32,7 +32,7 @@ export default async function BookingDetailsPage(props: { params: Promise<{ id: 
     where: { id },
     include: {
       organizer: { select: { id: true, name: true, image: true } },
-      providerProfile: { select: { id: true, name: true, userId: true, currency: true } },
+      providerProfile: { select: { id: true, name: true, userId: true, currency: true, category: true, specialty: true, location: true, basePrice: true } },
       messages: { orderBy: { createdAt: "asc" } },
       review: true,
       coupon: { select: { code: true } },

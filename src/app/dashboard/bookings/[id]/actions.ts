@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 import { BookingStatus, PaymentMethod, Prisma } from "@prisma/client";
 import { notifyNewMessage } from "@/lib/email";
 import { initiateTranzakPayment, isTranzakConfigured } from "@/lib/tranzak";
+import { generateQuoteDraft, checkAiQuota, isAiConfigured } from "@/lib/ai";
+import { isPremium } from "@/lib/plan";
 
 export async function sendMessage(bookingId: string, content: string) {
   const session = await getServerSession(authOptions);
@@ -277,5 +279,59 @@ export async function openDispute(bookingId: string, reason: string) {
     }
     console.error("Erreur ouverture litige:", error);
     return { error: "Erreur lors du signalement." };
+  }
+}
+
+export async function generateQuoteAction(
+  bookingId: string
+): Promise<{ success: true; quote: string } | { success: false; error: string }> {
+  if (!isAiConfigured()) {
+    return { success: false, error: "Le Coach IA n'est pas encore configuré." };
+  }
+
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: { providerProfile: true },
+  });
+  if (!user || !user.providerProfile) return { success: false, error: "Profil prestataire requis" };
+
+  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  if (!booking) return { success: false, error: "Réservation introuvable" };
+  if (booking.providerProfileId !== user.providerProfile.id) return { success: false, error: "Non autorisé" };
+
+  const premium = isPremium(user.providerProfile);
+  const allowed = await checkAiQuota(user.id, premium);
+  if (!allowed) {
+    return {
+      success: false,
+      error: premium
+        ? "Quota mensuel atteint. Réessayez le mois prochain."
+        : "Vous avez utilisé vos 3 générations gratuites ce mois-ci. Passez en Premium pour un accès illimité.",
+    };
+  }
+
+  try {
+    const quote = await generateQuoteDraft({
+      provider: {
+        name: user.providerProfile.name,
+        category: user.providerProfile.category,
+        specialty: user.providerProfile.specialty,
+        location: user.providerProfile.location,
+        basePrice: user.providerProfile.basePrice,
+        currency: user.providerProfile.currency,
+        bio: user.providerProfile.bio,
+      },
+      eventType: booking.eventType,
+      eventDate: booking.eventDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+      eventLocation: booking.eventLocation,
+      notes: booking.details,
+    });
+    return { success: true, quote };
+  } catch (error) {
+    console.error("Erreur génération devis IA:", error);
+    return { success: false, error: "Le Coach IA est momentanément indisponible. Réessayez dans un instant." };
   }
 }

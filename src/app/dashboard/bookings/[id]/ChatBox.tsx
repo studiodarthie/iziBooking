@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { sendMessage, updateBookingStatus } from "./actions";
-import { Send, CheckCircle2, XCircle, FileText } from "lucide-react";
+import { sendMessage, updateBookingStatus, generateQuoteAction } from "./actions";
+import { Send, CheckCircle2, XCircle, FileText, Sparkles, Loader2 } from "lucide-react";
 import type { BookingStatus } from "@prisma/client";
 
 type Message = {
@@ -32,6 +32,8 @@ export function ChatBox({
   const [statusLoading, setStatusLoading] = useState(false);
   const [proposedPrice, setProposedPrice] = useState<string>(totalAmount?.toString() || "");
   const [showPriceInput, setShowPriceInput] = useState(false);
+  const [generatingQuote, setGeneratingQuote] = useState(false);
+  const [quoteError, setQuoteError] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -40,17 +42,21 @@ export function ChatBox({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitMessage = async () => {
     if (!content.trim()) return;
-    
+
     setLoading(true);
     const text = content;
     setContent(""); // optimistically clear
 
     await sendMessage(bookingId, text);
-    
+
     setLoading(false);
+  };
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitMessage();
   };
 
   const handleStatusChange = async (newStatus: BookingStatus, price?: number) => {
@@ -58,6 +64,18 @@ export function ChatBox({
     await updateBookingStatus(bookingId, newStatus, price);
     setStatusLoading(false);
     setShowPriceInput(false);
+  };
+
+  const handleGenerateQuote = async () => {
+    setGeneratingQuote(true);
+    setQuoteError(null);
+    const res = await generateQuoteAction(bookingId);
+    setGeneratingQuote(false);
+    if (res.success) {
+      setContent(res.quote);
+    } else {
+      setQuoteError(res.error);
+    }
   };
 
   return (
@@ -84,12 +102,20 @@ export function ChatBox({
                 >
                   <CheckCircle2 size={16} /> Accepter
                 </button>
-                <button 
+                <button
                   onClick={() => setShowPriceInput(true)}
                   disabled={statusLoading}
                   className="px-3 py-1.5 bg-white border border-ink/20 text-ink text-sm font-semibold rounded-lg hover:bg-sand transition-colors flex items-center gap-1.5"
                 >
                   <FileText size={16} /> Proposer un prix
+                </button>
+                <button
+                  onClick={handleGenerateQuote}
+                  disabled={generatingQuote}
+                  className="px-3 py-1.5 bg-accent-2/10 text-accent-2-700 text-sm font-semibold rounded-lg hover:bg-accent-2/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  {generatingQuote ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                  {generatingQuote ? "Génération…" : "Devis IA"}
                 </button>
                 <button 
                   onClick={() => handleStatusChange("CANCELLED")}
@@ -172,13 +198,22 @@ export function ChatBox({
       </div>
 
       {/* Chat Input */}
-      <form onSubmit={handleSend} className="p-3 bg-white border-t border-ink/10 flex items-center gap-2">
-        <input
-          type="text"
+      {quoteError && (
+        <div className="mx-3 mb-2 text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2">{quoteError}</div>
+      )}
+      <form onSubmit={handleSend} className="p-3 bg-white border-t border-ink/10 flex items-end gap-2">
+        <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Écrivez un message..."
-          className="flex-1 px-4 py-2.5 bg-sand/30 border border-ink/10 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-ink"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              submitMessage();
+            }
+          }}
+          placeholder="Écrivez un message... (Entrée pour envoyer, Maj+Entrée pour une nouvelle ligne)"
+          rows={content.includes("\n") || content.length > 60 ? 4 : 1}
+          className="flex-1 px-4 py-2.5 bg-sand/30 border border-ink/10 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-ink resize-none"
         />
         <button
           type="submit"

@@ -1,14 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { updateProviderSettings } from "@/app/dashboard/settings/actions";
-import { Loader2 } from "lucide-react";
+import { updateProviderSettings, generateBioAction } from "@/app/dashboard/settings/actions";
+import { Loader2, Sparkles } from "lucide-react";
 import type { ProviderProfile } from "@prisma/client";
 import { OCCASIONS } from "@/lib/filters";
 
 export default function ProfileSettingsForm({ initialData }: { initialData: ProviderProfile }) {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error", text: string } | null>(null);
+  const [bio, setBio] = useState(initialData?.bio || "");
+  const [generatingBio, setGeneratingBio] = useState(false);
+  const [bioError, setBioError] = useState<string | null>(null);
+
+  async function handleGenerateBio() {
+    const form = document.getElementById("provider-settings-form") as HTMLFormElement | null;
+    if (!form) return;
+    const fd = new FormData(form);
+    setGeneratingBio(true);
+    setBioError(null);
+    const res = await generateBioAction({
+      name: (fd.get("name") as string) || "",
+      category: (fd.get("category") as string) || "",
+      specialty: (fd.get("specialty") as string) || "",
+      location: (fd.get("location") as string) || "",
+      basePrice: initialData?.basePrice ?? undefined,
+      currency: initialData?.currency || "XAF",
+      bio,
+    });
+    setGeneratingBio(false);
+    if (res.success) {
+      setBio(res.bio);
+    } else {
+      setBioError(res.error);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -31,7 +57,7 @@ export default function ProfileSettingsForm({ initialData }: { initialData: Prov
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-8 bg-sand rounded-2xl p-6 md:p-8 border border-ink/10">
+    <form id="provider-settings-form" onSubmit={onSubmit} className="space-y-8 bg-sand rounded-2xl p-6 md:p-8 border border-ink/10">
       
       {message && (
         <div className={`p-4 rounded-xl text-sm font-medium ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
@@ -93,9 +119,21 @@ export default function ProfileSettingsForm({ initialData }: { initialData: Prov
         </fieldset>
 
         <div className="space-y-2 pt-2">
-          <label htmlFor="bio" className="block text-sm font-medium text-ink">Biographie / Présentation</label>
-          <textarea id="bio" name="bio" rows={4} defaultValue={initialData?.bio || ""} placeholder="Présentez-vous en quelques phrases..."
+          <div className="flex items-center justify-between gap-2">
+            <label htmlFor="bio" className="block text-sm font-medium text-ink">Biographie / Présentation</label>
+            <button
+              type="button"
+              onClick={handleGenerateBio}
+              disabled={generatingBio}
+              className="flex items-center gap-1.5 text-xs font-bold text-accent-2-700 hover:text-accent-2-600 disabled:opacity-50 transition-colors"
+            >
+              {generatingBio ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+              {generatingBio ? "Génération…" : "Générer avec l'IA"}
+            </button>
+          </div>
+          <textarea id="bio" name="bio" rows={4} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Présentez-vous en quelques phrases..."
             className="block w-full rounded-xl border-ink/20 bg-transparent px-4 py-3 text-ink focus:border-primary focus:ring-primary sm:text-sm transition-colors resize-none" />
+          {bioError && <p className="text-xs text-red-600">{bioError}</p>}
         </div>
       </section>
 
