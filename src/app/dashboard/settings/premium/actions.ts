@@ -4,13 +4,16 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { initiateTranzakPayment, isTranzakConfigured } from "@/lib/tranzak";
+import { getPremiumTier } from "@/lib/plan";
 
-const PREMIUM_PRICE_XAF = 15000;
-const PREMIUM_PERIOD_DAYS = 30;
-
-export async function startPremiumCheckout() {
+export async function startPremiumCheckout(tierId: string) {
   if (!isTranzakConfigured()) {
     return { success: false, error: "Le paiement en ligne n'est pas encore disponible." };
+  }
+
+  const tier = getPremiumTier(tierId);
+  if (!tier) {
+    return { success: false, error: "Formule invalide." };
   }
 
   const session = await getServerSession(authOptions);
@@ -29,12 +32,12 @@ export async function startPremiumCheckout() {
 
   const periodStart = new Date();
   const periodEnd = new Date(periodStart);
-  periodEnd.setDate(periodEnd.getDate() + PREMIUM_PERIOD_DAYS);
+  periodEnd.setDate(periodEnd.getDate() + tier.days);
 
   const subscriptionPayment = await prisma.subscriptionPayment.create({
     data: {
       providerProfileId: user.providerProfile.id,
-      amount: PREMIUM_PRICE_XAF,
+      amount: tier.price,
       periodStart,
       periodEnd,
     }
@@ -43,9 +46,9 @@ export async function startPremiumCheckout() {
   try {
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const result = await initiateTranzakPayment({
-      amount: PREMIUM_PRICE_XAF,
+      amount: tier.price,
       currencyCode: "XAF",
-      description: "Abonnement Premium iziBooking (30 jours)",
+      description: `Abonnement Premium iziBooking — ${tier.label}`,
       mchTransactionRef: subscriptionPayment.id,
       returnUrl: `${baseUrl}/dashboard/settings/premium`,
     });

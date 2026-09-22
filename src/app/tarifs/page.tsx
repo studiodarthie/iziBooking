@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, Crown, ArrowRight, Users, Calculator } from "lucide-react";
+import { Check, Crown, ArrowRight, Users, Calculator, Gift } from "lucide-react";
 import { PageHero } from "@/components/public/PageHero";
 import { HomeFooter } from "@/components/public/HomeFooter";
-import { FREE_PHOTO_LIMIT, FREE_SERVICE_LIMIT } from "@/lib/plan";
+import { FREE_PHOTO_LIMIT, FREE_SERVICE_LIMIT, PREMIUM_TIERS, TRIAL_DAYS } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Tarifs - iziBooking",
@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     "Gratuit pour les organisateurs, plan Free ou Premium pour les prestataires. Des tarifs simples, en FCFA, sans engagement.",
 };
 
-const PREMIUM_PRICE = 15000;
 const FEE_ORGANIZER = 0.03;
 const COMMISSION_FREE = 0.12;
 const COMMISSION_PREMIUM = 0.06;
+const monthlyTier = PREMIUM_TIERS[0];
 
 const fmt = (n: number) => n.toLocaleString("fr-FR");
 
@@ -29,9 +29,11 @@ const freeFeatures = [
 
 const premiumFeatures = [
   "Tout le plan Free",
-  "Photos et services en illimité",
   `Commission réduite à ${COMMISSION_PREMIUM * 100} %`,
+  "Photos et services en illimité",
   "Mise en avant dans les résultats de recherche",
+  "Badge Premium visible sur votre profil",
+  "Statistiques de profil (vues, demandes reçues)",
   "Vérification de votre profil en priorité",
 ];
 
@@ -40,7 +42,7 @@ const EXAMPLE = 200000;
 const exampleFee = EXAMPLE * FEE_ORGANIZER;
 const exampleFree = EXAMPLE * (1 - COMMISSION_FREE);
 const examplePremium = EXAMPLE * (1 - COMMISSION_PREMIUM);
-const breakEven = PREMIUM_PRICE / (COMMISSION_FREE - COMMISSION_PREMIUM);
+const breakEven = Math.round(monthlyTier.price / (COMMISSION_FREE - COMMISSION_PREMIUM));
 
 const faqs = [
   {
@@ -48,8 +50,12 @@ const faqs = [
     a: "Oui. Créer un compte, un profil ou faire une demande de réservation est gratuit. Vous ne payez que lorsqu'une réservation est réglée.",
   },
   {
+    q: `Qu'est-ce que l'essai gratuit de ${TRIAL_DAYS} jours ?`,
+    a: `À la création de votre profil prestataire, le Premium est activé automatiquement pendant ${TRIAL_DAYS} jours, sans paiement. Si vous ne souscrivez pas avant la fin de l'essai, vous repassez simplement au plan Free.`,
+  },
+  {
     q: "Le Premium engage-t-il sur la durée ?",
-    a: "Non. C'est un abonnement mensuel sans engagement : à l'expiration, il n'est simplement plus renouvelé et vous repassez au plan Free.",
+    a: "Non. C'est un abonnement sans reconduction automatique : à l'expiration, il n'est simplement plus renouvelé et vous repassez au plan Free.",
   },
   {
     q: "Comment est calculée la commission ?",
@@ -78,6 +84,12 @@ export default function TarifsPage() {
       {/* Plans prestataires */}
       <div className="bg-[#FCEFDD]">
       <section className="relative z-20 -mt-16 md:-mt-20 px-4 md:px-8 pb-16 md:pb-24 max-w-5xl mx-auto w-full">
+        <div className="flex justify-center mb-6">
+          <span className="inline-flex items-center gap-2 bg-accent-2-100 text-accent-2-700 text-sm font-bold px-4 py-2 rounded-full">
+            <Gift size={16} /> {TRIAL_DAYS} jours de Premium offerts à l&apos;inscription, sans paiement
+          </span>
+        </div>
+
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
           <div className="bg-white rounded-3xl border border-neutral-300 p-8 shadow-xl shadow-black/5 flex flex-col">
             <span className="text-primary text-xs font-bold tracking-[0.08em] uppercase">Prestataires</span>
@@ -105,9 +117,28 @@ export default function TarifsPage() {
             <span className="text-accent-2-300 text-xs font-bold tracking-[0.08em] uppercase">Prestataires</span>
             <h2 className="font-heading font-bold text-3xl mt-2">Premium</h2>
             <p className="mt-3 flex items-end gap-2">
-              <span className="font-heading font-extrabold text-5xl">{fmt(PREMIUM_PRICE)}</span>
-              <span className="text-white/80 pb-1.5">FCFA / mois</span>
+              <span className="font-heading font-extrabold text-5xl">{fmt(PREMIUM_TIERS[PREMIUM_TIERS.length - 1].perMonth)}</span>
+              <span className="text-white/80 pb-1.5">FCFA / mois, à partir de</span>
             </p>
+
+            <div className="mt-5 grid grid-cols-3 gap-2">
+              {PREMIUM_TIERS.map((tier) => (
+                <div
+                  key={tier.id}
+                  className={`relative rounded-xl p-3 text-center ${tier.popular ? "bg-white text-trust" : "bg-white/10"}`}
+                >
+                  {tier.popular && (
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-accent-2-500 text-ink text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+                      Populaire
+                    </span>
+                  )}
+                  <p className={`text-xs font-semibold ${tier.popular ? "text-trust/70" : "text-white/70"}`}>{tier.label}</p>
+                  <p className="font-heading font-bold text-lg mt-0.5">{fmt(tier.price)}</p>
+                  <p className={`text-[11px] ${tier.popular ? "text-trust/60" : "text-white/60"}`}>FCFA au total</p>
+                </div>
+              ))}
+            </div>
+
             <ul className="mt-6 space-y-3 flex-1">
               {premiumFeatures.map((f) => (
                 <li key={f} className="flex gap-3 text-white/90 text-[15px]">

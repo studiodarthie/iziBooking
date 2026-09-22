@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Star, Calendar, Camera, Music, Utensils, Briefcase } from "lucide-react";
+import { MapPin, Star, Calendar, Camera, Music, Utensils, Briefcase, Crown } from "lucide-react";
 
 type ProviderCardProps = {
   id: string;
@@ -15,11 +15,12 @@ type ProviderCardProps = {
   availableDate?: string;
   bio?: string | null;
   pole?: string;
+  isPremium?: boolean;
 };
 
 export function ProviderCard({
   id, name, category, location, basePrice, currency, image,
-  rating, reviewCount = 0, availableDate, bio, pole
+  rating, reviewCount = 0, availableDate, bio, pole, isPremium
 }: ProviderCardProps) {
   
   // Icon based on Pole
@@ -57,6 +58,11 @@ export function ProviderCard({
 
           {/* Pastilles en bas de l'image, sur un dégradé : le visage reste dégagé */}
           <div className="absolute inset-x-0 bottom-0 z-10 flex flex-wrap gap-2 px-4 pb-4 pt-20 bg-gradient-to-t from-black/70 via-black/25 to-transparent">
+            {isPremium && (
+              <div className="bg-accent-2-500 px-3 py-1.5 rounded-full text-xs font-bold text-ink shadow-sm flex items-center gap-1.5 w-fit">
+                <Crown size={14} /> Premium
+              </div>
+            )}
             {pole && (
               <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold text-ink shadow-sm flex items-center gap-1.5 w-fit">
                 {getPoleIcon()}

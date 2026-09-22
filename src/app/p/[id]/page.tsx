@@ -7,9 +7,12 @@ import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { ProviderCard } from "@/components/public/ProviderCard";
 import Image from "next/image";
-import { MapPin, Star, ShieldCheck, User, MessageCircle } from "lucide-react";
+import { MapPin, Star, ShieldCheck, User, MessageCircle, Crown } from "lucide-react";
 import { getRatingSummary } from "@/lib/ratings";
+import { isPremium } from "@/lib/plan";
 import { ContactProviderModal } from "@/components/public/ContactProviderModal";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -45,6 +48,15 @@ export default async function PublicProviderPage(props: Props) {
 
   if (!profile || profile.user.isBanned) {
     notFound();
+  }
+
+  // Compte une vue, sauf quand le prestataire consulte sa propre fiche.
+  const session = await getServerSession(authOptions);
+  if (session?.user?.email !== profile.user.email) {
+    prisma.providerProfile.update({
+      where: { id: profile.id },
+      data: { viewCount: { increment: 1 } }
+    }).catch(() => {}); // best-effort, ne doit jamais bloquer l'affichage de la fiche
   }
 
   const ratingSummary = getRatingSummary(profile.reviews);
@@ -120,6 +132,11 @@ export default async function PublicProviderPage(props: Props) {
               {profile.isVerified && (
                 <span className="flex items-center gap-1 text-[11px] font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">
                   <ShieldCheck size={14} /> Vérifié
+                </span>
+              )}
+              {isPremium(profile) && (
+                <span className="flex items-center gap-1 text-[11px] font-bold text-ink bg-accent-2-500 px-3 py-1 rounded-full">
+                  <Crown size={14} /> Premium
                 </span>
               )}
             </div>

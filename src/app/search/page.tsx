@@ -12,6 +12,7 @@ import { PageHero } from "@/components/public/PageHero";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { SearchSortSelect } from "@/components/public/SearchSortSelect";
 import { getRatingSummary } from "@/lib/ratings";
+import { isPremium } from "@/lib/plan";
 import { startOfDay, endOfDay, parseISO, format } from "date-fns";
 
 type SearchParams = { q?: string; loc?: string; pole?: string; minPrice?: string; maxPrice?: string; date?: string; sort?: string; occasion?: string; genre?: string; budget?: string };
@@ -384,6 +385,7 @@ async function SearchResults({ searchParams }: { searchParams: SearchParams }) {
                 rating={summary.average}
                 reviewCount={summary.count}
                 availableDate={dateStr && !isNaN(parseISO(dateStr).getTime()) ? format(parseISO(dateStr), "dd/MM/yyyy") : undefined}
+                isPremium={isPremium(provider)}
               />
             );
           })}

@@ -112,6 +112,9 @@ model ProviderProfile {
   // Phase 2 : Onboarding
   onboardingCompleted Boolean @default(false)
 
+  // Nombre de vues de la fiche publique (avantage Premium : statistiques de profil)
+  viewCount Int @default(0)
+
   // Abonnement
   plan          ProviderPlan @default(FREE)
   planExpiresAt DateTime?

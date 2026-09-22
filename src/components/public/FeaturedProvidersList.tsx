@@ -1,9 +1,10 @@
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, MapPin } from "lucide-react";
+import { Star, MapPin, Crown } from "lucide-react";
 import { getRatingSummary } from "@/lib/ratings";
 import { safeDb } from "@/lib/safe-db";
+import { isPremium } from "@/lib/plan";
 
 export async function FeaturedProvidersList() {
   // Simulate delay for skeleton demonstration (remove in production if desired)
@@ -78,6 +79,11 @@ export async function FeaturedProvidersList() {
             )}
 
             <div className="absolute bottom-0 inset-x-0 z-10 p-3 pointer-events-none">
+              {isPremium(provider) && (
+                <span className="inline-flex items-center gap-1 mb-1.5 mr-1.5 bg-accent-2-500 text-ink text-[10px] font-bold px-2 py-0.5 rounded">
+                  <Crown size={10} /> Premium
+                </span>
+              )}
               <span className="inline-block mb-1.5 bg-white/90 text-ink text-[10px] font-semibold px-2 py-0.5 rounded">
                 {provider.pole === "DIVERTISSEMENT" ? "Divertissement" :
                  provider.pole === "RECEPTION" ? "Réception" :

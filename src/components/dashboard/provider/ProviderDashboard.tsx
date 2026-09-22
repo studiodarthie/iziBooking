@@ -102,7 +102,7 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
         <div className="lg:col-span-8 space-y-8">
           
           {/* KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {/* KPI 1 */}
             <motion.div whileHover={{ y: -5 }} className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-ink/5 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
@@ -136,6 +136,23 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
               </div>
               <div className="mt-4 flex items-center text-sm font-medium text-ink/40">
                 Généré à partir de vraies données
+              </div>
+            </motion.div>
+
+            {/* KPI 3 */}
+            <motion.div whileHover={{ y: -5 }} className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-ink/5 shadow-sm hover:shadow-xl hover:shadow-trust/10 transition-all relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-trust/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-medium text-ink/60">Vues du profil</p>
+                  <p className="text-3xl font-black text-ink mt-1">{profile?.viewCount ?? 0}</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-trust/10 flex items-center justify-center text-trust shrink-0">
+                  <Eye className="w-6 h-6" />
+                </div>
+              </div>
+              <div className="mt-4 flex items-center text-sm font-medium text-ink/40">
+                Depuis la création du profil
               </div>
             </motion.div>
           </div>

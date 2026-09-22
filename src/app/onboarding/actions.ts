@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { ProviderPole } from "@prisma/client";
+import { TRIAL_DAYS } from "@/lib/plan";
 
 export async function submitProviderProfile(formData: FormData) {
   const session = await getServerSession(authOptions);
@@ -61,6 +62,10 @@ export async function submitProviderProfile(formData: FormData) {
       location,
       basePrice: price ? parseFloat(price) : null,
       onboardingCompleted: true,
+      // Essai Premium gratuit offert à l'inscription, sans paiement — retombe en Free
+      // automatiquement à l'expiration si le prestataire ne souscrit pas.
+      plan: "PREMIUM",
+      planExpiresAt: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000),
     }
   });
 
