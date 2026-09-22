@@ -16,7 +16,13 @@ function getTransport() {
 
 const BASE_URL = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
-async function sendEmail(params: { to: string; subject: string; html: string }) {
+/** Adresse d'expédition avec un nom affiché — un "from" nu nuit à la délivrabilité. */
+function fromAddress(): string {
+  const raw = process.env.EMAIL_FROM || "no-reply@izibooking.app";
+  return raw.includes("<") ? raw : `iziBooking <${raw}>`;
+}
+
+async function sendEmail(params: { to: string; subject: string; html: string; text?: string }) {
   if (!process.env.EMAIL_SERVER_HOST) {
     console.warn(`SMTP non configuré — email "${params.subject}" non envoyé à ${params.to}`);
     return;
@@ -24,16 +30,26 @@ async function sendEmail(params: { to: string; subject: string; html: string }) 
 
   try {
     await getTransport().sendMail({
-      from: process.env.EMAIL_FROM,
+      from: fromAddress(),
       to: params.to,
       subject: params.subject,
       html: params.html,
+      text: params.text,
     });
   } catch (error) {
     // Un email qui ne part pas ne doit jamais faire échouer l'action métier (réservation, message).
     console.error(`Erreur d'envoi email ("${params.subject}" à ${params.to}):`, error);
   }
 }
+
+// Pied de page présent sur chaque email : identifie clairement l'expéditeur (bonne pratique
+// anti-spam/RGPD) et évite le rendu "template vide" qui déclenche certains filtres de contenu.
+const EMAIL_FOOTER = `
+  <p style="margin: 32px 0 0; padding-top: 16px; border-top: 1px solid #eee; font-size: 11px; line-height: 1.6; color: #999;">
+    iziBooking.app — Ets Darthie, Douala, Cameroun<br/>
+    Vous recevez cet email suite à une action effectuée sur iziBooking.app. Une question ? Écrivez-nous à hello@izibooking.app.
+  </p>
+`;
 
 function emailShell(title: string, bodyHtml: string, ctaHref: string, ctaLabel: string): string {
   return `
@@ -42,8 +58,37 @@ function emailShell(title: string, bodyHtml: string, ctaHref: string, ctaLabel: 
       <h1 style="font-size: 20px; margin: 0 0 16px;">${title}</h1>
       <div style="font-size: 14px; line-height: 1.6; color: #444;">${bodyHtml}</div>
       <a href="${ctaHref}" style="display: inline-block; margin-top: 24px; padding: 12px 24px; background: #B5451B; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px;">${ctaLabel}</a>
+      ${EMAIL_FOOTER}
     </div>
   `;
+}
+
+/**
+ * Email de connexion (lien magique NextAuth). Doit lever une exception en cas d'échec
+ * d'envoi réel (NextAuth l'attend pour rediriger vers la page d'erreur), contrairement aux
+ * autres emails de notification ci-dessus qui avalent l'erreur.
+ */
+export async function sendSignInEmail(params: { to: string; url: string }) {
+  const transport = getTransport();
+  const result = await transport.sendMail({
+    from: fromAddress(),
+    to: params.to,
+    subject: "Votre lien de connexion iziBooking",
+    text: `Connectez-vous à iziBooking en ouvrant ce lien (valable 24h, usage unique) :\n${params.url}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet email sans risque.\n\niziBooking.app — Ets Darthie, Douala, Cameroun`,
+    html: emailShell(
+      "Votre lien de connexion",
+      `<p>Bonjour,</p>
+       <p>Voici votre lien pour vous connecter à votre compte iziBooking. Il est valable 24 heures et ne peut être utilisé qu'une seule fois.</p>
+       <p style="color:#888; font-size:12px;">Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email sans risque.</p>`,
+      params.url,
+      "Se connecter"
+    ),
+  });
+
+  const failed = result.rejected.concat(result.pending).filter(Boolean);
+  if (failed.length) {
+    throw new Error(`Email (${failed.join(", ")}) could not be sent`);
+  }
 }
 
 export async function notifyNewBooking(params: {
@@ -125,7 +170,7 @@ export async function sendContactRequest(params: {
 
   try {
     await getTransport().sendMail({
-      from: process.env.EMAIL_FROM,
+      from: fromAddress(),
       to,
       replyTo: `${params.name.replace(/[<>"\r\n]/g, "")} <${params.email}>`,
       subject: `[Contact] ${params.subject.replace(/[\r\n]/g, " ")}`,

@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import prisma from "@/lib/prisma";
+import { sendSignInEmail } from "@/lib/email";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -27,7 +28,12 @@ export const authOptions: NextAuthOptions = {
           pass: process.env.EMAIL_SERVER_PASSWORD
         }
       },
-      from: process.env.EMAIL_FROM
+      from: process.env.EMAIL_FROM,
+      // Template par défaut de NextAuth trop générique (bouton nu, aucune marque) : certains
+      // serveurs mail le bloquent comme contenu suspect. On envoie notre propre email de marque.
+      sendVerificationRequest: async ({ identifier, url }) => {
+        await sendSignInEmail({ to: identifier, url });
+      },
     }),
   ],
   callbacks: {
