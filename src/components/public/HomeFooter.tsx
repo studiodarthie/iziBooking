@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, ShieldCheck } from "lucide-react";
+import { Heart } from "lucide-react";
 import { CEMAC_COUNTRIES } from "@/lib/countries";
 
 const FLAGS: Record<string, string> = {
@@ -81,13 +81,6 @@ export function HomeFooter() {
                 </li>
               ))}
             </ul>
-            <div className="mt-6 inline-flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3">
-              <ShieldCheck size={22} className="text-accent shrink-0" />
-              <div className="leading-tight">
-                <div className="text-white font-bold text-sm">RGPD</div>
-                <div className="text-xs text-neutral-300">100 % conforme</div>
-              </div>
-            </div>
           </div>
         </div>
 
