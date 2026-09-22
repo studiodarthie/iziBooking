@@ -214,7 +214,7 @@ export default function OnboardingPage() {
                   >
                     <option value="DIVERTISSEMENT">Divertissement (Musique, Danse, Animation...)</option>
                     <option value="RECEPTION">Réception (Traiteur, Décoration, Salles...)</option>
-                    <option value="IMAGE_SOUVENIR">Image & Souvenir (Photo, Vidéo, Drone...)</option>
+                    <option value="IMAGE_SOUVENIR">Image & Souvenir (Photo, Vidéo, Drone, Maquillage...)</option>
                     <option value="SERVICES">Services (Sécurité, Transport, Wedding Planner...)</option>
                   </select>
                 </div>
@@ -244,7 +244,7 @@ export default function OnboardingPage() {
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="block w-full rounded-xl border-ink/20 py-3 pl-4 pr-4 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20"
-                    placeholder="Ex: DJ, Photographe, Traiteur..."
+                    placeholder="Ex: DJ, Photographe, Traiteur, Maquilleuse..."
                     required
                   />
                 </div>

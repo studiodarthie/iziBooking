@@ -85,7 +85,7 @@ export default function ProfileSettingsForm({ initialData }: { initialData: Prov
           <div className="space-y-2">
             <label htmlFor="category" className="block text-sm font-medium text-ink">Catégorie exacte</label>
             <input type="text" id="category" name="category" defaultValue={initialData?.category} required
-              placeholder="Ex: DJ, Photographe, Traiteur..."
+              placeholder="Ex: DJ, Photographe, Traiteur, Maquilleuse..."
               className="block w-full rounded-xl border-ink/20 bg-transparent px-4 py-3 text-ink focus:border-primary focus:ring-primary sm:text-sm transition-colors" />
           </div>
 
