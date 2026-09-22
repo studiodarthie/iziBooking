@@ -190,7 +190,7 @@ export async function sendContactRequest(params: {
   }
 }
 
-/** Notifie l'équipe iziBooking (hello@) qu'un nouveau prestataire vient de finaliser son profil. */
+/** Notifie l'équipe iziBooking qu'un nouveau prestataire vient de finaliser son profil. */
 export async function notifyNewProviderSignup(params: {
   providerId: string;
   providerName: string;
@@ -198,7 +198,7 @@ export async function notifyNewProviderSignup(params: {
   location: string;
 }) {
   await sendEmail({
-    to: "hello@izibooking.app",
+    to: "itsizibooking@gmail.com",
     subject: `Nouveau prestataire inscrit — ${params.providerName}`,
     html: emailShell(
       "Nouveau prestataire",
