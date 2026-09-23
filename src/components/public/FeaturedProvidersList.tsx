@@ -87,7 +87,8 @@ export async function FeaturedProvidersList() {
               <span className="inline-block mb-1.5 bg-white/90 text-ink text-[10px] font-semibold px-2 py-0.5 rounded">
                 {provider.pole === "DIVERTISSEMENT" ? "Divertissement" :
                  provider.pole === "RECEPTION" ? "Réception" :
-                 provider.pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" : "Services"}
+                 provider.pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" :
+                 provider.pole === "CULTURE_CINEMA" ? "Culture & Cinéma" : "Services"}
               </span>
               <h3 className="font-heading font-bold text-sm text-white truncate">{provider.name}</h3>
               <div className="flex items-center gap-1 text-[11px] text-white/70 mt-0.5 truncate">

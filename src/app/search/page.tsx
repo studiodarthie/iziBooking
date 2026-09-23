@@ -33,6 +33,7 @@ export default async function SearchPage(props: {
     { value: "RECEPTION", label: "Réception & Traiteur" },
     { value: "IMAGE_SOUVENIR", label: "Photo & Vidéo" },
     { value: "SERVICES", label: "Services" },
+    { value: "CULTURE_CINEMA", label: "Culture & Cinéma" },
   ];
 
   return (

@@ -18,11 +18,12 @@ import { safeDb } from "@/lib/safe-db";
 export const revalidate = 120;
 
 export default async function Home() {
-  const poleLabels: { pole: "DIVERTISSEMENT" | "RECEPTION" | "IMAGE_SOUVENIR" | "SERVICES"; name: string }[] = [
+  const poleLabels: { pole: "DIVERTISSEMENT" | "RECEPTION" | "IMAGE_SOUVENIR" | "SERVICES" | "CULTURE_CINEMA"; name: string }[] = [
     { pole: "DIVERTISSEMENT", name: "Divertissement" },
     { pole: "RECEPTION", name: "Réception & Traiteur" },
     { pole: "IMAGE_SOUVENIR", name: "Photo & vidéo" },
     { pole: "SERVICES", name: "Services" },
+    { pole: "CULTURE_CINEMA", name: "Culture & Cinéma" },
   ];
   const categoryCounts: CategoryCount[] = await Promise.all(
     poleLabels.map(async ({ pole, name }) => ({
@@ -97,7 +98,7 @@ export default async function Home() {
           <h5 className="text-ink font-heading font-bold tracking-[0.08em] mb-10 text-[13px] uppercase">
             NOS CATÉGORIES DE PRESTATAIRES
           </h5>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-12">
             <div>
               <h6 className="text-primary font-bold text-[11px] tracking-[0.06em] mb-4">DIVERTISSEMENT</h6>
               <div className="flex flex-col gap-2.5">
@@ -133,6 +134,15 @@ export default async function Home() {
                 <a href="/search?pole=SERVICES" className="text-neutral-700 hover:text-primary text-[13.5px] transition-colors">Transport / VIP</a>
                 <a href="/search?pole=SERVICES" className="text-neutral-700 hover:text-primary text-[13.5px] transition-colors">Hôtesses</a>
                 <a href="/search?pole=SERVICES" className="text-neutral-700 hover:text-primary text-[13.5px] transition-colors">Wedding planners</a>
+              </div>
+            </div>
+            <div>
+              <h6 className="text-primary font-bold text-[11px] tracking-[0.06em] mb-4">CULTURE & CINÉMA</h6>
+              <div className="flex flex-col gap-2.5">
+                <a href="/search?pole=CULTURE_CINEMA" className="text-neutral-700 hover:text-primary text-[13.5px] transition-colors">Réalisation & production</a>
+                <a href="/search?pole=CULTURE_CINEMA" className="text-neutral-700 hover:text-primary text-[13.5px] transition-colors">Médiation culturelle</a>
+                <a href="/search?pole=CULTURE_CINEMA" className="text-neutral-700 hover:text-primary text-[13.5px] transition-colors">Projections & ciné-clubs</a>
+                <a href="/search?pole=CULTURE_CINEMA" className="text-neutral-700 hover:text-primary text-[13.5px] transition-colors">Ateliers & animations</a>
               </div>
             </div>
           </div>

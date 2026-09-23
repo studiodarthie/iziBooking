@@ -80,6 +80,7 @@ enum ProviderPole {
   RECEPTION
   IMAGE_SOUVENIR
   SERVICES
+  CULTURE_CINEMA
 }
 
 // Profil du prestataire

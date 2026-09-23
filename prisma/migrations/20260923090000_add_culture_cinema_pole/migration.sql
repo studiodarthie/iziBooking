@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "ProviderPole" ADD VALUE 'CULTURE_CINEMA';

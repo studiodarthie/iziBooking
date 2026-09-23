@@ -5,6 +5,8 @@
   --foreground: #232323;
   --color-trust: #1B4332;
   --color-trust-tint: #E7EDE9;
+  --color-culture: #6D3B6E;
+  --color-culture-tint: #F1E6EF;
   --color-accent: #B5451B;
   --color-accent-100: #FBEAE0;
   --color-accent-200: #F3CBB3;
@@ -52,6 +54,8 @@
   
   --color-trust: var(--color-trust);
   --color-trust-tint: var(--color-trust-tint);
+  --color-culture: var(--color-culture);
+  --color-culture-tint: var(--color-culture-tint);
   --color-accent-100: var(--color-accent-100);
   --color-accent-200: var(--color-accent-200);
   --color-accent-300: var(--color-accent-300);

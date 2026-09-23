@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
-import { Utensils, Music, Camera, Users, ArrowUpRight } from "lucide-react";
+import { Utensils, Music, Camera, Users, ArrowUpRight, Clapperboard } from "lucide-react";
 import Link from "next/link";
 
 const CATEGORY_STYLES: Record<string, { icon: typeof Utensils; tint: string; text: string }> = {
@@ -9,6 +9,7 @@ const CATEGORY_STYLES: Record<string, { icon: typeof Utensils; tint: string; tex
   "Réception & Traiteur": { icon: Utensils, tint: "bg-accent-2-100 group-hover:bg-accent-2-500", text: "text-accent-2-600" },
   "Photo & vidéo": { icon: Camera, tint: "bg-trust-tint group-hover:bg-trust", text: "text-trust" },
   "Services": { icon: Users, tint: "bg-accent-200/60 group-hover:bg-accent-400", text: "text-accent-700" },
+  "Culture & Cinéma": { icon: Clapperboard, tint: "bg-culture-tint group-hover:bg-culture", text: "text-culture" },
 };
 
 /** count = null quand la base est indisponible : on n'affiche alors aucun compteur. */
@@ -32,7 +33,7 @@ export function HomeCategories({ categories }: { categories: CategoryCount[] }) 
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-50px" }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6"
       >
         {categories.map((cat) => {
           const style = CATEGORY_STYLES[cat.name] || CATEGORY_STYLES["Services"];

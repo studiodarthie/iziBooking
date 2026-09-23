@@ -83,6 +83,7 @@ export default async function PublicProviderPage(props: Props) {
     RECEPTION: "Réception & Traiteur",
     IMAGE_SOUVENIR: "Image & Souvenir",
     SERVICES: "Services Événementiels",
+    CULTURE_CINEMA: "Culture & Cinéma",
   };
   const displayPole = poleLabels[profile.pole] || profile.pole;
 

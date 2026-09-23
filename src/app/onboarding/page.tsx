@@ -297,6 +297,7 @@ export default function OnboardingPage() {
                     <option value="RECEPTION">Réception (Traiteur, Décoration, Salles...)</option>
                     <option value="IMAGE_SOUVENIR">Image & Souvenir (Photo, Vidéo, Drone, Maquillage...)</option>
                     <option value="SERVICES">Services (Sécurité, Transport, Wedding Planner...)</option>
+                    <option value="CULTURE_CINEMA">Culture & Cinéma (Réalisation, Médiation culturelle, Projection...)</option>
                   </select>
                 </div>
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Star, Calendar, Camera, Music, Utensils, Briefcase, Crown } from "lucide-react";
+import { MapPin, Star, Calendar, Camera, Music, Utensils, Briefcase, Crown, Clapperboard } from "lucide-react";
 
 type ProviderCardProps = {
   id: string;
@@ -29,13 +29,15 @@ export function ProviderCard({
       case "DIVERTISSEMENT": return <Music size={14} className="text-primary" />;
       case "RECEPTION": return <Utensils size={14} className="text-primary" />;
       case "IMAGE_SOUVENIR": return <Camera size={14} className="text-primary" />;
+      case "CULTURE_CINEMA": return <Clapperboard size={14} className="text-primary" />;
       default: return <Briefcase size={14} className="text-primary" />;
     }
   };
 
   const poleLabel = pole === "DIVERTISSEMENT" ? "Divertissement" :
                     pole === "RECEPTION" ? "Réception & Traiteur" :
-                    pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" : "Services";
+                    pole === "IMAGE_SOUVENIR" ? "Image & Souvenir" :
+                    pole === "CULTURE_CINEMA" ? "Culture & Cinéma" : "Services";
 
   return (
     <div className="group bg-white rounded-2xl border border-ink/10 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col">
