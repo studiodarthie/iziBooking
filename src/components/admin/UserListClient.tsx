@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { toggleUserBan } from "@/app/admin/users/actions";
+import { toggleUserBan, deleteUserPermanently } from "@/app/admin/users/actions";
 import { toggleProviderVerification, setProviderPlanForTesting } from "@/app/admin/providers/actions";
 import { isPremium } from "@/lib/plan";
-import { MoreVertical, Eye, CheckCircle2, ShieldAlert, Ban, RotateCcw, Crown } from "lucide-react";
+import { MoreVertical, Eye, CheckCircle2, ShieldAlert, Ban, RotateCcw, Crown, Trash2 } from "lucide-react";
 
 type UserRow = {
   id: string;
@@ -45,6 +45,22 @@ export function UserListClient({ users }: { users: UserRow[] }) {
       if (!confirm(`Réactiver le compte de ${user.name || user.email} ?`)) return;
     }
     run(user.id, () => toggleUserBan(user.id, user.isBanned, reason));
+  };
+
+  const handleDelete = (user: UserRow) => {
+    const label = user.name || user.email || "cet utilisateur";
+    const typed = prompt(
+      `Suppression DÉFINITIVE et IRRÉVERSIBLE de ${label}.\n` +
+        `Seront aussi supprimés : ses réservations, avis, messages` +
+        (user.providerProfile ? ", ainsi que son profil prestataire (médias, services, coupons...)." : ".") +
+        `\n\nPour confirmer, tapez exactement son email :\n${user.email}`
+    );
+    if (typed === null) return;
+    if (typed.trim() !== user.email) {
+      alert("Email non confirmé — suppression annulée.");
+      return;
+    }
+    run(user.id, () => deleteUserPermanently(user.id));
   };
 
   return (
@@ -161,6 +177,14 @@ export function UserListClient({ users }: { users: UserRow[] }) {
                                 </button>
                               </>
                             )}
+
+                            <div className="my-1.5 border-t border-ink/10" />
+                            <button
+                              onClick={() => handleDelete(user)}
+                              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-bold text-red-700 hover:bg-red-50 transition-colors"
+                            >
+                              <Trash2 size={16} /> Supprimer définitivement
+                            </button>
                           </div>
                         </>
                       )}
