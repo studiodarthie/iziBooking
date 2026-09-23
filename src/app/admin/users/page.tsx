@@ -13,7 +13,7 @@ export default async function AdminUsersPage() {
       isAdmin: true,
       isBanned: true,
       banReason: true,
-      providerProfile: { select: { isVerified: true } },
+      providerProfile: { select: { id: true, isVerified: true, plan: true, planExpiresAt: true } },
     }
   });
 
