@@ -76,7 +76,7 @@ export default async function Home() {
               À LA UNE EN CE MOMENT
             </span>
             <h2 className="font-heading font-bold text-3xl mt-2 text-ink">
-              Les réservations du moment
+              Notre sélection du moment
             </h2>
           </div>
           <a href="/search" className="text-primary font-semibold text-sm hover:underline">Voir tous les prestataires →</a>
