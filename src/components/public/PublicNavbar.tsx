@@ -28,7 +28,7 @@ export function PublicNavbar({ overlay = false }: { overlay?: boolean }) {
       <header className={`z-50 px-4 md:px-8 pt-5 ${overlay ? "absolute top-0 inset-x-0" : "relative pb-4"}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           <Link href="/" aria-label="iziBooking - Accueil" className="bg-white rounded-2xl px-4 h-12 md:h-14 flex items-center border border-black/5 shadow-lg shadow-black/10">
-            <Image src="/logo.png" alt="iziBooking" width={1576} height={317} priority className="h-6 md:h-7 w-auto" />
+            <Image src="/logo.png" alt="iziBooking" width={1571} height={314} priority className="h-6 md:h-7 w-auto" />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1 bg-white rounded-2xl h-14 px-3 border border-black/5 shadow-lg shadow-black/10">
@@ -67,7 +67,7 @@ export function PublicNavbar({ overlay = false }: { overlay?: boolean }) {
       {open && (
         <div className="fixed inset-0 z-[100] flex flex-col p-6 lg:hidden bg-white">
           <div className="flex items-center justify-between mb-10">
-            <Image src="/logo.png" alt="iziBooking" width={1576} height={317} className="h-8 w-auto" />
+            <Image src="/logo.png" alt="iziBooking" width={1571} height={314} className="h-8 w-auto" />
             <button onClick={() => setOpen(false)} aria-label="Fermer le menu" className="text-ink/70 hover:text-ink"><X size={24} /></button>
           </div>
           <div className="flex flex-col gap-6">

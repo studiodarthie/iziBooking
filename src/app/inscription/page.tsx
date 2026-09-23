@@ -41,7 +41,7 @@ export default function InscriptionPage() {
         <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-white/5 blur-[100px] pointer-events-none" />
 
         <Link href="/" className="relative z-10">
-          <Image src="/logo-white.png" alt="iziBooking" width={1576} height={317} className="h-8 w-auto" />
+          <Image src="/logo-white.png" alt="iziBooking" width={1571} height={314} className="h-8 w-auto" />
         </Link>
 
         <div className="relative z-10 space-y-10">
@@ -77,7 +77,7 @@ export default function InscriptionPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-12">
         <div className="w-full max-w-md">
           <div className="flex justify-center lg:hidden mb-6">
-            <Image src="/logo.png" alt="iziBooking" width={1576} height={317} className="h-8 w-auto" />
+            <Image src="/logo.png" alt="iziBooking" width={1571} height={314} className="h-8 w-auto" />
           </div>
 
           <div className="text-center mb-8">

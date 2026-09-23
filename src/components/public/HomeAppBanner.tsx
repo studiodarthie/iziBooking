@@ -43,7 +43,7 @@ function PhoneMockup() {
     <div className="relative w-[250px] h-[470px] rounded-[2.6rem] border-[9px] border-neutral-900 bg-white shadow-2xl overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-neutral-900 rounded-b-2xl z-10" />
       <div className="pt-7 px-3.5">
-        <Image src="/logo.png" alt="iziBooking" width={1576} height={317} className="h-4 w-auto mx-auto" />
+        <Image src="/logo.png" alt="iziBooking" width={1571} height={314} className="h-4 w-auto mx-auto" />
         <div className="mt-3 flex items-center gap-2 bg-neutral-100 rounded-lg px-2.5 py-2 text-[9px] text-neutral-600">
           <Search size={11} /> Rechercher un DJ, un traiteur…
         </div>

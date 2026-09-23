@@ -39,7 +39,7 @@ export function HomeFooter() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-16">
           <div>
-            <Image src="/logo-white.png" alt="iziBooking" width={1576} height={317} className="h-9 w-auto mb-5" />
+            <Image src="/logo-white.png" alt="iziBooking" width={1571} height={314} className="h-9 w-auto mb-5" />
             <p className="text-sm max-w-[32ch] leading-relaxed">
               La scène africaine, réservable en un clic. Le pont entre les talents et les événements inoubliables.
             </p>

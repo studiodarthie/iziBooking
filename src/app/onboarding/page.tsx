@@ -24,7 +24,7 @@ function OnboardingBackground({ children }: { children: React.ReactNode }) {
       <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/35 blur-3xl pointer-events-none" />
       <div className="relative z-10 flex justify-center pt-8 pb-2">
         <Link href="/" aria-label="iziBooking - Accueil">
-          <Image src="/logo.png" alt="iziBooking" width={1576} height={317} className="h-7 w-auto" />
+          <Image src="/logo.png" alt="iziBooking" width={1571} height={314} className="h-7 w-auto" />
         </Link>
       </div>
       <div className="relative z-10">{children}</div>
