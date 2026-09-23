@@ -73,7 +73,7 @@ export default async function Home() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
           <div>
             <span className="text-primary text-[13px] font-bold tracking-[0.08em] uppercase">
-              PRESTATAIRES EN VEDETTE
+              À LA UNE EN CE MOMENT
             </span>
             <h2 className="font-heading font-bold text-3xl mt-2 text-ink">
               Les réservations du moment
