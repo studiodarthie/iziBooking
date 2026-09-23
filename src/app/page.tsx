@@ -28,6 +28,7 @@ export default async function Home() {
   const categoryCounts: CategoryCount[] = await Promise.all(
     poleLabels.map(async ({ pole, name }) => ({
       name,
+      pole,
       count: await safeDb<number | null>(
         () => prisma.providerProfile.count({ where: { isVerified: true, pole, user: { isBanned: false } } }),
         null

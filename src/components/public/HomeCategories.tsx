@@ -13,7 +13,7 @@ const CATEGORY_STYLES: Record<string, { icon: typeof Utensils; tint: string; tex
 };
 
 /** count = null quand la base est indisponible : on n'affiche alors aucun compteur. */
-export type CategoryCount = { name: string; count: number | null };
+export type CategoryCount = { name: string; pole: string; count: number | null };
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -39,7 +39,7 @@ export function HomeCategories({ categories }: { categories: CategoryCount[] }) 
           const style = CATEGORY_STYLES[cat.name] || CATEGORY_STYLES["Services"];
           const Icon = style.icon;
           return (
-            <Link key={cat.name} href={`/search?q=${encodeURIComponent(cat.name)}`} className="group">
+            <Link key={cat.name} href={`/search?pole=${cat.pole}`} className="group">
               <motion.div
                 variants={itemVariants}
                 whileHover={{ y: -6 }}
