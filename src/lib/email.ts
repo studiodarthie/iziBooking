@@ -190,6 +190,27 @@ export async function sendContactRequest(params: {
   }
 }
 
+/**
+ * Notifie l'équipe iziBooking dès qu'un compte est créé (première connexion Google ou lien
+ * magique), avant même que la personne n'ait choisi Organisateur ou Prestataire dans l'onboarding.
+ * Complémentaire de notifyNewProviderSignup ci-dessous, qui arrive plus tard avec le détail du
+ * profil (catégorie, ville) une fois l'onboarding prestataire terminé — celui-ci permet de voir
+ * toutes les inscriptions, y compris les organisateurs et les onboardings jamais terminés.
+ */
+export async function notifyNewUserSignup(params: { name: string | null; email: string }) {
+  await sendEmail({
+    to: "itsizibooking@gmail.com",
+    subject: `Nouvelle inscription — ${params.name || params.email}`,
+    html: emailShell(
+      "Nouvelle inscription",
+      `<p><strong>${escapeHtml(params.name || "Sans nom")}</strong> &lt;${escapeHtml(params.email)}&gt; vient de créer un compte sur iziBooking.</p>
+       <p>Pas encore de profil à vérifier à ce stade — vous recevrez un second email dès que la personne choisira "Prestataire" et complétera son profil.</p>`,
+      `${BASE_URL}/admin/users`,
+      "Voir dans l'admin"
+    ),
+  });
+}
+
 /** Notifie l'équipe iziBooking qu'un nouveau prestataire vient de finaliser son profil. */
 export async function notifyNewProviderSignup(params: {
   providerId: string;

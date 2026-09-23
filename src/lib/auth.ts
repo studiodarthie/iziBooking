@@ -3,7 +3,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import prisma from "@/lib/prisma";
-import { sendSignInEmail } from "@/lib/email";
+import { sendSignInEmail, notifyNewUserSignup } from "@/lib/email";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -57,5 +57,13 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     }
-  }
+  },
+  events: {
+    // Se déclenche une seule fois, exactement à la création de la ligne User en base
+    // (première connexion Google ou premier lien magique) — avant même l'onboarding.
+    async createUser({ user }) {
+      if (!user.email) return;
+      notifyNewUserSignup({ name: user.name ?? null, email: user.email }).catch(() => {});
+    },
+  },
 };
