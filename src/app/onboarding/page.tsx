@@ -3,8 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Briefcase, Sparkles, MapPin, DollarSign, UploadCloud, CheckCircle, ChevronRight, ArrowLeft, ArrowUpRight, Gift, ShieldCheck, Wallet, Search, MessageCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Briefcase, Sparkles, MapPin, DollarSign, UploadCloud, CheckCircle, ChevronRight,
+  ArrowLeft, ArrowUpRight, Gift, ShieldCheck, Wallet, Search, MessageCircle,
+  Music, Utensils, Camera, Clapperboard, Users, Tag, Layers, Palette, Calendar,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { submitProviderProfile, submitOrganizerProfile } from "./actions";
 import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
@@ -28,13 +32,47 @@ function OnboardingBackground({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Options du pôle d'activité, affichées en cartes plutôt qu'en menu déroulant. */
+const POLE_OPTIONS: { value: string; label: string; sub: string; icon: typeof Music }[] = [
+  { value: "DIVERTISSEMENT", label: "Divertissement", sub: "Musique, Danse, Animation", icon: Music },
+  { value: "RECEPTION", label: "Réception", sub: "Traiteur, Décoration, Salles", icon: Utensils },
+  { value: "IMAGE_SOUVENIR", label: "Image & Souvenir", sub: "Photo, Vidéo, Drone, Maquillage", icon: Camera },
+  { value: "SERVICES", label: "Services", sub: "Sécurité, Transport, Wedding Planner", icon: Users },
+  { value: "CULTURE_CINEMA", label: "Culture & Cinéma", sub: "Réalisation, Médiation, Projection", icon: Clapperboard },
+];
+
+/** Style commun à tous les champs texte des étapes prestataire : icône, bordure visible, focus marqué. */
+const fieldInputClass =
+  "block w-full rounded-xl border border-ink/15 bg-white pl-11 pr-4 py-3.5 text-sm text-ink placeholder:text-ink/35 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary/15 focus:outline-none";
+const fieldIconWrapClass = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-ink/35";
+
+/** Icône + titre affichés au-dessus de chaque étape du tunnel prestataire. */
+function StepHeader({ icon: Icon, title, subtitle }: { icon: typeof Tag; title: string; subtitle: string }) {
+  return (
+    <div className="text-center mb-8">
+      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <Icon size={22} />
+      </div>
+      <h2 className="text-2xl font-heading font-bold text-ink">{title}</h2>
+      <p className="text-sm text-ink/60 mt-1">{subtitle}</p>
+    </div>
+  );
+}
+
+const stepTransition = {
+  initial: { opacity: 0, x: 24 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -24 },
+  transition: { duration: 0.22, ease: "easeOut" as const },
+};
+
 export default function OnboardingPage() {
   const router = useRouter();
-  
+
   const [role, setRole] = useState<Role>(null);
   const [step, setStep] = useState(1);
   const [isPending, setIsPending] = useState(false);
-  
+
   // Provider Form State
   const [formData, setFormData] = useState({
     pole: "DIVERTISSEMENT",
@@ -272,77 +310,103 @@ export default function OnboardingPage() {
           </div>
         </div>
 
-        <div className="bg-white py-8 px-4 shadow-xl shadow-black/5 sm:rounded-3xl sm:px-10 border border-white">
+        <div className="bg-white py-8 px-4 shadow-xl shadow-black/5 sm:rounded-3xl sm:px-6 md:px-10 border border-white overflow-hidden">
+        <AnimatePresence mode="wait">
 
           {/* STEP 2: IDENTITÉ */}
           {step === 2 && (
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-heading font-bold text-ink">Votre identité</h2>
-                <p className="text-sm text-ink/60 mt-1">Dites-nous ce que vous proposez.</p>
-              </div>
+            <motion.div key="step-2" {...stepTransition} className="space-y-6">
+              <StepHeader icon={Tag} title="Votre identité" subtitle="Dites-nous ce que vous proposez." />
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label htmlFor="pole" className="block text-sm font-medium text-ink mb-1">
+                  <label className="block text-sm font-semibold text-ink mb-2">
                     Pôle d’activité principal
                   </label>
-                  <select
-                    id="pole"
-                    value={formData.pole}
-                    onChange={(e) => setFormData({ ...formData, pole: e.target.value })}
-                    className="block w-full rounded-xl border-ink/20 py-3 pl-4 pr-10 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20"
-                  >
-                    <option value="DIVERTISSEMENT">Divertissement (Musique, Danse, Animation...)</option>
-                    <option value="RECEPTION">Réception (Traiteur, Décoration, Salles...)</option>
-                    <option value="IMAGE_SOUVENIR">Image & Souvenir (Photo, Vidéo, Drone, Maquillage...)</option>
-                    <option value="SERVICES">Services (Sécurité, Transport, Wedding Planner...)</option>
-                    <option value="CULTURE_CINEMA">Culture & Cinéma (Réalisation, Médiation culturelle, Projection...)</option>
-                  </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {POLE_OPTIONS.map((p) => {
+                      const active = formData.pole === p.value;
+                      return (
+                        <button
+                          key={p.value}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, pole: p.value })}
+                          className={`group flex items-center gap-3 rounded-xl border-2 px-3.5 py-3 text-left transition-all ${
+                            active
+                              ? "border-primary bg-primary/5 shadow-sm"
+                              : "border-ink/10 bg-white hover:border-ink/25"
+                          }`}
+                        >
+                          <span
+                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                              active ? "bg-primary text-white" : "bg-sand/60 text-ink/45"
+                            }`}
+                          >
+                            <p.icon size={17} />
+                          </span>
+                          <span className="min-w-0">
+                            <span className={`block text-sm font-semibold ${active ? "text-primary" : "text-ink"}`}>
+                              {p.label}
+                            </span>
+                            <span className="block text-[11px] text-ink/50 truncate">{p.sub}</span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-ink mb-1">
+                  <label htmlFor="name" className="block text-sm font-semibold text-ink mb-2">
                     Nom de scène ou d’entreprise *
                   </label>
-                  <input
-                    type="text"
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="block w-full rounded-xl border-ink/20 pl-4 pr-4 py-3 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20"
-                    placeholder="Ex: Les Danseurs du Wouri, Traiteur XYZ..."
-                    required
-                  />
+                  <div className="relative">
+                    <span className={fieldIconWrapClass}><Sparkles size={17} /></span>
+                    <input
+                      type="text"
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className={fieldInputClass}
+                      placeholder="Ex: Les Danseurs du Wouri, Traiteur XYZ..."
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-ink mb-1">
+                  <label htmlFor="category" className="block text-sm font-semibold text-ink mb-2">
                     Catégorie exacte *
                   </label>
-                  <input
-                    type="text"
-                    id="category"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="block w-full rounded-xl border-ink/20 py-3 pl-4 pr-4 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20"
-                    placeholder="Ex: DJ, Photographe, Traiteur, Maquilleuse..."
-                    required
-                  />
+                  <div className="relative">
+                    <span className={fieldIconWrapClass}><Layers size={17} /></span>
+                    <input
+                      type="text"
+                      id="category"
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className={fieldInputClass}
+                      placeholder="Ex: DJ, Photographe, Traiteur, Maquilleuse..."
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="specialty" className="block text-sm font-medium text-ink mb-1">
+                  <label htmlFor="specialty" className="block text-sm font-semibold text-ink mb-2">
                     Spécialité / Style (optionnel)
                   </label>
-                  <input
-                    type="text"
-                    id="specialty"
-                    value={formData.specialty}
-                    onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
-                    className="block w-full rounded-xl border-ink/20 py-3 pl-4 pr-4 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20"
-                    placeholder="Ex: Afrobeats, Cuisine Locale..."
-                  />
+                  <div className="relative">
+                    <span className={fieldIconWrapClass}><Palette size={17} /></span>
+                    <input
+                      type="text"
+                      id="specialty"
+                      value={formData.specialty}
+                      onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
+                      className={fieldInputClass}
+                      placeholder="Ex: Afrobeats, Cuisine Locale..."
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -355,32 +419,27 @@ export default function OnboardingPage() {
                   Continuer <ChevronRight size={18} className="ml-2" />
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* STEP 3: LOCALISATION ET TARIFS */}
           {step === 3 && (
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-heading font-bold text-ink">Localisation & Tarifs</h2>
-                <p className="text-sm text-ink/60 mt-1">Où êtes-vous basé et quels sont vos tarifs ?</p>
-              </div>
+            <motion.div key="step-3" {...stepTransition} className="space-y-6">
+              <StepHeader icon={MapPin} title="Localisation & Tarifs" subtitle="Où êtes-vous basé et quels sont vos tarifs ?" />
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label htmlFor="location" className="block text-sm font-medium text-ink mb-1">
+                  <label htmlFor="location" className="block text-sm font-semibold text-ink mb-2">
                     Ville principale *
                   </label>
-                  <div className="relative rounded-xl shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <MapPin className="h-5 w-5 text-ink/40" />
-                    </div>
+                  <div className="relative">
+                    <span className={fieldIconWrapClass}><MapPin size={17} /></span>
                     <input
                       type="text"
                       id="location"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      className="block w-full rounded-xl border-ink/20 pl-10 py-3 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20"
+                      className={fieldInputClass}
                       placeholder="Ex: Douala, Cameroun"
                       required
                     />
@@ -388,26 +447,24 @@ export default function OnboardingPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="price" className="block text-sm font-medium text-ink mb-1">
+                  <label htmlFor="price" className="block text-sm font-semibold text-ink mb-2">
                     Tarif de base indicatif (optionnel)
                   </label>
-                  <div className="relative rounded-xl shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <DollarSign className="h-5 w-5 text-ink/40" />
-                    </div>
+                  <div className="relative">
+                    <span className={fieldIconWrapClass}><DollarSign size={17} /></span>
                     <input
                       type="number"
                       id="price"
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      className="block w-full rounded-xl border-ink/20 pl-10 pr-12 py-3 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20 font-mono"
+                      className={`${fieldInputClass} pr-14 font-mono`}
                       placeholder="Ex: 150000"
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <span className="text-ink/50 sm:text-sm font-mono">FCFA</span>
-                    </div>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-ink/40 text-sm font-mono">
+                      FCFA
+                    </span>
                   </div>
-                  <p className="text-xs text-ink/50 mt-1">Ce tarif apparaîtra sur votre profil public pour donner une idée aux clients.</p>
+                  <p className="text-xs text-ink/50 mt-1.5">Ce tarif apparaîtra sur votre profil public pour donner une idée aux clients.</p>
                 </div>
               </div>
 
@@ -420,27 +477,24 @@ export default function OnboardingPage() {
                   Continuer <ChevronRight size={18} className="ml-2" />
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* STEP 4: MEDIAS */}
           {step === 4 && (
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-heading font-bold text-ink">Photo de profil</h2>
-                <p className="text-sm text-ink/60 mt-1">Ajoutez un visage ou un logo à votre profil.</p>
-              </div>
+            <motion.div key="step-4" {...stepTransition} className="space-y-6">
+              <StepHeader icon={UploadCloud} title="Photo de profil" subtitle="Ajoutez un visage ou un logo à votre profil." />
 
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-ink/10 border-dashed rounded-2xl hover:border-primary/50 transition-colors bg-sand/10">
+              <div className="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-ink/10 border-dashed rounded-2xl hover:border-primary/50 transition-colors bg-sand/10">
                 <div className="space-y-1 text-center flex flex-col items-center w-full">
                   {formData.image ? (
                     <img src={formData.image} alt="Profil" className="h-28 w-28 rounded-full object-cover mb-4 shadow-md border-4 border-white" />
                   ) : (
-                    <div className="h-28 w-28 rounded-full bg-white shadow-sm border border-ink/5 flex items-center justify-center mb-4">
+                    <div className="h-28 w-28 rounded-full bg-white shadow-sm border border-ink/10 flex items-center justify-center mb-4">
                       <UploadCloud className="h-10 w-10 text-ink/30" />
                     </div>
                   )}
-                  
+
                   <CldUploadWidget
                     uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "kamita_preset"}
                     onSuccess={(result: CloudinaryUploadWidgetResults) => {
@@ -452,7 +506,7 @@ export default function OnboardingPage() {
                       <button
                         type="button"
                         onClick={() => open()}
-                        className="relative cursor-pointer bg-white border border-ink/10 shadow-sm rounded-full px-4 py-2 text-sm font-medium text-ink hover:bg-sand/50 focus-within:outline-none transition-colors"
+                        className="relative cursor-pointer bg-white border border-ink/15 shadow-sm rounded-full px-4 py-2 text-sm font-medium text-ink hover:bg-sand/50 hover:border-primary/40 focus-within:outline-none transition-colors"
                       >
                         {formData.image ? "Changer la photo" : "Choisir une image"}
                       </button>
@@ -469,52 +523,50 @@ export default function OnboardingPage() {
                   Continuer <ChevronRight size={18} className="ml-2" />
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* STEP 5: SERVICE INITIAL */}
           {step === 5 && (
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-heading font-bold text-ink">Premier Service</h2>
-                <p className="text-sm text-ink/60 mt-1">Créez votre première offre pour être réservable immédiatement.</p>
-              </div>
+            <motion.div key="step-5" {...stepTransition} className="space-y-6">
+              <StepHeader icon={DollarSign} title="Premier Service" subtitle="Créez votre première offre pour être réservable immédiatement." />
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label htmlFor="serviceName" className="block text-sm font-medium text-ink mb-1">
+                  <label htmlFor="serviceName" className="block text-sm font-semibold text-ink mb-2">
                     Nom du service *
                   </label>
-                  <input
-                    type="text"
-                    id="serviceName"
-                    value={formData.serviceName}
-                    onChange={(e) => setFormData({ ...formData, serviceName: e.target.value })}
-                    className="block w-full rounded-xl border-ink/20 pl-4 pr-4 py-3 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20"
-                    placeholder="Ex: Prestation Mariage Complète"
-                    required
-                  />
+                  <div className="relative">
+                    <span className={fieldIconWrapClass}><Tag size={17} /></span>
+                    <input
+                      type="text"
+                      id="serviceName"
+                      value={formData.serviceName}
+                      onChange={(e) => setFormData({ ...formData, serviceName: e.target.value })}
+                      className={fieldInputClass}
+                      placeholder="Ex: Prestation Mariage Complète"
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="servicePrice" className="block text-sm font-medium text-ink mb-1">
+                  <label htmlFor="servicePrice" className="block text-sm font-semibold text-ink mb-2">
                     Prix de départ pour ce service (optionnel)
                   </label>
-                  <div className="relative rounded-xl shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <DollarSign className="h-5 w-5 text-ink/40" />
-                    </div>
+                  <div className="relative">
+                    <span className={fieldIconWrapClass}><DollarSign size={17} /></span>
                     <input
                       type="number"
                       id="servicePrice"
                       value={formData.servicePrice}
                       onChange={(e) => setFormData({ ...formData, servicePrice: e.target.value })}
-                      className="block w-full rounded-xl border-ink/20 pl-10 pr-12 py-3 focus:border-primary focus:ring-primary sm:text-sm bg-sand/20 font-mono"
+                      className={`${fieldInputClass} pr-14 font-mono`}
                       placeholder="Ex: 250000"
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <span className="text-ink/50 sm:text-sm font-mono">FCFA</span>
-                    </div>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-ink/40 text-sm font-mono">
+                      FCFA
+                    </span>
                   </div>
                 </div>
               </div>
@@ -528,16 +580,13 @@ export default function OnboardingPage() {
                   Continuer <ChevronRight size={18} className="ml-2" />
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* STEP 6: DISPONIBILITÉS */}
           {step === 6 && (
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-heading font-bold text-ink">Horaires de base</h2>
-                <p className="text-sm text-ink/60 mt-1">Quels jours de la semaine êtes-vous disponible ?</p>
-              </div>
+            <motion.div key="step-6" {...stepTransition} className="space-y-6">
+              <StepHeader icon={Calendar} title="Horaires de base" subtitle="Quels jours de la semaine êtes-vous disponible ?" />
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -556,10 +605,10 @@ export default function OnboardingPage() {
                         key={day.id}
                         type="button"
                         onClick={() => toggleDay(day.id)}
-                        className={`py-3 px-2 rounded-xl text-sm font-medium border transition-colors
-                          ${isSelected 
-                            ? "bg-primary/10 border-primary text-primary" 
-                            : "bg-white border-ink/20 text-ink/60 hover:border-ink/40"
+                        className={`py-3 px-2 rounded-xl text-sm font-medium border-2 transition-colors
+                          ${isSelected
+                            ? "bg-primary/10 border-primary text-primary"
+                            : "bg-white border-ink/15 text-ink/60 hover:border-ink/30"
                           }`}
                       >
                         {day.label}
@@ -579,9 +628,10 @@ export default function OnboardingPage() {
                   {isPending ? "Création du profil..." : "Terminer et accéder au Dashboard"}
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
+        </AnimatePresence>
         </div>
       </div>
     </div>
