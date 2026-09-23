@@ -150,6 +150,7 @@ export default function OnboardingPage() {
     const ROLE_CARDS: {
       role: "ORGANIZER" | "PROVIDER";
       icon: typeof Briefcase;
+      tag: string;
       title: string;
       description: string;
       features: { icon: typeof Search; label: string }[];
@@ -161,8 +162,9 @@ export default function OnboardingPage() {
       {
         role: "ORGANIZER",
         icon: Briefcase,
-        title: "Je suis Organisateur",
-        description: "Je cherche des prestataires pour mes événements.",
+        tag: "Organisateur",
+        title: "Je cherche un prestataire",
+        description: "Musicien, traiteur, photographe, décorateur... trouvez la bonne personne pour votre événement.",
         features: [
           { icon: Search, label: "Recherche et mise en relation gratuites" },
           { icon: ShieldCheck, label: "Prestataires vérifiés à la main" },
@@ -176,8 +178,9 @@ export default function OnboardingPage() {
       {
         role: "PROVIDER",
         icon: Sparkles,
-        title: "Je suis Prestataire",
-        description: "Je propose mes services (Artiste, Traiteur, Photo...).",
+        tag: "Prestataire",
+        title: "Je propose mes services",
+        description: "Vous êtes artiste, traiteur, photographe...? Recevez des demandes et gérez vos réservations.",
         features: [
           { icon: MessageCircle, label: "Profil public et demandes en illimité" },
           { icon: Gift, label: `${TRIAL_DAYS} jours de Premium offerts à l'inscription` },
@@ -200,7 +203,7 @@ export default function OnboardingPage() {
             Bienvenue sur <span className="text-primary">iziBooking</span>
           </h1>
           <p className="mt-3 text-center text-neutral-700 max-w-md">
-            Pour commencer, dites-nous comment vous souhaitez utiliser la plateforme.
+            Pour commencer, que voulez-vous faire ?
           </p>
 
           <div className="mt-10 w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -221,7 +224,8 @@ export default function OnboardingPage() {
                   <card.icon className="h-8 w-8" />
                 </div>
 
-                <h3 className="font-heading font-bold text-xl text-ink">{card.title}</h3>
+                <span className={`text-[11px] font-bold uppercase tracking-[0.06em] ${card.textTint}`}>{card.tag}</span>
+                <h3 className="font-heading font-bold text-xl text-ink mt-0.5">{card.title}</h3>
                 <p className="mt-1.5 text-sm text-neutral-600">{card.description}</p>
 
                 <ul className="mt-5 space-y-2.5 border-t border-ink/10 pt-4">
