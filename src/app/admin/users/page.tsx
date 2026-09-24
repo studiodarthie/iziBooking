@@ -9,6 +9,7 @@ export default async function AdminUsersPage() {
       id: true,
       name: true,
       email: true,
+      phone: true,
       role: true,
       isAdmin: true,
       isBanned: true,

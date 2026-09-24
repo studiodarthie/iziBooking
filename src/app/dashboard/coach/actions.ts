@@ -8,10 +8,10 @@ import { isPremium } from "@/lib/plan";
 
 async function getProviderOrThrow() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) throw new Error("Non autorisé");
+  if (!session?.user?.id) throw new Error("Non autorisé");
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true },
   });
   if (!user || user.role !== "PROVIDER" || !user.providerProfile) {

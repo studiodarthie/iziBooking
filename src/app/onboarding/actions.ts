@@ -11,12 +11,12 @@ import { notifyNewProviderSignup } from "@/lib/email";
 export async function submitProviderProfile(formData: FormData) {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     throw new Error("Vous devez être connecté.");
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
   });
 
   if (!user) {
@@ -141,12 +141,12 @@ export async function submitProviderProfile(formData: FormData) {
 export async function submitOrganizerProfile() {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     throw new Error("Vous devez être connecté.");
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
   });
 
   if (!user) {

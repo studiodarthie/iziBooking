@@ -12,6 +12,7 @@ type UserRow = {
   id: string;
   name: string | null;
   email: string | null;
+  phone: string | null;
   role: string;
   isAdmin: boolean;
   isBanned: boolean;
@@ -48,16 +49,17 @@ export function UserListClient({ users }: { users: UserRow[] }) {
   };
 
   const handleDelete = (user: UserRow) => {
-    const label = user.name || user.email || "cet utilisateur";
+    const identifier = user.email || user.phone || user.name || user.id;
+    const label = user.name || identifier;
     const typed = prompt(
       `Suppression DÉFINITIVE et IRRÉVERSIBLE de ${label}.\n` +
         `Seront aussi supprimés : ses réservations, avis, messages` +
         (user.providerProfile ? ", ainsi que son profil prestataire (médias, services, coupons...)." : ".") +
-        `\n\nPour confirmer, tapez exactement son email :\n${user.email}`
+        `\n\nPour confirmer, tapez exactement son identifiant :\n${identifier}`
     );
     if (typed === null) return;
-    if (typed.trim() !== user.email) {
-      alert("Email non confirmé — suppression annulée.");
+    if (typed.trim() !== identifier) {
+      alert("Identifiant non confirmé — suppression annulée.");
       return;
     }
     run(user.id, () => deleteUserPermanently(user.id));
@@ -84,7 +86,7 @@ export function UserListClient({ users }: { users: UserRow[] }) {
                   {user.name || "—"}
                   {user.isAdmin && <span className="ml-2 text-[10px] uppercase text-primary font-bold">Admin</span>}
                 </td>
-                <td className="px-6 py-4 text-ink/60">{user.email}</td>
+                <td className="px-6 py-4 text-ink/60">{user.email || user.phone || "—"}</td>
                 <td className="px-6 py-4 text-ink/60">
                   {user.role === "PROVIDER" ? "Prestataire" : "Organisateur"}
                   {user.providerProfile?.isVerified && (

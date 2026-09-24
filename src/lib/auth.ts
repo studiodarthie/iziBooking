@@ -38,8 +38,11 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      if (!user.email) return true;
-      const existing = await prisma.user.findUnique({ where: { email: user.email } });
+      // Un compte peut n'avoir ni email (connexion par téléphone/réseau social) : on cherche
+      // d'abord par identifiant, puis par email en repli.
+      const existing =
+        (user.id ? await prisma.user.findUnique({ where: { id: user.id } }) : null) ??
+        (user.email ? await prisma.user.findUnique({ where: { email: user.email } }) : null);
       if (existing?.isBanned) return false;
       return true;
     },
@@ -47,6 +50,14 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role; // Needs to exist on user in DB, Prisma handles it
+      }
+      // Sessions ouvertes avant que l'identité passe par l'id : on retrouve l'id une fois par email.
+      if (!token.id && token.email) {
+        const dbUser = await prisma.user.findUnique({ where: { email: token.email }, select: { id: true, role: true } });
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+        }
       }
       return token;
     },
@@ -62,8 +73,7 @@ export const authOptions: NextAuthOptions = {
     // Se déclenche une seule fois, exactement à la création de la ligne User en base
     // (première connexion Google ou premier lien magique) — avant même l'onboarding.
     async createUser({ user }) {
-      if (!user.email) return;
-      notifyNewUserSignup({ name: user.name ?? null, email: user.email }).catch(() => {});
+      notifyNewUserSignup({ name: user.name ?? null, email: user.email ?? null }).catch(() => {});
     },
   },
 };

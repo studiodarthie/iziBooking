@@ -41,6 +41,9 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  // Numéro au format international (ex: +237...), identifiant de connexion pour les comptes
+  // créés par téléphone/WhatsApp — beaucoup d'utilisateurs n'ont pas d'email.
+  phone         String?   @unique
   image         String?
   role          UserRole  @default(ORGANIZER)
   isAdmin       Boolean   @default(false)

@@ -8,13 +8,13 @@ import { revalidatePath } from "next/cache";
 export async function toggleProviderVerification(providerId: string, currentStatus: boolean) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return { success: false, error: "Non autorisé" };
     }
 
     // Vérifier si l'utilisateur est vraiment ADMIN
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { id: session.user.id },
       select: { isAdmin: true }
     });
 
@@ -48,12 +48,12 @@ export async function toggleProviderVerification(providerId: string, currentStat
 export async function setProviderPlanForTesting(providerId: string, makePremium: boolean) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return { success: false, error: "Non autorisé" };
     }
 
     const admin = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { id: session.user.id },
       select: { isAdmin: true }
     });
 

@@ -11,13 +11,13 @@ export default async function DashboardLayout({
 }) {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
   // Vérifier l'utilisateur en base
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 

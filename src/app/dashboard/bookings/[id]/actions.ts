@@ -12,9 +12,9 @@ import { isPremium } from "@/lib/plan";
 
 export async function sendMessage(bookingId: string, content: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { error: "Non autorisé" };
+  if (!session?.user?.id) return { error: "Non autorisé" };
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) return { error: "Utilisateur non trouvé" };
 
   if (!content.trim()) return { error: "Le message ne peut pas être vide" };
@@ -57,10 +57,10 @@ export async function sendMessage(bookingId: string, content: string) {
 
 export async function updateBookingStatus(bookingId: string, status: BookingStatus, totalAmount?: number) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { error: "Non autorisé" };
+  if (!session?.user?.id) return { error: "Non autorisé" };
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
   if (!user) return { error: "Non autorisé" };
@@ -106,9 +106,9 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
 // La plateforme n'a jamais tenu cet argent : payoutStatus reste NOT_APPLICABLE.
 export async function confirmDirectDeposit(bookingId: string, method: PaymentMethod) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { error: "Non autorisé" };
+  if (!session?.user?.id) return { error: "Non autorisé" };
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) return { error: "Non autorisé" };
 
   const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
@@ -161,9 +161,9 @@ export async function initiateOnlineDeposit(bookingId: string) {
   }
 
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) return { success: false, error: "Non autorisé" };
 
   const booking = await prisma.booking.findUnique({
@@ -212,13 +212,13 @@ export async function initiateOnlineDeposit(bookingId: string) {
 
 export async function submitReview(bookingId: string, rating: number, comment?: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { error: "Non autorisé" };
+  if (!session?.user?.id) return { error: "Non autorisé" };
 
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return { error: "La note doit être comprise entre 1 et 5." };
   }
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) return { error: "Non autorisé" };
 
   const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
@@ -250,11 +250,11 @@ export async function submitReview(bookingId: string, rating: number, comment?: 
 
 export async function openDispute(bookingId: string, reason: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { error: "Non autorisé" };
+  if (!session?.user?.id) return { error: "Non autorisé" };
   if (!reason.trim()) return { error: "Merci de décrire le problème." };
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
   if (!user) return { error: "Non autorisé" };
@@ -290,10 +290,10 @@ export async function generateQuoteAction(
   }
 
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true },
   });
   if (!user || !user.providerProfile) return { success: false, error: "Profil prestataire requis" };

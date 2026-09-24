@@ -7,9 +7,9 @@ import { revalidatePath } from "next/cache";
 
 export async function toggleUserBan(userId: string, currentlyBanned: boolean, reason?: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
-  const admin = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const admin = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!admin?.isAdmin) return { success: false, error: "Accès refusé" };
   if (admin.id === userId) return { success: false, error: "Vous ne pouvez pas vous bannir vous-même." };
 
@@ -39,9 +39,9 @@ export async function toggleUserBan(userId: string, currentlyBanned: boolean, re
  */
 export async function deleteUserPermanently(userId: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
-  const admin = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const admin = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!admin?.isAdmin) return { success: false, error: "Accès refusé" };
   if (admin.id === userId) return { success: false, error: "Vous ne pouvez pas supprimer votre propre compte." };
 

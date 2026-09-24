@@ -10,12 +10,12 @@ import { isPremium, FREE_PHOTO_LIMIT } from "@/lib/plan";
 export async function addMediaToProfile(url: string, format: string) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     throw new Error("Vous devez être connecté.");
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 
@@ -54,12 +54,12 @@ export async function addMediaToProfile(url: string, format: string) {
 export async function getMediaLinks() {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return [];
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: { include: { mediaLinks: true } } }
   });
 
@@ -69,12 +69,12 @@ export async function getMediaLinks() {
 export async function deleteMedia(mediaId: string) {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     throw new Error("Vous devez être connecté.");
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 

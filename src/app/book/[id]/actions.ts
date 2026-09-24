@@ -70,12 +70,12 @@ export async function submitBooking(data: {
 }) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté pour envoyer une demande." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email }
+    where: { id: session.user.id }
   });
 
   if (!user) {

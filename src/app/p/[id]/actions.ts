@@ -8,7 +8,7 @@ import { rateLimit } from "@/lib/ratelimit";
 
 export async function sendContactMessage(providerProfileId: string, content: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté pour envoyer un message." };
   }
 
@@ -17,7 +17,7 @@ export async function sendContactMessage(providerProfileId: string, content: str
     return { success: false, error: "Le message ne peut pas être vide." };
   }
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) {
     return { success: false, error: "Utilisateur introuvable." };
   }

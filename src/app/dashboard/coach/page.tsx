@@ -9,10 +9,10 @@ import { CoachChat } from "@/components/dashboard/CoachChat";
 
 export default async function CoachPage() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) redirect("/login");
+  if (!session?.user?.id) redirect("/login");
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true },
   });
 

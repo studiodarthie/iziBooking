@@ -14,12 +14,12 @@ export async function createService(data: {
 }) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: { include: { _count: { select: { services: true } } } } }
   });
 
@@ -58,12 +58,12 @@ export async function updateService(id: string, data: {
 }) {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 
@@ -99,12 +99,12 @@ export async function updateService(id: string, data: {
 export async function deleteService(id: string) {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 

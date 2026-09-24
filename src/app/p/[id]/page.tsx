@@ -52,7 +52,7 @@ export default async function PublicProviderPage(props: Props) {
 
   // Compte une vue, sauf quand le prestataire consulte sa propre fiche.
   const session = await getServerSession(authOptions);
-  if (session?.user?.email !== profile.user.email) {
+  if (session?.user?.id !== profile.userId) {
     prisma.providerProfile.update({
       where: { id: profile.id },
       data: { viewCount: { increment: 1 } }

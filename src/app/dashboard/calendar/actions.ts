@@ -7,10 +7,10 @@ import { revalidatePath } from "next/cache";
 
 export async function getBlockedDates() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 
@@ -40,10 +40,10 @@ export async function updateScheduleSettings(data: {
   workingHours: WorkingHourInput[];
 }) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 
@@ -88,10 +88,10 @@ export async function updateScheduleSettings(data: {
 
 export async function toggleBlockedDate(dateStr: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 

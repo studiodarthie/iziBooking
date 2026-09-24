@@ -7,9 +7,9 @@ import { revalidatePath } from "next/cache";
 
 export async function resolveDispute(disputeId: string, resolutionNote?: string) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé" };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé" };
 
-  const admin = await prisma.user.findUnique({ where: { email: session.user.email } });
+  const admin = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!admin?.isAdmin) return { success: false, error: "Accès refusé" };
 
   try {

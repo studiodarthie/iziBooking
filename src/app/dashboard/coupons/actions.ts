@@ -16,12 +16,12 @@ export async function createCoupon(data: {
 }) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 
@@ -67,12 +67,12 @@ export async function createCoupon(data: {
 export async function toggleCouponActive(id: string, isActive: boolean) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 
@@ -102,12 +102,12 @@ export async function toggleCouponActive(id: string, isActive: boolean) {
 export async function deleteCoupon(id: string) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true }
   });
 

@@ -197,13 +197,15 @@ export async function sendContactRequest(params: {
  * profil (catégorie, ville) une fois l'onboarding prestataire terminé — celui-ci permet de voir
  * toutes les inscriptions, y compris les organisateurs et les onboardings jamais terminés.
  */
-export async function notifyNewUserSignup(params: { name: string | null; email: string }) {
+export async function notifyNewUserSignup(params: { name: string | null; email: string | null; phone?: string | null; via?: string }) {
+  // Un compte peut n'avoir ni email ni nom (connexion par téléphone) : on affiche ce qu'on a.
+  const contact = params.email || params.phone || "contact inconnu";
   await sendEmail({
     to: "itsizibooking@gmail.com",
-    subject: `Nouvelle inscription — ${params.name || params.email}`,
+    subject: `Nouvelle inscription — ${params.name || contact}`,
     html: emailShell(
       "Nouvelle inscription",
-      `<p><strong>${escapeHtml(params.name || "Sans nom")}</strong> &lt;${escapeHtml(params.email)}&gt; vient de créer un compte sur iziBooking.</p>
+      `<p><strong>${escapeHtml(params.name || "Sans nom")}</strong> (${escapeHtml(contact)}${params.via ? `, via ${escapeHtml(params.via)}` : ""}) vient de créer un compte sur iziBooking.</p>
        <p>Pas encore de profil à vérifier à ce stade — vous recevrez un second email dès que la personne choisira "Prestataire" et complétera son profil.</p>`,
       `${BASE_URL}/admin/users`,
       "Voir dans l'admin"

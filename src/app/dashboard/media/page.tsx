@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 export default async function MediaPage() {
   const [mediaLinks, session] = await Promise.all([getMediaLinks(), getServerSession(authOptions)]);
 
-  const user = session?.user?.email
+  const user = session?.user?.id
     ? await prisma.user.findUnique({
-        where: { email: session.user.email },
+        where: { id: session.user.id },
         include: { providerProfile: true }
       })
     : null;

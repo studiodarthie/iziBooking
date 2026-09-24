@@ -11,12 +11,12 @@ import { isPremium } from "@/lib/plan";
 export async function updateProviderSettings(formData: FormData) {
   const session = await getServerSession(authOptions);
   
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
   });
 
   if (!user || user.role !== "PROVIDER") {
@@ -63,7 +63,7 @@ export async function updateProviderSettings(formData: FormData) {
 export async function updateOrganizerName(name: string) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return { success: false, error: "Vous devez être connecté." };
   }
 
@@ -72,7 +72,7 @@ export async function updateOrganizerName(name: string) {
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const user = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!user) {
       return { success: false, error: "Utilisateur introuvable." };
     }
@@ -105,10 +105,10 @@ export async function generateBioAction(input: {
   }
 
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return { success: false, error: "Non autorisé." };
+  if (!session?.user?.id) return { success: false, error: "Non autorisé." };
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.id },
     include: { providerProfile: true },
   });
   if (!user || user.role !== "PROVIDER" || !user.providerProfile) {
