@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
-import { Camera, Share2, Sparkles, ArrowRight, Crown } from "lucide-react";
+import { Camera, Share2, Sparkles, ArrowRight, Crown, Users } from "lucide-react";
 import { buildPosterUrl } from "@/lib/poster";
 
 // Photo déjà hébergée sur Cloudinary (même image que la section culture de l'accueil),
@@ -14,7 +14,7 @@ const STEPS = [
   {
     icon: Sparkles,
     title: "Créez votre affiche",
-    text: "Titre de l'événement, date, un thème de couleur. Ça prend une minute, depuis votre tableau de bord.",
+    text: "Titre, date, et si vous voulez votre propre visuel (comme une vraie affiche d'événement). Depuis votre tableau de bord, en une minute.",
   },
   {
     icon: Share2,
@@ -24,7 +24,12 @@ const STEPS = [
   {
     icon: Camera,
     title: "Chacun génère la sienne",
-    text: "Chaque visiteur ajoute sa photo et télécharge sa propre affiche « J'y serai » à repartager. Chaque partage fait connaître votre événement.",
+    text: "Chaque visiteur ajoute sa photo, ajuste le cadrage, et télécharge sa propre affiche à repartager. Chaque partage fait connaître votre événement.",
+  },
+  {
+    icon: Users,
+    title: "Vous récupérez les contacts",
+    text: "Nom, téléphone, email : chaque affiche générée vous laisse un contact intéressé par votre événement, exportable en un clic.",
   },
 ];
 
@@ -56,8 +61,8 @@ export default async function JySeraiLandingPage() {
             </h1>
             <p className="mt-5 text-lg text-neutral-700 max-w-xl">
               Créez une campagne pour votre mariage, concert, festival ou conférence. Vos
-              invités ajoutent leur photo et partagent leur propre affiche — chaque partage
-              est une publicité gratuite pour votre événement.
+              invités ajoutent leur photo et partagent leur propre affiche — chaque partage est
+              une publicité gratuite, et vous récupérez leurs coordonnées au passage.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link
@@ -87,7 +92,7 @@ export default async function JySeraiLandingPage() {
           <h2 className="text-center font-heading font-bold text-2xl md:text-3xl text-ink mb-10">
             Comment ça marche
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {STEPS.map((s, i) => (
               <div key={s.title} className="text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary font-heading font-bold">

@@ -452,8 +452,22 @@ model PosterCampaign {
   eventDate DateTime?
   theme     PosterTheme @default(BRIQUE)
 
+  // Gabarit personnalisé (optionnel) : un PNG avec une zone transparente, fourni par
+  // l'organisateur, superposé tel quel sur la photo de chaque visiteur. Sans gabarit, on
+  // retombe sur le rendu généré automatiquement (cercle + texte, thème ci-dessus).
+  templatePublicId String?
+  templateWidth    Int?
+  templateHeight   Int?
+
   slug           String @unique
+  // Nombre de fois où la page a été ouverte, distinct de generatedCount (nombre d'affiches
+  // réellement téléchargées) — les deux sont affichés séparément, comme preuve sociale.
+  viewCount      Int    @default(0)
   generatedCount Int    @default(0)
+  // Nombre d'affiches autorisées par personne (déduplication par téléphone via PosterLead).
+  maxPerPerson   Int    @default(1)
+
+  leads PosterLead[]
 
   createdAt DateTime @default(now())
 }
@@ -462,4 +476,24 @@ enum PosterTheme {
   BRIQUE
   DORE
   FORET
+}
+
+// Contact capté à chaque génération d'affiche : la vraie valeur du produit pour
+// l'organisateur n'est pas que la viralité, c'est la liste de contacts qui en résulte.
+// L'unicité (campaignId, phone) sert aussi de garde-fou anti-abus (1 génération/personne).
+model PosterLead {
+  id         String         @id @default(cuid())
+  campaignId String
+  campaign   PosterCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  firstName   String
+  lastName    String
+  phone       String
+  isWhatsapp  Boolean  @default(true)
+  email       String?
+  consentedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  @@unique([campaignId, phone])
 }

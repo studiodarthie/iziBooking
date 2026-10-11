@@ -15,7 +15,10 @@ export default async function PostersPage() {
     where: { id: session.user.id },
     include: {
       providerProfile: { select: { plan: true, planExpiresAt: true } },
-      posterCampaigns: { orderBy: { createdAt: "desc" } },
+      posterCampaigns: {
+        orderBy: { createdAt: "desc" },
+        include: { _count: { select: { leads: true } } },
+      },
     },
   });
   if (!user) redirect("/login");
@@ -33,8 +36,9 @@ export default async function PostersPage() {
         </div>
         <p className="mt-2 text-ink/60 max-w-2xl">
           Créez une affiche personnalisable pour votre événement, partagez le lien : chaque
-          invité y ajoute sa photo et génère sa propre affiche à partager sur WhatsApp,
-          Facebook ou Instagram. Chaque partage fait connaître votre événement — et iziBooking.
+          invité y ajoute sa photo et génère sa propre affiche à partager sur WhatsApp, Facebook
+          ou Instagram. Vous récupérez aussi ses coordonnées — une vraie liste de contacts
+          intéressés par votre événement, pas seulement des partages.
         </p>
         {!premium && (
           <p className="mt-2 text-xs text-ink/50">

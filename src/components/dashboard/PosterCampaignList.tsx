@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Copy, Check, Trash2, ExternalLink, Images } from "lucide-react";
+import { Copy, Check, Trash2, ExternalLink, Images, Users, BarChart3 } from "lucide-react";
 import { deletePosterCampaign } from "@/app/dashboard/posters/actions";
 
 type Campaign = {
@@ -12,6 +12,8 @@ type Campaign = {
   slug: string;
   eventDate: Date | null;
   generatedCount: number;
+  viewCount: number;
+  _count: { leads: number };
   createdAt: Date;
 };
 
@@ -58,14 +60,14 @@ export function PosterCampaignList({ campaigns }: { campaigns: Campaign[] }) {
       {campaigns.map((c) => (
         <div key={c.id} className="bg-white border border-ink/10 rounded-2xl p-5">
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <h4 className="font-heading font-bold text-ink truncate">{c.title}</h4>
+            <Link href={`/dashboard/posters/${c.id}`} className="min-w-0">
+              <h4 className="font-heading font-bold text-ink truncate hover:text-primary transition-colors">{c.title}</h4>
               {c.eventDate && (
                 <p className="text-xs text-ink/50 mt-0.5">
                   {new Date(c.eventDate).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                 </p>
               )}
-            </div>
+            </Link>
             <button
               onClick={() => handleDelete(c)}
               disabled={busyId === c.id}
@@ -76,24 +78,37 @@ export function PosterCampaignList({ campaigns }: { campaigns: Campaign[] }) {
             </button>
           </div>
 
-          <div className="mt-4 flex items-center gap-1.5 text-sm text-ink/70">
-            <Images size={14} className="text-primary" />
-            <span className="font-semibold text-ink">{c.generatedCount}</span>
-            affiche{c.generatedCount > 1 ? "s" : ""} générée{c.generatedCount > 1 ? "s" : ""}
+          <div className="mt-4 flex items-center gap-4 text-xs text-ink/70">
+            <span className="flex items-center gap-1">
+              <BarChart3 size={13} className="text-ink/40" /> {c.viewCount} vues
+            </span>
+            <span className="flex items-center gap-1">
+              <Images size={13} className="text-primary" /> {c.generatedCount} générées
+            </span>
+            <span className="flex items-center gap-1">
+              <Users size={13} className="text-accent-2-600" /> {c._count.leads} contacts
+            </span>
           </div>
 
           <div className="mt-4 flex gap-2">
-            <button
-              onClick={() => copyLink(c.slug, c.id)}
+            <Link
+              href={`/dashboard/posters/${c.id}`}
               className="flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold border border-ink/15 rounded-lg px-3 py-2 hover:bg-sand/40 transition-colors"
             >
+              Voir les contacts
+            </Link>
+            <button
+              onClick={() => copyLink(c.slug, c.id)}
+              className="flex items-center justify-center gap-1.5 text-sm font-semibold border border-ink/15 rounded-lg px-3 py-2 hover:bg-sand/40 transition-colors"
+              aria-label="Copier le lien"
+            >
               {copiedId === c.id ? <Check size={15} className="text-success" /> : <Copy size={15} />}
-              {copiedId === c.id ? "Copié !" : "Copier le lien"}
             </button>
             <Link
               href={`/jyserai/${c.slug}`}
               target="_blank"
               className="flex items-center justify-center gap-1.5 text-sm font-semibold border border-ink/15 rounded-lg px-3 py-2 hover:bg-sand/40 transition-colors"
+              aria-label="Voir la page publique"
             >
               <ExternalLink size={15} />
             </Link>

@@ -22,7 +22,12 @@ async function uniqueSlug(title: string): Promise<string> {
   return slug;
 }
 
-export async function createPosterCampaign(input: { title: string; eventDate?: string; theme: string }) {
+export async function createPosterCampaign(input: {
+  title: string;
+  eventDate?: string;
+  theme: string;
+  template?: { publicId: string; width: number; height: number } | null;
+}) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { success: false as const, error: "Non autorisé" };
 
@@ -48,6 +53,9 @@ export async function createPosterCampaign(input: { title: string; eventDate?: s
       eventDate: input.eventDate ? new Date(input.eventDate) : null,
       theme,
       slug,
+      templatePublicId: input.template?.publicId,
+      templateWidth: input.template?.width,
+      templateHeight: input.template?.height,
     },
   });
 
