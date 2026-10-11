@@ -1,7 +1,120 @@
-import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import Link from "next/link";
+import { PublicNavbar } from "@/components/public/PublicNavbar";
+import { HomeFooter } from "@/components/public/HomeFooter";
+import { Camera, Share2, Sparkles, ArrowRight, Crown } from "lucide-react";
+import { buildPosterUrl } from "@/lib/poster";
 
-// /jyserai seul (sans slug de campagne) n'a rien à afficher — redirige vers l'accueil
-// plutôt qu'une 404 brute, au cas où le lien de base est partagé ou tapé par curiosité.
-export default function JySeraiIndexPage() {
-  redirect("/");
+// Photo déjà hébergée sur Cloudinary (même image que la section culture de l'accueil),
+// réutilisée pour montrer un exemple réel de rendu, sans dépendre d'un asset à part.
+const DEMO_PHOTO_PUBLIC_ID = "cdqqfmcr8eiq1hi0bkqd";
+
+const STEPS = [
+  {
+    icon: Sparkles,
+    title: "Créez votre affiche",
+    text: "Titre de l'événement, date, un thème de couleur. Ça prend une minute, depuis votre tableau de bord.",
+  },
+  {
+    icon: Share2,
+    title: "Partagez le lien",
+    text: "Un lien unique à envoyer sur WhatsApp, Facebook, Instagram — à vos invités, vos abonnés, votre communauté.",
+  },
+  {
+    icon: Camera,
+    title: "Chacun génère la sienne",
+    text: "Chaque visiteur ajoute sa photo et télécharge sa propre affiche « J'y serai » à repartager. Chaque partage fait connaître votre événement.",
+  },
+];
+
+export default async function JySeraiLandingPage() {
+  const session = await getServerSession(authOptions);
+  const ctaHref = session?.user ? "/dashboard/posters" : "/inscription";
+
+  const demoUrl = buildPosterUrl({
+    photoPublicId: DEMO_PHOTO_PUBLIC_ID,
+    title: "Festival Culturel 2026",
+    eventDateLabel: "Samedi 12 décembre 2026",
+    theme: "BRIQUE",
+    showWatermark: true,
+  });
+
+  return (
+    <div className="min-h-screen flex flex-col font-sans bg-[#FBF6EE]">
+      <PublicNavbar />
+
+      <section className="px-4 md:px-8 py-10 md:py-16">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
+              Gratuit · Sans compte pour vos invités
+            </span>
+            <h1 className="font-heading font-extrabold text-[clamp(32px,4.5vw,52px)] leading-[1.08] text-ink">
+              Faites parler de votre événement avec des affiches{" "}
+              <span className="text-primary">« J'y serai »</span>
+            </h1>
+            <p className="mt-5 text-lg text-neutral-700 max-w-xl">
+              Créez une campagne pour votre mariage, concert, festival ou conférence. Vos
+              invités ajoutent leur photo et partagent leur propre affiche — chaque partage
+              est une publicité gratuite pour votre événement.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Link
+                href={ctaHref}
+                className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-7 py-4 transition-colors"
+              >
+                Créer mon affiche gratuitement <ArrowRight size={18} />
+              </Link>
+            </div>
+            <p className="mt-4 text-xs text-ink/50 flex items-center gap-1.5">
+              <Crown size={14} className="text-accent-2-500" />
+              Avec Premium, le filigrane iziBooking disparaît de vos affiches.
+            </p>
+          </div>
+
+          <div className="flex justify-center">
+            <div className="w-full max-w-[320px] rounded-[28px] overflow-hidden shadow-2xl border-4 border-white">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={demoUrl} alt="Exemple d'affiche J'y serai" className="w-full h-auto" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 md:px-8 py-10 md:py-16 bg-white border-y border-divider">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-center font-heading font-bold text-2xl md:text-3xl text-ink mb-10">
+            Comment ça marche
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {STEPS.map((s, i) => (
+              <div key={s.title} className="text-center">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary font-heading font-bold">
+                  <s.icon size={24} />
+                </div>
+                <p className="text-xs font-bold text-primary tracking-wide uppercase mb-1">Étape {i + 1}</p>
+                <h3 className="font-heading font-bold text-lg text-ink">{s.title}</h3>
+                <p className="text-sm text-neutral-600 mt-2">{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 md:px-8 py-14 text-center">
+        <h2 className="font-heading font-bold text-2xl md:text-3xl text-ink">
+          Prêt à faire parler de votre événement ?
+        </h2>
+        <Link
+          href={ctaHref}
+          className="mt-6 inline-flex items-center justify-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-7 py-4 transition-colors"
+        >
+          Créer mon affiche gratuitement <ArrowRight size={18} />
+        </Link>
+      </section>
+
+      <HomeFooter />
+    </div>
+  );
 }
