@@ -53,6 +53,11 @@ export function slugifyPosterTitle(title: string): string {
 
 export type PosterTemplate = { publicId: string; width: number; height: number };
 
+/** Aperçu du gabarit seul, avant que le visiteur n'ajoute sa photo. */
+export function buildTemplatePreviewUrl(template: PosterTemplate): string {
+  return `https://res.cloudinary.com/${cloudName()}/image/upload/w_${template.width},h_${template.height},c_fill/f_auto,q_auto/${template.publicId}`;
+}
+
 export function buildPosterUrl(params: {
   photoPublicId: string;
   title: string;

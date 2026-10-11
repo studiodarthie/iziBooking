@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { Camera, Download, Share2, RefreshCw, Eye, Images, ChevronDown, Check } from "lucide-react";
-import { buildPosterUrl, POSTER_THEMES, type PosterTemplate } from "@/lib/poster";
+import { buildPosterUrl, buildTemplatePreviewUrl, POSTER_THEMES, type PosterTemplate } from "@/lib/poster";
 import { submitPosterLead } from "@/app/jyserai/[slug]/actions";
 import type { PosterTheme } from "@prisma/client";
 
@@ -52,6 +52,7 @@ export function PosterGenerator({
   const posterUrl = photoPublicId
     ? buildPosterUrl({ photoPublicId, title, eventDateLabel, theme, showWatermark, template })
     : null;
+  const previewUrl = posterUrl ?? (template ? buildTemplatePreviewUrl(template) : null);
   const downloadUrl = posterUrl?.replace("/image/upload/", "/image/upload/fl_attachment/");
 
   const canvasRatio = template ? `${template.width}:${template.height}` : "1080:1350";
@@ -124,9 +125,9 @@ export function PosterGenerator({
             className="rounded-3xl overflow-hidden shadow-2xl border-4 mx-auto max-w-[420px]"
             style={{ borderColor: `#${t.accent}`, aspectRatio: aspectCss, backgroundColor: `#${t.bg}` }}
           >
-            {posterUrl ? (
+            {previewUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={posterUrl} alt={title} className="w-full h-full object-cover" />
+              <img src={previewUrl} alt={title} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white/50 text-sm px-8 text-center">
                 Ajoutez votre photo pour générer votre affiche
