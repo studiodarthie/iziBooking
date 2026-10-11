@@ -62,6 +62,7 @@ model User {
   reviews         Review[]
   disputesOpened  Dispute[]
   contactMessagesSent ContactMessage[]
+  posterCampaigns PosterCampaign[]
 }
 
 model VerificationToken {
@@ -436,4 +437,29 @@ model Coupon {
 enum DiscountType {
   PERCENTAGE
   FIXED_AMOUNT
+}
+
+// Générateur d'affiches virales "J'y serai" : un organisateur ou un prestataire crée une
+// campagne pour son événement, partage le lien public, et chaque visiteur génère sa propre
+// affiche avec sa photo. Sert la viralité (chaque affiche partagée est une pub gratuite) —
+// volontairement léger : pas de paiement, pas de stock, juste un gabarit + un compteur.
+model PosterCampaign {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title     String
+  eventDate DateTime?
+  theme     PosterTheme @default(BRIQUE)
+
+  slug           String @unique
+  generatedCount Int    @default(0)
+
+  createdAt DateTime @default(now())
+}
+
+enum PosterTheme {
+  BRIQUE
+  DORE
+  FORET
 }

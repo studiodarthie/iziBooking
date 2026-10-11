@@ -16,6 +16,7 @@ import {
   Crown,
   Mail,
   Sparkles,
+  Images,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -41,6 +42,7 @@ const PROVIDER_SECTIONS = [
       { name: "Codes promo", href: "/dashboard/coupons", icon: Tag },
       { name: "Médiathèque", href: "/dashboard/media", icon: ImageIcon },
       { name: "Coach IA", href: "/dashboard/coach", icon: Sparkles, badge: "Nouveau" },
+      { name: "Affiches J'y serai", href: "/dashboard/posters", icon: Images, badge: "Nouveau" },
     ]
   },
   {
@@ -55,6 +57,7 @@ const PROVIDER_SECTIONS = [
 const ORGANIZER_NAVIGATION = [
   { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
   { name: "Mes Réservations", href: "/dashboard/bookings", icon: CheckCircle },
+  { name: "Affiches J'y serai", href: "/dashboard/posters", icon: Images, badge: "Nouveau" },
   { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
 ];
 
@@ -156,6 +159,11 @@ export function Sidebar({
                         />
                         {item.name}
                       </div>
+                      {"badge" in item && item.badge && (
+                        <span className="text-[10px] font-bold bg-accent-2-500 text-ink px-2 py-0.5 rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 );
