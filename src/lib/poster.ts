@@ -23,6 +23,16 @@ const GENERATED_CANVAS_H = 1350;
 /** Photo déjà hébergée sur Cloudinary, réutilisée pour les aperçus de démonstration (accueil, édition de zone). */
 export const DEMO_PHOTO_PUBLIC_ID = "cdqqfmcr8eiq1hi0bkqd";
 
+/** Logo blanc iziBooking (PNG transparent), uploadé une fois pour servir de filigrane. */
+const WATERMARK_LOGO_PUBLIC_ID = "izibooking/watermark-logo-white";
+
+/** Filigrane en bas à droite : le logo de l'app plutôt qu'un texte, dimensionné au canevas. */
+function watermarkStep(canvasWidth: number): string {
+  const logoWidth = Math.round(canvasWidth * 0.2);
+  const margin = Math.round(canvasWidth * 0.035);
+  return `l_${layerId(WATERMARK_LOGO_PUBLIC_ID)},w_${logoWidth},o_85/fl_layer_apply,g_south_east,x_${margin},y_${margin}`;
+}
+
 /** Taille recommandée pour un gabarit personnalisé, affichée dans l'UI d'upload. */
 export const RECOMMENDED_TEMPLATE_SIZE = "1080 × 1350 px";
 
@@ -134,10 +144,9 @@ function customTemplateSteps(params: {
   photoPublicId: string;
   photoCrop?: PhotoCrop | null;
 }): string[] {
-  const { theme, showWatermark, template, photoPublicId, photoCrop } = params;
+  const { showWatermark, template, photoPublicId, photoCrop } = params;
   const { width, height, photoZone } = template;
   const zone = photoZone ?? { x: 0, y: 0, width, height };
-  const t = POSTER_THEMES[theme];
   const templateLayer = layerId(template.publicId);
 
   const photoTransform = photoCrop
@@ -151,7 +160,7 @@ function customTemplateSteps(params: {
   ];
 
   if (showWatermark) {
-    steps.push(`l_text:Poppins_28_bold:izibooking.app,co_rgb:${t.text},o_70,b_rgb:00000080/fl_layer_apply,g_south,y_30`);
+    steps.push(watermarkStep(width));
   }
 
   return steps;
@@ -181,7 +190,7 @@ function generatedSteps(params: {
   }
 
   if (showWatermark) {
-    steps.push(`l_text:Poppins_28_bold:izibooking.app,co_rgb:${t.text},o_55/fl_layer_apply,g_south,y_50`);
+    steps.push(watermarkStep(GENERATED_CANVAS_W));
   }
 
   return steps;
