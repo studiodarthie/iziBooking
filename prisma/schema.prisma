@@ -458,6 +458,13 @@ model PosterCampaign {
   templatePublicId String?
   templateWidth    Int?
   templateHeight   Int?
+  // Position/taille (en pixels, dans le référentiel du gabarit) de la zone transparente où
+  // la photo du visiteur doit être insérée. Sans cette zone, la photo serait calée sur tout
+  // le canevas, ce qui la fait apparaître mal cadrée dans la petite fenêtre découpée du PNG.
+  photoZoneX      Int?
+  photoZoneY      Int?
+  photoZoneWidth  Int?
+  photoZoneHeight Int?
 
   slug           String @unique
   // Nombre de fois où la page a été ouverte, distinct de generatedCount (nombre d'affiches

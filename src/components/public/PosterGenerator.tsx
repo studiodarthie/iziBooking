@@ -142,7 +142,11 @@ export function PosterGenerator({
                 sources: ["local", "camera"],
                 multiple: false,
                 cropping: true,
-                croppingAspectRatio: template ? template.width / template.height : 1080 / 1350,
+                croppingAspectRatio: template?.photoZone
+                  ? template.photoZone.width / template.photoZone.height
+                  : template
+                    ? template.width / template.height
+                    : 1080 / 1350,
                 croppingShowDimensions: true,
                 showSkipCropButton: false,
               }}

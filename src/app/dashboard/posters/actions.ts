@@ -4,8 +4,18 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { slugifyPosterTitle } from "@/lib/poster";
+import { slugifyPosterTitle, type PhotoZone } from "@/lib/poster";
 import { PosterTheme } from "@prisma/client";
+
+/** Rejette toute zone qui déborderait du gabarit (donnée non fiable venant du client). */
+function sanitizePhotoZone(zone: PhotoZone | null | undefined, template: { width: number; height: number }) {
+  if (!zone) return null;
+  const width = Math.min(Math.max(Math.round(zone.width), 1), template.width);
+  const height = Math.min(Math.max(Math.round(zone.height), 1), template.height);
+  const x = Math.min(Math.max(Math.round(zone.x), 0), template.width - width);
+  const y = Math.min(Math.max(Math.round(zone.y), 0), template.height - height);
+  return { x, y, width, height };
+}
 
 const MAX_CAMPAIGNS_PER_USER = 10;
 
@@ -26,7 +36,7 @@ export async function createPosterCampaign(input: {
   title: string;
   eventDate?: string;
   theme: string;
-  template?: { publicId: string; width: number; height: number } | null;
+  template?: { publicId: string; width: number; height: number; photoZone?: PhotoZone | null } | null;
 }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { success: false as const, error: "Non autorisé" };
@@ -45,6 +55,7 @@ export async function createPosterCampaign(input: {
   }
 
   const slug = await uniqueSlug(title);
+  const zone = input.template ? sanitizePhotoZone(input.template.photoZone, input.template) : null;
 
   const campaign = await prisma.posterCampaign.create({
     data: {
@@ -56,6 +67,10 @@ export async function createPosterCampaign(input: {
       templatePublicId: input.template?.publicId,
       templateWidth: input.template?.width,
       templateHeight: input.template?.height,
+      photoZoneX: zone?.x,
+      photoZoneY: zone?.y,
+      photoZoneWidth: zone?.width,
+      photoZoneHeight: zone?.height,
     },
   });
 

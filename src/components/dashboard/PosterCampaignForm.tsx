@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Plus, X, Loader2, Upload, Check } from "lucide-react";
 import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { createPosterCampaign } from "@/app/dashboard/posters/actions";
-import { RECOMMENDED_TEMPLATE_SIZE } from "@/lib/poster";
+import { RECOMMENDED_TEMPLATE_SIZE, type PhotoZone } from "@/lib/poster";
+import { PhotoZoneEditor, defaultPhotoZone } from "./PhotoZoneEditor";
 
 const THEME_OPTIONS: { id: "BRIQUE" | "DORE" | "FORET"; label: string; swatch: string }[] = [
   { id: "BRIQUE", label: "Brique", swatch: "#331408" },
@@ -20,13 +21,19 @@ export function PosterCampaignForm() {
   const [eventDate, setEventDate] = useState("");
   const [theme, setTheme] = useState<"BRIQUE" | "DORE" | "FORET">("BRIQUE");
   const [template, setTemplate] = useState<{ publicId: string; width: number; height: number } | null>(null);
+  const [photoZone, setPhotoZone] = useState<PhotoZone | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     setError(null);
     setIsPending(true);
-    const res = await createPosterCampaign({ title, eventDate: eventDate || undefined, theme, template });
+    const res = await createPosterCampaign({
+      title,
+      eventDate: eventDate || undefined,
+      theme,
+      template: template ? { ...template, photoZone } : null,
+    });
     setIsPending(false);
     if (res.success) {
       setOpen(false);
@@ -34,6 +41,7 @@ export function PosterCampaignForm() {
       setEventDate("");
       setTheme("BRIQUE");
       setTemplate(null);
+      setPhotoZone(null);
       router.refresh();
     } else {
       setError(res.error);
@@ -91,11 +99,21 @@ export function PosterCampaignForm() {
         </p>
 
         {template ? (
-          <div className="flex items-center gap-2 text-sm font-semibold text-success bg-success/10 rounded-lg px-3 py-2.5">
-            <Check size={16} /> Gabarit ajouté ({template.width}×{template.height}px)
-            <button type="button" onClick={() => setTemplate(null)} className="ml-auto text-ink/40 hover:text-red-600">
-              <X size={14} />
-            </button>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-success bg-success/10 rounded-lg px-3 py-2.5">
+              <Check size={16} /> Gabarit ajouté ({template.width}×{template.height}px)
+              <button
+                type="button"
+                onClick={() => {
+                  setTemplate(null);
+                  setPhotoZone(null);
+                }}
+                className="ml-auto text-ink/40 hover:text-red-600"
+              >
+                <X size={14} />
+              </button>
+            </div>
+            {photoZone && <PhotoZoneEditor template={template} value={photoZone} onChange={setPhotoZone} />}
           </div>
         ) : (
           <CldUploadWidget
@@ -105,7 +123,9 @@ export function PosterCampaignForm() {
               if (typeof result.info !== "object" || !result.info) return;
               const info = result.info;
               if (!info.width || !info.height) return;
-              setTemplate({ publicId: info.public_id, width: info.width, height: info.height });
+              const nextTemplate = { publicId: info.public_id, width: info.width, height: info.height };
+              setTemplate(nextTemplate);
+              setPhotoZone(defaultPhotoZone(nextTemplate));
             }}
           >
             {({ open: openWidget }) => (

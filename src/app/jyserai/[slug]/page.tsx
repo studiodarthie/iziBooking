@@ -35,7 +35,20 @@ export default async function PosterCampaignPage(props: Props) {
   const theme = POSTER_THEMES[campaign.theme];
   const template =
     campaign.templatePublicId && campaign.templateWidth && campaign.templateHeight
-      ? { publicId: campaign.templatePublicId, width: campaign.templateWidth, height: campaign.templateHeight }
+      ? {
+          publicId: campaign.templatePublicId,
+          width: campaign.templateWidth,
+          height: campaign.templateHeight,
+          photoZone:
+            campaign.photoZoneX != null && campaign.photoZoneY != null && campaign.photoZoneWidth != null && campaign.photoZoneHeight != null
+              ? {
+                  x: campaign.photoZoneX,
+                  y: campaign.photoZoneY,
+                  width: campaign.photoZoneWidth,
+                  height: campaign.photoZoneHeight,
+                }
+              : null,
+        }
       : null;
 
   return (

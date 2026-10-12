@@ -51,7 +51,15 @@ export function slugifyPosterTitle(title: string): string {
     .slice(0, 60) || "evenement";
 }
 
-export type PosterTemplate = { publicId: string; width: number; height: number };
+/** Position/taille (en pixels, dans le référentiel du gabarit) de la zone où insérer la photo. */
+export type PhotoZone = { x: number; y: number; width: number; height: number };
+
+export type PosterTemplate = {
+  publicId: string;
+  width: number;
+  height: number;
+  photoZone?: PhotoZone | null;
+};
 
 /** Aperçu du gabarit seul, avant que le visiteur n'ajoute sa photo. */
 export function buildTemplatePreviewUrl(template: PosterTemplate): string {
@@ -67,26 +75,44 @@ export function buildPosterUrl(params: {
   template?: PosterTemplate | null;
 }): string {
   const { photoPublicId, theme, showWatermark, template } = params;
-  const steps = template
-    ? customTemplateSteps({ theme, showWatermark, template })
-    : generatedSteps(params);
+
+  if (template) {
+    const steps = customTemplateSteps({ theme, showWatermark, template, photoPublicId });
+    steps.push("f_auto,q_auto");
+    return `https://res.cloudinary.com/${cloudName()}/image/upload/${steps.join("/")}/${template.publicId}`;
+  }
+
+  const steps = generatedSteps(params);
   steps.push("f_auto,q_auto");
   return `https://res.cloudinary.com/${cloudName()}/image/upload/${steps.join("/")}/${photoPublicId}`;
 }
 
-/** Mode gabarit personnalisé : photo redimensionnée au format du gabarit, gabarit posé par-dessus. */
+/**
+ * Mode gabarit personnalisé — construit en "sandwich" :
+ *  1. le gabarit en base (fixe les dimensions du canevas),
+ *  2. la photo du visiteur en calque, redimensionnée/positionnée exactement sur la zone
+ *     transparente (pas sur tout le canevas, sinon le cadrage choisi par le visiteur ne
+ *     correspond pas à ce qui s'affiche réellement dans la petite fenêtre découpée),
+ *  3. le gabarit à nouveau par-dessus, pour masquer précisément tout débord de la photo hors
+ *     de la zone transparente et garder le cadre toujours net, même si la zone n'est pas
+ *     pixel-parfaite.
+ */
 function customTemplateSteps(params: {
   theme: PosterTheme;
   showWatermark: boolean;
   template: PosterTemplate;
+  photoPublicId: string;
 }): string[] {
-  const { theme, showWatermark, template } = params;
-  const { publicId, width, height } = template;
+  const { theme, showWatermark, template, photoPublicId } = params;
+  const { width, height, photoZone } = template;
+  const zone = photoZone ?? { x: 0, y: 0, width, height };
   const t = POSTER_THEMES[theme];
+  const templateLayer = layerId(template.publicId);
 
   const steps: string[] = [
-    `w_${width},h_${height},c_fill,g_auto`,
-    `l_${layerId(publicId)},w_${width},h_${height},c_fill/fl_layer_apply,g_north_west,x_0,y_0`,
+    `w_${width},h_${height},c_fit`,
+    `l_${layerId(photoPublicId)},w_${zone.width},h_${zone.height},c_fill,g_auto/fl_layer_apply,g_north_west,x_${zone.x},y_${zone.y}`,
+    `l_${templateLayer},w_${width},h_${height},c_fit/fl_layer_apply,g_north_west,x_0,y_0`,
   ];
 
   if (showWatermark) {
