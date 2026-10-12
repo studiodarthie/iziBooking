@@ -15,6 +15,7 @@ const NAVIGATION = [
   { href: "/", label: "Accueil" },
   { href: "/#comment-ca-marche", label: "Comment ça marche" },
   { href: "/jyserai", label: "Affiches J'y serai" },
+  { href: "/jyserai/galerie", label: "Galerie des badges" },
   { href: "/tarifs", label: "Tarifs" },
   { href: "/blog", label: "Blog" },
   { href: "/contact#faq", label: "FAQ" },

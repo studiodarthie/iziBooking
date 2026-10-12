@@ -101,6 +101,24 @@ export function buildCloudinaryUrl(publicId: string, transform?: string): string
   return `https://res.cloudinary.com/${cloudName()}/image/upload/${transform ? `${transform}/` : ""}${publicId}`;
 }
 
+/**
+ * Vignette d'une campagne (carte dashboard, galerie publique) : le vrai gabarit s'il y en a un,
+ * sinon un aperçu du rendu généré automatiquement — jamais vide, même sans photo de visiteur.
+ */
+export function buildCampaignThumbnailUrl(campaign: {
+  title: string;
+  theme: PosterTheme;
+  templatePublicId?: string | null;
+  templateWidth?: number | null;
+  templateHeight?: number | null;
+}): string {
+  const { title, theme, templatePublicId, templateWidth, templateHeight } = campaign;
+  if (templatePublicId && templateWidth && templateHeight) {
+    return buildTemplatePreviewUrl({ publicId: templatePublicId, width: templateWidth, height: templateHeight });
+  }
+  return buildPosterUrl({ photoPublicId: DEMO_PHOTO_PUBLIC_ID, title, theme, showWatermark: false });
+}
+
 export function buildPosterUrl(params: {
   photoPublicId: string;
   title: string;

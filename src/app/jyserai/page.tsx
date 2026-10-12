@@ -69,6 +69,12 @@ export default async function JySeraiLandingPage() {
                 >
                   Créer mon affiche gratuitement <ArrowRight size={18} />
                 </Link>
+                <Link
+                  href="/jyserai/galerie"
+                  className="inline-flex items-center justify-center gap-2 bg-white border border-neutral-400 text-ink font-semibold rounded-full px-7 py-4 hover:border-primary hover:text-primary transition-colors"
+                >
+                  Voir les badges existants
+                </Link>
               </div>
               <p className="mt-4 text-xs text-ink/50 flex items-center gap-1.5">
                 <Crown size={14} className="text-accent-2-500" />

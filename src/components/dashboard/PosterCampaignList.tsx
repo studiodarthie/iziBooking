@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Copy, Check, Trash2, ExternalLink, Images, Users, BarChart3 } from "lucide-react";
 import { deletePosterCampaign } from "@/app/dashboard/posters/actions";
-import { buildTemplatePreviewUrl, buildPosterUrl, DEMO_PHOTO_PUBLIC_ID } from "@/lib/poster";
+import { buildCampaignThumbnailUrl } from "@/lib/poster";
 import type { PosterTheme } from "@prisma/client";
 
 type Campaign = {
@@ -22,19 +22,6 @@ type Campaign = {
   _count: { leads: number };
   createdAt: Date;
 };
-
-/** Vignette de la campagne : le vrai gabarit s'il y en a un, sinon un aperçu du rendu généré. */
-function thumbnailUrl(c: Campaign): string {
-  if (c.templatePublicId && c.templateWidth && c.templateHeight) {
-    return buildTemplatePreviewUrl({ publicId: c.templatePublicId, width: c.templateWidth, height: c.templateHeight });
-  }
-  return buildPosterUrl({
-    photoPublicId: DEMO_PHOTO_PUBLIC_ID,
-    title: c.title,
-    theme: c.theme,
-    showWatermark: false,
-  });
-}
 
 export function PosterCampaignList({ campaigns }: { campaigns: Campaign[] }) {
   const router = useRouter();
@@ -84,7 +71,7 @@ export function PosterCampaignList({ campaigns }: { campaigns: Campaign[] }) {
             style={{ aspectRatio: c.templateWidth && c.templateHeight ? `${c.templateWidth} / ${c.templateHeight}` : "1080 / 1350" }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={thumbnailUrl(c)} alt={c.title} className="w-full h-full object-cover" />
+            <img src={buildCampaignThumbnailUrl(c)} alt={c.title} className="w-full h-full object-cover" />
           </Link>
 
           <div className="min-w-0 flex-1">
