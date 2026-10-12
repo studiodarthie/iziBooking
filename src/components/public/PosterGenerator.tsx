@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { Camera, Download, Share2, RefreshCw, Eye, Images, ChevronDown, Check } from "lucide-react";
-import { buildPosterUrl, buildTemplatePreviewUrl, POSTER_THEMES, type PosterTemplate } from "@/lib/poster";
+import { buildPosterUrl, buildTemplatePreviewUrl, POSTER_THEMES, type PosterTemplate, type PhotoCrop } from "@/lib/poster";
+import { PhotoAdjuster } from "./PhotoAdjuster";
 import { submitPosterLead } from "@/app/jyserai/[slug]/actions";
 import type { PosterTheme } from "@prisma/client";
 
@@ -31,8 +32,18 @@ export function PosterGenerator({
   generatedCount: number;
   maxPerPerson: number;
 }) {
-  const [photoPublicId, setPhotoPublicId] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<{ publicId: string; width: number; height: number } | null>(null);
+  const [photoCrop, setPhotoCrop] = useState<PhotoCrop | null>(null);
+  const [debouncedCrop, setDebouncedCrop] = useState<PhotoCrop | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
+  // Évite de régénérer l'URL Cloudinary (donc de spammer des requêtes) à chaque pixel de
+  // glissement dans PhotoAdjuster — seul l'aperçu <img> affiché est retardé, pas le recadrage
+  // réellement enregistré (photoCrop), utilisé tel quel au moment du téléchargement.
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedCrop(photoCrop), 150);
+    return () => clearTimeout(id);
+  }, [photoCrop]);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -49,14 +60,33 @@ export function PosterGenerator({
     ? new Date(eventDate).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
     : null;
 
-  const posterUrl = photoPublicId
-    ? buildPosterUrl({ photoPublicId, title, eventDateLabel, theme, showWatermark, template })
+  const previewPosterUrl = photo
+    ? buildPosterUrl({
+        photoPublicId: photo.publicId,
+        title,
+        eventDateLabel,
+        theme,
+        showWatermark,
+        template,
+        photoCrop: debouncedCrop,
+      })
     : null;
-  const previewUrl = posterUrl ?? (template ? buildTemplatePreviewUrl(template) : null);
-  const downloadUrl = posterUrl?.replace("/image/upload/", "/image/upload/fl_attachment/");
+  const previewUrl = previewPosterUrl ?? (template ? buildTemplatePreviewUrl(template) : null);
+
+  // Recadrage exact (non retardé) au moment du téléchargement, pour que le fichier téléchargé
+  // corresponde pile à ce que le visiteur a validé, même si l'aperçu affiché a un léger délai.
+  const finalPosterUrl = photo
+    ? buildPosterUrl({ photoPublicId: photo.publicId, title, eventDateLabel, theme, showWatermark, template, photoCrop })
+    : null;
+  const downloadUrl = finalPosterUrl?.replace("/image/upload/", "/image/upload/fl_attachment/");
 
   const canvasRatio = template ? `${template.width}:${template.height}` : "1080:1350";
   const aspectCss = template ? `${template.width} / ${template.height}` : "1080 / 1350";
+  const zoneAspectRatio = template?.photoZone
+    ? template.photoZone.width / template.photoZone.height
+    : template
+      ? template.width / template.height
+      : 1080 / 1350;
 
   const handleDownload = async () => {
     setFormError(null);
@@ -141,34 +171,51 @@ export function PosterGenerator({
               options={{
                 sources: ["local", "camera"],
                 multiple: false,
-                cropping: true,
-                croppingAspectRatio: template?.photoZone
-                  ? template.photoZone.width / template.photoZone.height
-                  : template
-                    ? template.width / template.height
-                    : 1080 / 1350,
+                // Avec un gabarit, on gère nous-mêmes le recadrage après coup (PhotoAdjuster,
+                // ajustable à tout moment) plutôt que de figer un cadrage unique à l'upload.
+                cropping: !template,
+                croppingAspectRatio: zoneAspectRatio,
                 croppingShowDimensions: true,
                 showSkipCropButton: false,
               }}
               onSuccess={(result: CloudinaryUploadWidgetResults) => {
                 if (typeof result.info !== "object" || !result.info) return;
-                setPhotoPublicId(result.info.public_id);
+                const info = result.info;
+                if (!info.width || !info.height) return;
+                setPhoto({ publicId: info.public_id, width: info.width, height: info.height });
+                setPhotoCrop(null);
+                setDebouncedCrop(null);
               }}
             >
-              {({ open }) => (
-                <button
-                  type="button"
-                  onClick={() => open()}
-                  className="w-full flex items-center justify-center gap-2 bg-white text-ink font-bold rounded-xl px-5 py-3.5 hover:bg-white/90 transition-colors"
-                >
-                  {photoPublicId ? <RefreshCw size={18} /> : <Camera size={18} />}
-                  {photoPublicId ? "Changer la photo" : "1. Ajouter ma photo (cadrage ajustable)"}
-                </button>
-              )}
+              {({ open }) =>
+                photo && template ? (
+                  <div className="flex flex-col items-center gap-3">
+                    <PhotoAdjuster key={photo.publicId} photo={photo} aspectRatio={zoneAspectRatio} onChange={setPhotoCrop} />
+                    <button
+                      type="button"
+                      onClick={() => open()}
+                      className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-xs font-semibold transition-colors"
+                    >
+                      <RefreshCw size={13} /> Changer de photo
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => open()}
+                    className="w-full flex items-center justify-center gap-2 bg-white text-ink font-bold rounded-xl px-5 py-3.5 hover:bg-white/90 transition-colors"
+                  >
+                    <Camera size={18} />
+                    1. Ajouter ma photo
+                  </button>
+                )
+              }
             </CldUploadWidget>
-            <p className="text-center text-white/40 text-xs mt-3">
-              Format conseillé : portrait, ratio {canvasRatio}.
-            </p>
+            {!(photo && template) && (
+              <p className="text-center text-white/40 text-xs mt-3">
+                Format conseillé : portrait, ratio {canvasRatio}.
+              </p>
+            )}
           </div>
         </div>
 
@@ -233,14 +280,14 @@ export function PosterGenerator({
 
               <button
                 onClick={handleDownload}
-                disabled={!photoPublicId || isSubmitting}
+                disabled={!photo || isSubmitting}
                 className="w-full flex items-center justify-center gap-2 font-bold rounded-xl px-4 py-3 mt-2 transition-colors disabled:opacity-40"
                 style={{ backgroundColor: `#${t.accent}`, color: "#1a1208" }}
               >
                 <Download size={18} />
                 {isSubmitting ? "..." : "3. Télécharger"}
               </button>
-              {!photoPublicId && (
+              {!photo && (
                 <p className="text-center text-ink/40 text-[11px]">Ajoutez d&apos;abord votre photo à gauche.</p>
               )}
               <p className="text-center text-ink/40 text-[11px]">{maxPerPerson} affiche par personne.</p>

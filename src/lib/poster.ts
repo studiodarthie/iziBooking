@@ -57,6 +57,23 @@ export function slugifyPosterTitle(title: string): string {
 /** Position/taille (en pixels, dans le référentiel du gabarit) de la zone où insérer la photo. */
 export type PhotoZone = { x: number; y: number; width: number; height: number };
 
+/** Position/taille (en pixels, dans le référentiel de la PHOTO) du recadrage choisi par le visiteur. */
+export type PhotoCrop = { x: number; y: number; width: number; height: number };
+
+/** Le plus grand rectangle centré au ratio donné qui tient dans la photo (zoom minimal, "cover"). */
+export function defaultPhotoCrop(photo: { width: number; height: number }, aspectRatio: number): PhotoCrop {
+  let width: number;
+  let height: number;
+  if (photo.width / photo.height > aspectRatio) {
+    height = photo.height;
+    width = Math.round(height * aspectRatio);
+  } else {
+    width = photo.width;
+    height = Math.round(width / aspectRatio);
+  }
+  return { x: Math.round((photo.width - width) / 2), y: Math.round((photo.height - height) / 2), width, height };
+}
+
 export type PosterTemplate = {
   publicId: string;
   width: number;
@@ -69,6 +86,11 @@ export function buildTemplatePreviewUrl(template: PosterTemplate): string {
   return `https://res.cloudinary.com/${cloudName()}/image/upload/w_${template.width},h_${template.height},c_fill/f_auto,q_auto/${template.publicId}`;
 }
 
+/** URL Cloudinary brute pour un public_id donné, avec une transformation optionnelle. */
+export function buildCloudinaryUrl(publicId: string, transform?: string): string {
+  return `https://res.cloudinary.com/${cloudName()}/image/upload/${transform ? `${transform}/` : ""}${publicId}`;
+}
+
 export function buildPosterUrl(params: {
   photoPublicId: string;
   title: string;
@@ -76,11 +98,12 @@ export function buildPosterUrl(params: {
   theme: PosterTheme;
   showWatermark: boolean;
   template?: PosterTemplate | null;
+  photoCrop?: PhotoCrop | null;
 }): string {
-  const { photoPublicId, theme, showWatermark, template } = params;
+  const { photoPublicId, theme, showWatermark, template, photoCrop } = params;
 
   if (template) {
-    const steps = customTemplateSteps({ theme, showWatermark, template, photoPublicId });
+    const steps = customTemplateSteps({ theme, showWatermark, template, photoPublicId, photoCrop });
     steps.push("f_auto,q_auto");
     return `https://res.cloudinary.com/${cloudName()}/image/upload/${steps.join("/")}/${template.publicId}`;
   }
@@ -99,22 +122,31 @@ export function buildPosterUrl(params: {
  *  3. le gabarit à nouveau par-dessus, pour masquer précisément tout débord de la photo hors
  *     de la zone transparente et garder le cadre toujours net, même si la zone n'est pas
  *     pixel-parfaite.
+ *
+ * Si le visiteur a choisi un recadrage précis (photoCrop, via PhotoAdjuster), on l'applique
+ * tel quel (c_crop) avant de normaliser à la taille de la zone — sinon on retombe sur un
+ * recadrage automatique (c_fill,g_auto) sur la photo entière.
  */
 function customTemplateSteps(params: {
   theme: PosterTheme;
   showWatermark: boolean;
   template: PosterTemplate;
   photoPublicId: string;
+  photoCrop?: PhotoCrop | null;
 }): string[] {
-  const { theme, showWatermark, template, photoPublicId } = params;
+  const { theme, showWatermark, template, photoPublicId, photoCrop } = params;
   const { width, height, photoZone } = template;
   const zone = photoZone ?? { x: 0, y: 0, width, height };
   const t = POSTER_THEMES[theme];
   const templateLayer = layerId(template.publicId);
 
+  const photoTransform = photoCrop
+    ? `c_crop,x_${photoCrop.x},y_${photoCrop.y},w_${photoCrop.width},h_${photoCrop.height}/c_fill,w_${zone.width},h_${zone.height}`
+    : `w_${zone.width},h_${zone.height},c_fill,g_auto`;
+
   const steps: string[] = [
     `w_${width},h_${height},c_fit`,
-    `l_${layerId(photoPublicId)},w_${zone.width},h_${zone.height},c_fill,g_auto/fl_layer_apply,g_north_west,x_${zone.x},y_${zone.y}`,
+    `l_${layerId(photoPublicId)},${photoTransform}/fl_layer_apply,g_north_west,x_${zone.x},y_${zone.y}`,
     `l_${templateLayer},w_${width},h_${height},c_fit/fl_layer_apply,g_north_west,x_0,y_0`,
   ];
 
