@@ -4,7 +4,6 @@ import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { PosterGenerator } from "@/components/public/PosterGenerator";
 import { isPremium } from "@/lib/plan";
-import { POSTER_THEMES } from "@/lib/poster";
 import { registerPosterView } from "./actions";
 
 interface Props {
@@ -32,7 +31,6 @@ export default async function PosterCampaignPage(props: Props) {
   registerPosterView(slug).catch(() => {});
 
   const showWatermark = !(campaign.user.providerProfile && isPremium(campaign.user.providerProfile));
-  const theme = POSTER_THEMES[campaign.theme];
   const template =
     campaign.templatePublicId && campaign.templateWidth && campaign.templateHeight
       ? {
@@ -52,7 +50,7 @@ export default async function PosterCampaignPage(props: Props) {
       : null;
 
   return (
-    <div className="min-h-screen flex flex-col font-sans" style={{ backgroundColor: `#${theme.bg}` }}>
+    <div className="min-h-screen flex flex-col font-sans bg-[#FBF6EE]">
       <PublicNavbar />
       <div className="flex-1 px-4 py-8 md:py-12">
         <PosterGenerator

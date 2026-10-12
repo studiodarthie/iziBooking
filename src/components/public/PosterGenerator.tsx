@@ -129,16 +129,13 @@ export function PosterGenerator({
   return (
     <div className="max-w-5xl mx-auto">
       <div className="text-center mb-8">
-        <span
-          className="inline-block text-[11px] font-bold uppercase tracking-[0.08em] px-3 py-1 rounded-full mb-3"
-          style={{ backgroundColor: `#${t.accent}33`, color: `#${t.accent}` }}
-        >
+        <span className="inline-block bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-[0.08em] px-3 py-1 rounded-full mb-3">
           J&apos;y serai
         </span>
-        <h1 className="text-2xl md:text-3xl font-heading font-bold text-white">{title}</h1>
-        {eventDateLabel && <p className="text-white/70 mt-1">{eventDateLabel}</p>}
+        <h1 className="text-2xl md:text-3xl font-heading font-bold text-ink">{title}</h1>
+        {eventDateLabel && <p className="text-ink/60 mt-1">{eventDateLabel}</p>}
 
-        <div className="mt-4 flex items-center justify-center gap-4 text-white/60 text-sm">
+        <div className="mt-4 flex items-center justify-center gap-4 text-ink/50 text-sm">
           <span className="flex items-center gap-1.5">
             <Eye size={15} /> {viewCount} vue{viewCount > 1 ? "s" : ""}
           </span>
@@ -159,7 +156,7 @@ export function PosterGenerator({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={previewUrl} alt={title} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-white/50 text-sm px-8 text-center">
+              <div className="w-full h-full flex items-center justify-center text-white/60 text-sm px-8 text-center">
                 Ajoutez votre photo pour générer votre affiche
               </div>
             )}
@@ -194,7 +191,7 @@ export function PosterGenerator({
                     <button
                       type="button"
                       onClick={() => open()}
-                      className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 text-ink/60 hover:text-ink text-xs font-semibold transition-colors"
                     >
                       <RefreshCw size={13} /> Changer de photo
                     </button>
@@ -203,7 +200,7 @@ export function PosterGenerator({
                   <button
                     type="button"
                     onClick={() => open()}
-                    className="w-full flex items-center justify-center gap-2 bg-white text-ink font-bold rounded-xl px-5 py-3.5 hover:bg-white/90 transition-colors"
+                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-xl px-5 py-3.5 transition-colors"
                   >
                     <Camera size={18} />
                     1. Ajouter ma photo
@@ -212,7 +209,7 @@ export function PosterGenerator({
               }
             </CldUploadWidget>
             {!(photo && template) && (
-              <p className="text-center text-white/40 text-xs mt-3">
+              <p className="text-center text-ink/40 text-xs mt-3">
                 Format conseillé : portrait, ratio {canvasRatio}.
               </p>
             )}
@@ -311,7 +308,7 @@ export function PosterGenerator({
       </div>
 
       {/* Détails de l'événement */}
-      <div className="mt-8 max-w-2xl mx-auto bg-white/95 rounded-2xl overflow-hidden">
+      <div className="mt-8 max-w-2xl mx-auto bg-white border border-ink/10 rounded-2xl overflow-hidden">
         <button
           onClick={() => setDetailsOpen((v) => !v)}
           className="w-full flex items-center justify-between px-5 py-4 font-heading font-bold text-ink"
@@ -328,9 +325,9 @@ export function PosterGenerator({
         )}
       </div>
 
-      <p className="text-center text-white/40 text-xs mt-6">
+      <p className="text-center text-ink/40 text-xs mt-6">
         Affiche générée avec{" "}
-        <a href="/jyserai" className="underline">
+        <a href="/jyserai" className="underline hover:text-ink/60">
           iziBooking
         </a>
       </p>

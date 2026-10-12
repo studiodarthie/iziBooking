@@ -94,7 +94,7 @@ export function PhotoAdjuster({
     <div>
       <div
         ref={containerRef}
-        className="relative mx-auto overflow-hidden rounded-xl border-2 border-white/70 shadow-lg select-none touch-none cursor-move bg-black/20"
+        className="relative mx-auto overflow-hidden rounded-xl border-2 border-ink/15 shadow-lg select-none touch-none cursor-move bg-ink/5"
         style={{ width: "100%", maxWidth: 200, aspectRatio: `${aspectRatio}` }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -114,7 +114,7 @@ export function PhotoAdjuster({
       </div>
 
       <div className="flex items-center gap-2 mt-2.5 max-w-[200px] mx-auto">
-        <ZoomIn size={14} className="text-white/50 shrink-0" />
+        <ZoomIn size={14} className="text-ink/40 shrink-0" />
         <input
           type="range"
           min={1}
@@ -122,10 +122,10 @@ export function PhotoAdjuster({
           step={0.05}
           value={zoom}
           onChange={(e) => setZoom(Number(e.target.value))}
-          className="w-full accent-white"
+          className="w-full accent-primary"
         />
       </div>
-      <p className="text-center text-white/40 text-[11px] mt-1.5">Glissez pour repositionner, zoomez pour recadrer</p>
+      <p className="text-center text-ink/40 text-[11px] mt-1.5">Glissez pour repositionner, zoomez pour recadrer</p>
     </div>
   );
 }
