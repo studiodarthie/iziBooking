@@ -78,6 +78,39 @@ export async function createPosterCampaign(input: {
   return { success: true as const, slug: campaign.slug };
 }
 
+export async function updatePosterPhotoZone(campaignId: string, zone: PhotoZone) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { success: false as const, error: "Non autorisé" };
+
+  const campaign = await prisma.posterCampaign.findUnique({
+    where: { id: campaignId },
+    select: { userId: true, templateWidth: true, templateHeight: true },
+  });
+  if (!campaign || campaign.userId !== session.user.id) {
+    return { success: false as const, error: "Campagne introuvable." };
+  }
+  if (!campaign.templateWidth || !campaign.templateHeight) {
+    return { success: false as const, error: "Cette affiche n'a pas de gabarit personnalisé." };
+  }
+
+  const sanitized = sanitizePhotoZone(zone, { width: campaign.templateWidth, height: campaign.templateHeight });
+  if (!sanitized) return { success: false as const, error: "Zone invalide." };
+
+  await prisma.posterCampaign.update({
+    where: { id: campaignId },
+    data: {
+      photoZoneX: sanitized.x,
+      photoZoneY: sanitized.y,
+      photoZoneWidth: sanitized.width,
+      photoZoneHeight: sanitized.height,
+    },
+  });
+
+  revalidatePath(`/dashboard/posters/${campaignId}`);
+  revalidatePath("/dashboard/posters");
+  return { success: true as const };
+}
+
 export async function deletePosterCampaign(id: string) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { success: false as const, error: "Non autorisé" };

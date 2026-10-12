@@ -4,6 +4,8 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { ArrowLeft, Eye, Images, Users, Download, Phone, Mail } from "lucide-react";
+import { isPremium } from "@/lib/plan";
+import { PosterZonePanel } from "@/components/dashboard/PosterZonePanel";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -16,10 +18,16 @@ export default async function PosterCampaignDetailPage(props: Props) {
 
   const campaign = await prisma.posterCampaign.findUnique({
     where: { id },
-    include: { leads: { orderBy: { createdAt: "desc" } } },
+    include: {
+      leads: { orderBy: { createdAt: "desc" } },
+      user: { select: { providerProfile: { select: { plan: true, planExpiresAt: true } } } },
+    },
   });
 
   if (!campaign || campaign.userId !== session.user.id) notFound();
+
+  const hasTemplate = campaign.templatePublicId && campaign.templateWidth && campaign.templateHeight;
+  const showWatermark = !(campaign.user.providerProfile && isPremium(campaign.user.providerProfile));
 
   return (
     <div className="space-y-6">
@@ -65,6 +73,30 @@ export default async function PosterCampaignDetailPage(props: Props) {
           <div className="text-xs text-ink/50">Contacts captés</div>
         </div>
       </div>
+
+      {hasTemplate && (
+        <PosterZonePanel
+          campaignId={campaign.id}
+          template={{
+            publicId: campaign.templatePublicId!,
+            width: campaign.templateWidth!,
+            height: campaign.templateHeight!,
+          }}
+          title={campaign.title}
+          theme={campaign.theme}
+          showWatermark={showWatermark}
+          initialZone={
+            campaign.photoZoneX != null && campaign.photoZoneY != null && campaign.photoZoneWidth != null && campaign.photoZoneHeight != null
+              ? {
+                  x: campaign.photoZoneX,
+                  y: campaign.photoZoneY,
+                  width: campaign.photoZoneWidth,
+                  height: campaign.photoZoneHeight,
+                }
+              : null
+          }
+        />
+      )}
 
       <div className="bg-white border border-ink/10 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-ink/10">

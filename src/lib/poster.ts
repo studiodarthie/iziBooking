@@ -20,6 +20,9 @@ export const POSTER_THEMES: Record<PosterTheme, { label: string; bg: string; acc
 const GENERATED_CANVAS_W = 1080;
 const GENERATED_CANVAS_H = 1350;
 
+/** Photo déjà hébergée sur Cloudinary, réutilisée pour les aperçus de démonstration (accueil, édition de zone). */
+export const DEMO_PHOTO_PUBLIC_ID = "cdqqfmcr8eiq1hi0bkqd";
+
 /** Taille recommandée pour un gabarit personnalisé, affichée dans l'UI d'upload. */
 export const RECOMMENDED_TEMPLATE_SIZE = "1080 × 1350 px";
 

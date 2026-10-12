@@ -4,11 +4,7 @@ import Link from "next/link";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { Camera, Share2, Sparkles, ArrowRight, Crown, Users } from "lucide-react";
-import { buildPosterUrl } from "@/lib/poster";
-
-// Photo déjà hébergée sur Cloudinary (même image que la section culture de l'accueil),
-// réutilisée pour montrer un exemple réel de rendu, sans dépendre d'un asset à part.
-const DEMO_PHOTO_PUBLIC_ID = "cdqqfmcr8eiq1hi0bkqd";
+import { buildPosterUrl, DEMO_PHOTO_PUBLIC_ID } from "@/lib/poster";
 
 const STEPS = [
   {
