@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { User, Menu, X } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { User, Menu, X, ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 
 export const NAV_LINKS = [
   { href: "/", label: "Accueil" },
@@ -23,6 +23,16 @@ export function PublicNavbar({ overlay = false }: { overlay?: boolean }) {
   const { data: session } = useSession();
   const user = session?.user;
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -42,12 +52,41 @@ export function PublicNavbar({ overlay = false }: { overlay?: boolean }) {
 
           <div className="flex items-center gap-2 bg-white rounded-2xl h-12 md:h-14 px-2 border border-black/5 shadow-lg shadow-black/10">
             {user ? (
-              <Link href="/dashboard" className="flex items-center gap-2 h-10 pl-1 pr-3 rounded-xl hover:bg-neutral-100 transition-colors">
-                <span className="relative w-8 h-8 rounded-full overflow-hidden bg-primary/15 flex items-center justify-center text-sm font-bold text-primary shrink-0">
-                  {user.image ? <Image src={user.image} alt={user.name || "Profil"} fill className="object-cover" /> : (user.name || "?").charAt(0).toUpperCase()}
-                </span>
-                <span className="hidden sm:inline text-sm font-semibold text-ink max-w-[110px] truncate">{user.name}</span>
-              </Link>
+              <div className="relative" ref={menuRef}>
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen((v) => !v)}
+                  aria-expanded={menuOpen}
+                  className="flex items-center gap-2 h-10 pl-1 pr-2.5 rounded-xl hover:bg-neutral-100 transition-colors"
+                >
+                  <span className="relative w-8 h-8 rounded-full overflow-hidden bg-primary/15 flex items-center justify-center text-sm font-bold text-primary shrink-0">
+                    {user.image ? <Image src={user.image} alt={user.name || "Profil"} fill className="object-cover" /> : (user.name || "?").charAt(0).toUpperCase()}
+                  </span>
+                  <span className="hidden sm:inline text-sm font-semibold text-ink max-w-[110px] truncate">{user.name}</span>
+                  <ChevronDown size={14} className={`hidden sm:block text-ink/40 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {menuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-black/5 bg-white shadow-lg py-1.5 z-50">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-ink/80 hover:bg-neutral-100 transition-colors"
+                    >
+                      <LayoutDashboard size={16} className="text-ink/40" />
+                      Mon tableau de bord
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => signOut({ callbackUrl: "/" })}
+                      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      Déconnexion
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <Link href="/login" aria-label="Connexion" className="w-10 h-10 rounded-xl flex items-center justify-center text-ink/80 hover:bg-neutral-100 transition-colors">
@@ -78,7 +117,18 @@ export function PublicNavbar({ overlay = false }: { overlay?: boolean }) {
             <Link href={user ? "/dashboard" : "/login"} onClick={() => setOpen(false)} className="text-lg font-medium text-ink/80">
               {user ? "Mon tableau de bord" : "Connexion"}
             </Link>
-            <Link href="/inscription" onClick={() => setOpen(false)} className="text-lg font-bold text-primary">Inscription gratuite</Link>
+            {user ? (
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="flex items-center gap-2 text-lg font-bold text-red-500 text-left"
+              >
+                <LogOut size={18} />
+                Déconnexion
+              </button>
+            ) : (
+              <Link href="/inscription" onClick={() => setOpen(false)} className="text-lg font-bold text-primary">Inscription gratuite</Link>
+            )}
           </div>
         </div>
       )}
