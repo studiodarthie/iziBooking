@@ -4,7 +4,11 @@ import Link from "next/link";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HomeFooter } from "@/components/public/HomeFooter";
 import { Camera, Share2, Sparkles, ArrowRight, Crown, Users } from "lucide-react";
-import { buildPosterUrl, DEMO_PHOTO_PUBLIC_ID } from "@/lib/poster";
+import { buildCloudinaryUrl } from "@/lib/poster";
+
+// Exemple statique d'affiche avec gabarit personnalisé, montrant la zone où la photo du
+// visiteur s'insère — plus parlant qu'un rendu généré automatiquement pour ce hero.
+const HERO_DEMO_PUBLIC_ID = "izibooking/jyserai-hero-demo";
 
 const STEPS = [
   {
@@ -33,13 +37,7 @@ export default async function JySeraiLandingPage() {
   const session = await getServerSession(authOptions);
   const ctaHref = session?.user ? "/dashboard/posters" : "/inscription";
 
-  const demoUrl = buildPosterUrl({
-    photoPublicId: DEMO_PHOTO_PUBLIC_ID,
-    title: "Festival Culturel 2026",
-    eventDateLabel: "Samedi 12 décembre 2026",
-    theme: "BRIQUE",
-    showWatermark: true,
-  });
+  const demoUrl = buildCloudinaryUrl(HERO_DEMO_PUBLIC_ID, "f_auto,q_auto");
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white">
