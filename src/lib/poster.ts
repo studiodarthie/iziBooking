@@ -109,17 +109,21 @@ export function buildPosterUrl(params: {
   showWatermark: boolean;
   template?: PosterTemplate | null;
   photoCrop?: PhotoCrop | null;
+  /** "auto" (par défaut) laisse Cloudinary choisir le format le plus léger (souvent WebP) pour
+   *  l'aperçu à l'écran ; "png" force un PNG pour le fichier réellement téléchargé. */
+  format?: "auto" | "png";
 }): string {
-  const { photoPublicId, theme, showWatermark, template, photoCrop } = params;
+  const { photoPublicId, theme, showWatermark, template, photoCrop, format = "auto" } = params;
+  const formatStep = format === "png" ? "f_png" : "f_auto,q_auto";
 
   if (template) {
     const steps = customTemplateSteps({ theme, showWatermark, template, photoPublicId, photoCrop });
-    steps.push("f_auto,q_auto");
+    steps.push(formatStep);
     return `https://res.cloudinary.com/${cloudName()}/image/upload/${steps.join("/")}/${template.publicId}`;
   }
 
   const steps = generatedSteps(params);
-  steps.push("f_auto,q_auto");
+  steps.push(formatStep);
   return `https://res.cloudinary.com/${cloudName()}/image/upload/${steps.join("/")}/${photoPublicId}`;
 }
 

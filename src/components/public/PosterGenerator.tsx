@@ -76,7 +76,16 @@ export function PosterGenerator({
   // Recadrage exact (non retardé) au moment du téléchargement, pour que le fichier téléchargé
   // corresponde pile à ce que le visiteur a validé, même si l'aperçu affiché a un léger délai.
   const finalPosterUrl = photo
-    ? buildPosterUrl({ photoPublicId: photo.publicId, title, eventDateLabel, theme, showWatermark, template, photoCrop })
+    ? buildPosterUrl({
+        photoPublicId: photo.publicId,
+        title,
+        eventDateLabel,
+        theme,
+        showWatermark,
+        template,
+        photoCrop,
+        format: "png",
+      })
     : null;
   const downloadUrl = finalPosterUrl?.replace("/image/upload/", "/image/upload/fl_attachment/");
 
