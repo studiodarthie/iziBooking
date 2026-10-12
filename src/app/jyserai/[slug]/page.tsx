@@ -50,20 +50,24 @@ export default async function PosterCampaignPage(props: Props) {
       : null;
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-[#FBF6EE]">
-      <PublicNavbar />
-      <div className="flex-1 px-4 py-8 md:py-12">
-        <PosterGenerator
-          slug={campaign.slug}
-          title={campaign.title}
-          eventDate={campaign.eventDate?.toISOString() ?? null}
-          theme={campaign.theme}
-          showWatermark={showWatermark}
-          template={template}
-          viewCount={campaign.viewCount}
-          generatedCount={campaign.generatedCount}
-          maxPerPerson={campaign.maxPerPerson}
-        />
+    <div className="min-h-screen flex flex-col font-sans bg-white">
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#FBDDBF] via-[#FCE6CE] to-[#FCEFDD] flex-1 flex flex-col">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+        <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
+        <PublicNavbar />
+        <div className="relative z-10 flex-1 px-4 py-8 md:py-12">
+          <PosterGenerator
+            slug={campaign.slug}
+            title={campaign.title}
+            eventDate={campaign.eventDate?.toISOString() ?? null}
+            theme={campaign.theme}
+            showWatermark={showWatermark}
+            template={template}
+            viewCount={campaign.viewCount}
+            generatedCount={campaign.generatedCount}
+            maxPerPerson={campaign.maxPerPerson}
+          />
+        </div>
       </div>
       <HomeFooter />
     </div>

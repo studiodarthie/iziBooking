@@ -42,46 +42,51 @@ export default async function JySeraiLandingPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-[#FBF6EE]">
-      <PublicNavbar />
+    <div className="min-h-screen flex flex-col font-sans bg-white">
+      {/* Hero */}
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#FBDDBF] via-[#FCE6CE] to-[#FCEFDD]">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+        <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
+        <PublicNavbar />
 
-      <section className="px-4 md:px-8 py-10 md:py-16">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
-              Gratuit · Sans compte pour vos invités
-            </span>
-            <h1 className="font-heading font-extrabold text-[clamp(32px,4.5vw,52px)] leading-[1.08] text-ink">
-              Faites parler de votre événement avec des affiches{" "}
-              <span className="text-primary">« J'y serai »</span>
-            </h1>
-            <p className="mt-5 text-lg text-neutral-700 max-w-xl">
-              Créez une campagne pour votre mariage, concert, festival ou conférence. Vos
-              invités ajoutent leur photo et partagent leur propre affiche — chaque partage est
-              une publicité gratuite, et vous récupérez leurs coordonnées au passage.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Link
-                href={ctaHref}
-                className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-7 py-4 transition-colors"
-              >
-                Créer mon affiche gratuitement <ArrowRight size={18} />
-              </Link>
+        <section className="relative z-10 px-4 md:px-8 py-10 md:py-16">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
+                Gratuit · Sans compte pour vos invités
+              </span>
+              <h1 className="font-heading font-extrabold text-[clamp(32px,4.5vw,52px)] leading-[1.08] text-ink">
+                Faites parler de votre événement avec des affiches{" "}
+                <span className="text-primary">« J'y serai »</span>
+              </h1>
+              <p className="mt-5 text-lg text-neutral-700 max-w-xl">
+                Créez une campagne pour votre mariage, concert, festival ou conférence. Vos
+                invités ajoutent leur photo et partagent leur propre affiche — chaque partage est
+                une publicité gratuite, et vous récupérez leurs coordonnées au passage.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <Link
+                  href={ctaHref}
+                  className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-7 py-4 transition-colors"
+                >
+                  Créer mon affiche gratuitement <ArrowRight size={18} />
+                </Link>
+              </div>
+              <p className="mt-4 text-xs text-ink/50 flex items-center gap-1.5">
+                <Crown size={14} className="text-accent-2-500" />
+                Avec Premium, le filigrane iziBooking disparaît de vos affiches.
+              </p>
             </div>
-            <p className="mt-4 text-xs text-ink/50 flex items-center gap-1.5">
-              <Crown size={14} className="text-accent-2-500" />
-              Avec Premium, le filigrane iziBooking disparaît de vos affiches.
-            </p>
-          </div>
 
-          <div className="flex justify-center">
-            <div className="w-full max-w-[320px] rounded-[28px] overflow-hidden shadow-2xl border-4 border-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={demoUrl} alt="Exemple d'affiche J'y serai" className="w-full h-auto" />
+            <div className="flex justify-center">
+              <div className="w-full max-w-[320px] rounded-[28px] overflow-hidden shadow-2xl border-4 border-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={demoUrl} alt="Exemple d'affiche J'y serai" className="w-full h-auto" />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <section className="px-4 md:px-8 py-10 md:py-16 bg-white border-y border-divider">
         <div className="max-w-5xl mx-auto">
