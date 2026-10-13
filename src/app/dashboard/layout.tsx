@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { ImpersonationBanner } from "@/components/admin/ImpersonationBanner";
 
 export default async function DashboardLayout({
   children,
@@ -45,9 +46,16 @@ export default async function DashboardLayout({
       })
     : 0;
 
+  const adminName = session.impersonatedBy
+    ? (await prisma.user.findUnique({ where: { id: session.impersonatedBy }, select: { name: true } }))?.name ?? null
+    : null;
+
   return (
-    <DashboardShell role={user.role} user={user} unreadMessages={unreadMessages}>
-      {children}
-    </DashboardShell>
+    <>
+      {session.impersonatedBy && <ImpersonationBanner targetName={user.name || "cet utilisateur"} adminName={adminName} />}
+      <DashboardShell role={user.role} user={user} unreadMessages={unreadMessages}>
+        {children}
+      </DashboardShell>
+    </>
   );
 }

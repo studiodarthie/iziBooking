@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { toggleUserBan, deleteUserPermanently } from "@/app/admin/users/actions";
+import { toggleUserBan, deleteUserPermanently, impersonateUser } from "@/app/admin/users/actions";
 import { toggleProviderVerification, setProviderPlanForTesting } from "@/app/admin/providers/actions";
 import { isPremium } from "@/lib/plan";
-import { MoreVertical, Eye, CheckCircle2, ShieldAlert, Ban, RotateCcw, Crown, Trash2 } from "lucide-react";
+import { MoreVertical, Eye, CheckCircle2, ShieldAlert, Ban, RotateCcw, Crown, Trash2, UserCog, Copy, Check } from "lucide-react";
 
 type UserRow = {
   id: string;
@@ -24,6 +24,7 @@ export function UserListClient({ users }: { users: UserRow[] }) {
   const router = useRouter();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const run = async (userId: string, action: () => Promise<{ success: boolean; error?: string }>) => {
     setBusyId(userId);
@@ -34,6 +35,16 @@ export function UserListClient({ users }: { users: UserRow[] }) {
       router.refresh();
     } else {
       alert(res.error || "Une erreur est survenue.");
+    }
+  };
+
+  const copyId = async (user: UserRow) => {
+    try {
+      await navigator.clipboard.writeText(user.id);
+      setCopiedId(user.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      prompt("Copiez cet identifiant :", user.id);
     }
   };
 
@@ -126,6 +137,14 @@ export function UserListClient({ users }: { users: UserRow[] }) {
                           {/* Zone invisible pour fermer le menu au clic extérieur */}
                           <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
                           <div className="absolute right-6 top-full mt-1 z-20 w-56 bg-white rounded-xl shadow-xl border border-ink/10 py-1.5 text-left">
+                            <button
+                              disabled={busyId === user.id}
+                              onClick={() => run(user.id, () => impersonateUser(user.id))}
+                              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-ink/80 hover:bg-sand/40 transition-colors disabled:opacity-50"
+                            >
+                              <UserCog size={16} className="text-primary" /> Visualiser l&apos;interface
+                            </button>
+
                             {user.providerProfile && (
                               <Link
                                 href={`/p/${user.providerProfile.id}`}
@@ -179,6 +198,14 @@ export function UserListClient({ users }: { users: UserRow[] }) {
                                 </button>
                               </>
                             )}
+
+                            <button
+                              onClick={() => copyId(user)}
+                              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-ink/80 hover:bg-sand/40 transition-colors"
+                            >
+                              {copiedId === user.id ? <Check size={16} className="text-success" /> : <Copy size={16} />}
+                              {copiedId === user.id ? "Identifiant copié" : "Copier l'identifiant"}
+                            </button>
 
                             <div className="my-1.5 border-t border-ink/10" />
                             <button

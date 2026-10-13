@@ -63,6 +63,26 @@ model User {
   disputesOpened  Dispute[]
   contactMessagesSent ContactMessage[]
   posterCampaigns PosterCampaign[]
+
+  impersonationsStarted  AdminImpersonationLog[] @relation("ImpersonationsStarted")
+  impersonationsReceived AdminImpersonationLog[] @relation("ImpersonationsReceived")
+}
+
+// Traçabilité de la fonctionnalité "Visualiser l'interface" côté admin : qui a usurpé
+// l'identité de qui, et quand — indispensable pour un pouvoir aussi sensible (voir tout ce
+// qu'un utilisateur voit sans son mot de passe). `endedAt` reste null tant que l'admin n'a pas
+// explicitement cliqué "Retour admin" (ou que le cookie a simplement expiré).
+model AdminImpersonationLog {
+  id     String @id @default(cuid())
+
+  adminId String
+  admin   User   @relation("ImpersonationsStarted", fields: [adminId], references: [id], onDelete: Cascade)
+
+  targetUserId String
+  target       User   @relation("ImpersonationsReceived", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
 }
 
 model VerificationToken {

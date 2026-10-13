@@ -6,6 +6,9 @@ declare module "next-auth" {
       id: string;
       role: string;
     } & DefaultSession["user"];
+    // Présent uniquement pendant une session "Visualiser l'interface" déclenchée par un admin
+    // (src/app/admin/users/actions.ts) : id de l'admin derrière le compte actuellement affiché.
+    impersonatedBy?: string;
   }
 
   interface User extends DefaultUser {
@@ -18,5 +21,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     role: string;
+    impersonatedBy?: string;
   }
 }
