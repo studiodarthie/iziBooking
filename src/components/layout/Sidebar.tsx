@@ -79,7 +79,7 @@ export function Sidebar({
       {/* Logo */}
       <div className="flex h-20 shrink-0 items-center px-6 border-b border-white/10">
         <Link href="/" aria-label="iziBooking - Accueil">
-          <Image src="/logo-white.png" alt="iziBooking" width={1571} height={314} className="h-8 w-auto" />
+          <Image src="/logo-white.png" alt="iziBooking" width={1665} height={332} className="h-8 w-auto" />
         </Link>
       </div>
 
