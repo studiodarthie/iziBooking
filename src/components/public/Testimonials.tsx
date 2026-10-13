@@ -17,7 +17,7 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
   if (testimonials.length === 0) return null;
 
   return (
-    <section id="temoignages" className="relative py-16 md:py-24 bg-[#FCEFDD] overflow-hidden">
+    <section id="temoignages" className="relative py-16 md:py-24 bg-[#EEF1F8] overflow-hidden">
       {/* Decorative blurred backgrounds */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>

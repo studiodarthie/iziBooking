@@ -49,7 +49,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white text-ink font-sans flex flex-col">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#FBDDBF] via-[#FCE6CE] to-[#FCEFDD]">
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#C7D2F0] via-[#DCE3F7] to-[#EEF1F8]">
         <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
         <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
         <PublicNavbar />
@@ -113,7 +113,7 @@ export default function AboutPage() {
       </section>
 
       {/* Les 4 pôles */}
-      <section className="bg-[#FCEFDD] py-16 md:py-24">
+      <section className="bg-[#EEF1F8] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-primary text-xs font-bold tracking-[0.08em] uppercase">Toute la chaîne événementielle</span>
@@ -171,7 +171,7 @@ export default function AboutPage() {
       </section>
 
       {/* Pour qui */}
-      <section className="bg-[#F6EBDD] py-16 md:py-24">
+      <section className="bg-[#E4E9F5] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-8 grid md:grid-cols-2 gap-6">
           <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm">
             <span className="text-primary text-xs font-bold tracking-[0.08em] uppercase">Organisateurs</span>

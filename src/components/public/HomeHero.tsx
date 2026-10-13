@@ -23,7 +23,7 @@ export function HomeHero() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-[#3A1508] text-white">
+    <div className="relative overflow-hidden bg-[#0E1430] text-white">
       <Image
         src="/images/home/hero-artist.jpg"
         alt=""
@@ -32,8 +32,8 @@ export function HomeHero() {
         sizes="100vw"
         className="object-cover object-[85%_center]"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#6E240C]/90 via-[#8E3414]/72 to-[#B5451B]/20" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#3A1508]/55 via-transparent to-[#3A1508]/85" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0B1130]/90 via-[#16214A]/72 to-[#0EA5C7]/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0E1430]/55 via-transparent to-[#0E1430]/85" />
       <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-accent/30 blur-[120px] pointer-events-none" />
 
       <PublicNavbar overlay />
@@ -53,7 +53,7 @@ export function HomeHero() {
             <span className="text-accent-2-300">réservable en un clic.</span>
           </h1>
 
-          <p className="mt-6 text-white text-lg md:text-xl max-w-3xl mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(58,21,8,0.6)]">
+          <p className="mt-6 text-white text-lg md:text-xl max-w-3xl mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(14,20,48,0.6)]">
             Vous cherchez un artiste, instrumentiste, performeur, DJ, groupe de danse, traiteur, photographe pro, make-up artist, vidéaste… ? Sur iziBooking, comparez, échangez et réservez en toute sécurité pour la réussite de votre événement.
           </p>
 

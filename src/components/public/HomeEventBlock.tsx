@@ -15,7 +15,7 @@ const CONFETTI = [
 
 export function HomeEventBlock() {
   return (
-    <section className="bg-[#F6EBDD] py-8 md:py-10 overflow-hidden">
+    <section className="bg-[#E4E9F5] py-8 md:py-10 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 md:px-8 grid md:grid-cols-[1fr_1.1fr] gap-8 md:gap-12 items-center">
         {/* Visuel : deux photos + confettis */}
         <div className="relative mx-auto w-full max-w-[380px] h-[240px] md:h-[280px]">

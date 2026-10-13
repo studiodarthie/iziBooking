@@ -31,8 +31,8 @@ export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTab
           onClick={() => setActiveTab("presentation")}
           className={`pb-2 -mb-[9px] transition-colors ${
             activeTab === "presentation" 
-              ? "text-[#0d0d0d] border-b-2 border-[#0d0d0d]" 
-              : "text-[#0d0d0d]/50 hover:text-[#0d0d0d]"
+              ? "text-[#0E1430] border-b-2 border-[#0E1430]" 
+              : "text-[#0E1430]/50 hover:text-[#0E1430]"
           }`}
         >
           Présentation
@@ -41,8 +41,8 @@ export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTab
           onClick={() => setActiveTab("services")}
           className={`pb-2 -mb-[9px] transition-colors ${
             activeTab === "services" 
-              ? "text-[#0d0d0d] border-b-2 border-[#0d0d0d]" 
-              : "text-[#0d0d0d]/50 hover:text-[#0d0d0d]"
+              ? "text-[#0E1430] border-b-2 border-[#0E1430]" 
+              : "text-[#0E1430]/50 hover:text-[#0E1430]"
           }`}
         >
           Services
@@ -51,8 +51,8 @@ export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTab
           onClick={() => setActiveTab("medias")}
           className={`pb-2 -mb-[9px] transition-colors ${
             activeTab === "medias" 
-              ? "text-[#0d0d0d] border-b-2 border-[#0d0d0d]" 
-              : "text-[#0d0d0d]/50 hover:text-[#0d0d0d]"
+              ? "text-[#0E1430] border-b-2 border-[#0E1430]" 
+              : "text-[#0E1430]/50 hover:text-[#0E1430]"
           }`}
         >
           Médias
@@ -63,21 +63,21 @@ export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTab
         {activeTab === "presentation" && (
           <div className="animate-in fade-in duration-300">
             {bio ? (
-              <div className="prose prose-neutral max-w-none text-[#0d0d0d]/80 whitespace-pre-wrap leading-relaxed">
+              <div className="prose prose-neutral max-w-none text-[#0E1430]/80 whitespace-pre-wrap leading-relaxed">
                 {bio}
               </div>
             ) : (
-              <p className="text-[#0d0d0d]/50 italic">Aucune description pour le moment.</p>
+              <p className="text-[#0E1430]/50 italic">Aucune description pour le moment.</p>
             )}
             
             {/* Reviews */}
             <div className="mt-12">
-              <h2 className="text-xl font-heading font-bold text-[#0d0d0d] mb-6">
+              <h2 className="text-xl font-heading font-bold text-[#0E1430] mb-6">
                 Avis {reviews.length > 0 && `(${reviews.length})`}
               </h2>
               {reviews.length === 0 ? (
                 <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm">
-                  <p className="text-[#0d0d0d]/50 italic">Les avis apparaîtront ici dès que les clients auront laissé une note via iziBooking.</p>
+                  <p className="text-[#0E1430]/50 italic">Les avis apparaîtront ici dès que les clients auront laissé une note via iziBooking.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -92,7 +92,7 @@ export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTab
                           )}
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-[#0d0d0d]">{review.organizer.name || "Client iziBooking"}</p>
+                          <p className="text-sm font-semibold text-[#0E1430]">{review.organizer.name || "Client iziBooking"}</p>
                           <div className="flex gap-0.5">
                             {[1, 2, 3, 4, 5].map((n) => (
                               <Star key={n} size={12} className={review.rating >= n ? "fill-accent text-accent" : "text-neutral-200"} />
@@ -101,7 +101,7 @@ export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTab
                         </div>
                       </div>
                       {review.comment && (
-                        <p className="text-sm text-[#0d0d0d]/70 whitespace-pre-wrap">{review.comment}</p>
+                        <p className="text-sm text-[#0E1430]/70 whitespace-pre-wrap">{review.comment}</p>
                       )}
                     </div>
                   ))}
@@ -122,14 +122,14 @@ export function ProviderTabs({ bio, services, mediaLinks, reviews }: ProviderTab
                         {service.category}
                       </span>
                     )}
-                    <h3 className="font-bold text-lg text-[#0d0d0d] leading-tight mb-2">{service.name}</h3>
+                    <h3 className="font-bold text-lg text-[#0E1430] leading-tight mb-2">{service.name}</h3>
                     <p className="text-sm text-neutral-500 line-clamp-3 mb-4 min-h-[60px]">
                       {service.description || "Aucune description détaillée"}
                     </p>
                     <div className="pt-4 border-t border-neutral-100 flex items-end justify-between">
                       <div>
                         <span className="block text-[10px] uppercase font-bold text-neutral-400">À partir de</span>
-                        <span className="font-heading font-bold text-lg text-[#b5451b]">
+                        <span className="font-heading font-bold text-lg text-[#1E2A5E]">
                           {service.startingPrice ? `${service.startingPrice.toLocaleString('fr-FR')} FCFA` : "Sur devis"}
                         </span>
                       </div>

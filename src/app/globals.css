@@ -2,43 +2,43 @@
 
 :root {
   --background: #FFFFFF;
-  --foreground: #232323;
-  --color-trust: #1B4332;
-  --color-trust-tint: #E7EDE9;
-  --color-culture: #6D3B6E;
-  --color-culture-tint: #F1E6EF;
-  --color-accent: #B5451B;
-  --color-accent-100: #FBEAE0;
-  --color-accent-200: #F3CBB3;
-  --color-accent-300: #E4A379;
-  --color-accent-400: #CE7548;
-  --color-accent-500: #B5451B;
-  --color-accent-600: #953817;
-  --color-accent-700: #742C12;
-  --color-accent-800: #52200D;
-  --color-accent-900: #331408;
-  --color-accent-2: #C9982B;
-  --color-accent-2-100: #FCF3DE;
-  --color-accent-2-200: #F2E0AC;
-  --color-accent-2-300: #E2C978;
-  --color-accent-2-400: #D3AE4D;
-  --color-accent-2-500: #C9982B;
-  --color-accent-2-600: #A67D22;
-  --color-accent-2-700: #7F611A;
-  --color-accent-2-800: #584311;
-  --color-accent-2-900: #332709;
-  --color-surface: #FFFDF8;
-  --color-bg: #F4E9D8;
-  --color-divider: rgba(35,35,35,0.14);
-  --color-neutral-100: #FBF6EE;
-  --color-neutral-200: #F4E9D8;
-  --color-neutral-300: #E4D3B8;
-  --color-neutral-400: #C9B08A;
-  --color-neutral-500: #A98F68;
-  --color-neutral-600: #8A7250;
-  --color-neutral-700: #6B5940;
-  --color-neutral-800: #4A3F30;
-  --color-neutral-900: #232323;
+  --foreground: #0E1430;
+  --color-trust: #047857;
+  --color-trust-tint: #E3F6EE;
+  --color-culture: #7C3AED;
+  --color-culture-tint: #F1E9FE;
+  --color-accent: #1E2A5E;
+  --color-accent-100: #E7EAF6;
+  --color-accent-200: #C7CEEA;
+  --color-accent-300: #9FAAD9;
+  --color-accent-400: #6E7FC0;
+  --color-accent-500: #1E2A5E;
+  --color-accent-600: #182350;
+  --color-accent-700: #121B3E;
+  --color-accent-800: #0C132C;
+  --color-accent-900: #070B1A;
+  --color-accent-2: #0891B2;
+  --color-accent-2-100: #E0FAFE;
+  --color-accent-2-200: #B0F1FB;
+  --color-accent-2-300: #67E4F5;
+  --color-accent-2-400: #22D3EE;
+  --color-accent-2-500: #0891B2;
+  --color-accent-2-600: #0E7490;
+  --color-accent-2-700: #155E75;
+  --color-accent-2-800: #164E63;
+  --color-accent-2-900: #0C2B36;
+  --color-surface: #FFFFFF;
+  --color-bg: #EEF1F8;
+  --color-divider: rgba(14,20,48,0.12);
+  --color-neutral-100: #F8F9FC;
+  --color-neutral-200: #EEF1F8;
+  --color-neutral-300: #DEE3EF;
+  --color-neutral-400: #BCC4DB;
+  --color-neutral-500: #8E97B8;
+  --color-neutral-600: #666F93;
+  --color-neutral-700: #4A5276;
+  --color-neutral-800: #2E3454;
+  --color-neutral-900: #171B2E;
 }
 
 @theme inline {
@@ -86,9 +86,9 @@
   --color-neutral-800: var(--color-neutral-800);
   --color-neutral-900: var(--color-neutral-900);
   
-  --font-sans: var(--font-inter), sans-serif;
-  --font-heading: var(--font-magistral), var(--font-inter), sans-serif;
-  --font-mono: var(--font-inter), monospace;
+  --font-sans: var(--font-jakarta), sans-serif;
+  --font-heading: var(--font-jakarta), sans-serif;
+  --font-mono: var(--font-jakarta), monospace;
 }
 
 body {
@@ -100,5 +100,6 @@ body {
 @layer base {
   h1, h2, h3 {
     font-family: var(--font-heading);
+    font-weight: 800;
   }
 }

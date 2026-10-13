@@ -53,11 +53,11 @@ const EMAIL_FOOTER = `
 
 function emailShell(title: string, bodyHtml: string, ctaHref: string, ctaLabel: string): string {
   return `
-    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #232323;">
-      <p style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #B5451B; margin: 0 0 16px;">iziBooking</p>
+    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #0E1430;">
+      <p style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1E2A5E; margin: 0 0 16px;">iziBooking</p>
       <h1 style="font-size: 20px; margin: 0 0 16px;">${title}</h1>
       <div style="font-size: 14px; line-height: 1.6; color: #444;">${bodyHtml}</div>
-      <a href="${ctaHref}" style="display: inline-block; margin-top: 24px; padding: 12px 24px; background: #B5451B; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px;">${ctaLabel}</a>
+      <a href="${ctaHref}" style="display: inline-block; margin-top: 24px; padding: 12px 24px; background: #1E2A5E; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px;">${ctaLabel}</a>
       ${EMAIL_FOOTER}
     </div>
   `;
@@ -124,7 +124,7 @@ export async function notifyContactMessage(params: {
     html: emailShell(
       "Nouveau message",
       `<p><strong>${params.senderName}</strong> vous a contacté via votre fiche iziBooking :</p>
-       <p style="padding: 12px 16px; background: #F4E9D8; border-radius: 10px; font-style: italic;">« ${preview} »</p>`,
+       <p style="padding: 12px 16px; background: #EEF1F8; border-radius: 10px; font-style: italic;">« ${preview} »</p>`,
       `${BASE_URL}/dashboard/messages`,
       "Voir le message"
     ),
@@ -144,7 +144,7 @@ export async function notifyNewMessage(params: {
     html: emailShell(
       "Nouveau message",
       `<p><strong>${params.senderName}</strong> vous a écrit :</p>
-       <p style="padding: 12px 16px; background: #F4E9D8; border-radius: 10px; font-style: italic;">« ${preview} »</p>`,
+       <p style="padding: 12px 16px; background: #EEF1F8; border-radius: 10px; font-style: italic;">« ${preview} »</p>`,
       `${BASE_URL}/dashboard/bookings/${params.bookingId}`,
       "Répondre"
     ),
@@ -175,11 +175,11 @@ export async function sendContactRequest(params: {
       replyTo: `${params.name.replace(/[<>"\r\n]/g, "")} <${params.email}>`,
       subject: `[Contact] ${params.subject.replace(/[\r\n]/g, " ")}`,
       html: `
-        <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #232323;">
-          <p style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #B5451B; margin: 0 0 12px;">Nouveau message de contact</p>
+        <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #0E1430;">
+          <p style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1E2A5E; margin: 0 0 12px;">Nouveau message de contact</p>
           <p style="margin: 0 0 4px;"><strong>${escapeHtml(params.name)}</strong> &lt;${escapeHtml(params.email)}&gt;</p>
           <p style="margin: 0 0 16px; color: #666;">Sujet : ${escapeHtml(params.subject)}</p>
-          <div style="font-size: 14px; line-height: 1.6; white-space: pre-wrap; border-left: 3px solid #C9982B; padding-left: 12px;">${escapeHtml(params.message)}</div>
+          <div style="font-size: 14px; line-height: 1.6; white-space: pre-wrap; border-left: 3px solid #0891B2; padding-left: 12px;">${escapeHtml(params.message)}</div>
         </div>
       `,
     });
@@ -226,7 +226,7 @@ export async function notifyNewProviderSignup(params: {
     html: emailShell(
       "Nouveau prestataire",
       `<p><strong>${escapeHtml(params.providerName)}</strong> vient de créer son profil sur iziBooking.</p>
-       <p style="margin: 12px 0; padding: 12px 16px; background: #F4E9D8; border-radius: 10px;">
+       <p style="margin: 12px 0; padding: 12px 16px; background: #EEF1F8; border-radius: 10px;">
          Catégorie : <strong>${escapeHtml(params.category)}</strong><br/>
          Localisation : <strong>${escapeHtml(params.location)}</strong>
        </p>

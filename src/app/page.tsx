@@ -64,7 +64,7 @@ export default async function Home() {
       {/* Hero Section */}
       <HomeHero />
 
-      <div className="w-full bg-[#FCEFDD]">
+      <div className="w-full bg-[#EEF1F8]">
       {/* Categories Section */}
       <HomeCategories categories={categoryCounts} />
 
@@ -94,7 +94,7 @@ export default async function Home() {
       <HomeHowItWorks />
 
       {/* Categories Links (Footer Grid) */}
-      <section className="bg-[#F6EBDD] py-16 px-4 md:px-8">
+      <section className="bg-[#E4E9F5] py-16 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
           <h5 className="text-ink font-heading font-bold tracking-[0.08em] mb-10 text-[13px] uppercase">
             NOS CATÉGORIES DE PRESTATAIRES

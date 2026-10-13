@@ -47,7 +47,7 @@ export default async function BookingPage(props: Props) {
   const unavailableDates = await getUnavailableDates(profile.id);
 
   return (
-    <div className="min-h-screen bg-[#FBF6EE] font-sans text-ink">
+    <div className="min-h-screen bg-[#F8F9FC] font-sans text-ink">
       <PublicNavbar />
 
       <main className="max-w-4xl mx-auto px-4 py-12 md:py-16">

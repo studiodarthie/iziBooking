@@ -33,7 +33,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-white font-sans">
       {/* Panneau gauche : identité de marque (identique à /inscription) */}
-      <div className="relative hidden lg:flex lg:w-[46%] flex-col justify-between overflow-hidden bg-gradient-to-br from-[#3A1508] via-[#6E240C] to-[#8E3414] px-10 py-10 text-white">
+      <div className="relative hidden lg:flex lg:w-[46%] flex-col justify-between overflow-hidden bg-gradient-to-br from-[#0E1430] via-[#0B1130] to-[#16214A] px-10 py-10 text-white">
         <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-accent/20 blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-white/5 blur-[100px] pointer-events-none" />
 

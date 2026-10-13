@@ -1,8 +1,8 @@
 export default function ProviderProfileLoading() {
   return (
-    <div className="min-h-screen bg-[#FBF6EE] pb-20 animate-pulse">
+    <div className="min-h-screen bg-[#F8F9FC] pb-20 animate-pulse">
       {/* Navbar Skeleton */}
-      <header className="bg-[#0d0d0d] border-b border-white/5 sticky top-0 z-50">
+      <header className="bg-[#0E1430] border-b border-white/5 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 md:px-8 h-[72px] flex items-center justify-between">
           <div className="w-32 h-8 bg-white/10 rounded"></div>
           <div className="flex gap-4">
@@ -19,7 +19,7 @@ export default function ProviderProfileLoading() {
 
         <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-20 -mt-20 flex flex-col md:flex-row md:items-end gap-6 mb-12">
           {/* Avatar */}
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#FBF6EE] bg-neutral-200 shrink-0"></div>
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#F8F9FC] bg-neutral-200 shrink-0"></div>
           
           <div className="flex-1 pb-2">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

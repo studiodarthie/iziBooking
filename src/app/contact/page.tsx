@@ -31,7 +31,7 @@ const faqs = [
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white text-ink font-sans flex flex-col">
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#FBDDBF] via-[#FCE6CE] to-[#FCEFDD]">
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#C7D2F0] via-[#DCE3F7] to-[#EEF1F8]">
         <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
         <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
         <PublicNavbar />
@@ -79,7 +79,7 @@ export default function ContactPage() {
         </div>
         <div className="flex flex-col gap-3">
           {faqs.map((f) => (
-            <details key={f.q} className="group bg-[#FCEFDD] rounded-2xl px-6 py-4 open:bg-white open:border open:border-neutral-300 open:shadow-sm">
+            <details key={f.q} className="group bg-[#EEF1F8] rounded-2xl px-6 py-4 open:bg-white open:border open:border-neutral-300 open:shadow-sm">
               <summary className="cursor-pointer list-none flex items-center justify-between gap-4 font-heading font-bold text-lg text-ink">
                 {f.q}
                 <span className="text-primary text-2xl leading-none transition-transform group-open:rotate-45">+</span>

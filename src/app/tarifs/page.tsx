@@ -83,7 +83,7 @@ export default function TarifsPage() {
       />
 
       {/* Plans prestataires */}
-      <div className="bg-[#FCEFDD]">
+      <div className="bg-[#EEF1F8]">
       <section className="relative z-20 -mt-16 md:-mt-20 px-4 md:px-8 pb-16 md:pb-24 max-w-5xl mx-auto w-full">
         <div className="flex justify-center mb-6">
           <span className="inline-flex items-center gap-2 bg-accent-2-100 text-accent-2-700 text-sm font-bold px-4 py-2 rounded-full">
@@ -167,12 +167,12 @@ export default function TarifsPage() {
           </h2>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="bg-[#FCEFDD] rounded-3xl p-6">
+          <div className="bg-[#EEF1F8] rounded-3xl p-6">
             <p className="text-sm font-semibold text-primary">L&apos;organisateur paie</p>
             <p className="font-heading font-extrabold text-3xl text-ink mt-2">{fmt(EXAMPLE + exampleFee)} FCFA</p>
             <p className="text-sm text-neutral-700 mt-2">{fmt(EXAMPLE)} pour la prestation + {fmt(exampleFee)} de frais de service ({FEE_ORGANIZER * 100} %).</p>
           </div>
-          <div className="bg-[#F6EBDD] rounded-3xl p-6">
+          <div className="bg-[#E4E9F5] rounded-3xl p-6">
             <p className="text-sm font-semibold text-primary">Le prestataire Free reçoit</p>
             <p className="font-heading font-extrabold text-3xl text-ink mt-2">{fmt(exampleFree)} FCFA</p>
             <p className="text-sm text-neutral-700 mt-2">Après {COMMISSION_FREE * 100} % de commission ({fmt(EXAMPLE * COMMISSION_FREE)} FCFA).</p>
@@ -189,7 +189,7 @@ export default function TarifsPage() {
       </section>
 
       {/* Organisateurs */}
-      <section className="bg-[#FCEFDD] py-16">
+      <section className="bg-[#EEF1F8] py-16">
         <div className="max-w-5xl mx-auto px-4 md:px-8 grid md:grid-cols-[auto_1fr] gap-6 items-center">
           <span className="w-16 h-16 rounded-2xl bg-white text-primary flex items-center justify-center shadow-sm"><Users size={30} /></span>
           <div>
@@ -206,7 +206,7 @@ export default function TarifsPage() {
         <h2 className="font-heading font-bold text-3xl md:text-4xl text-ink text-center mb-10">Questions sur les tarifs</h2>
         <div className="flex flex-col gap-3">
           {faqs.map((f) => (
-            <details key={f.q} className="group bg-[#FCEFDD] rounded-2xl px-6 py-4 open:bg-white open:border open:border-neutral-300 open:shadow-sm">
+            <details key={f.q} className="group bg-[#EEF1F8] rounded-2xl px-6 py-4 open:bg-white open:border open:border-neutral-300 open:shadow-sm">
               <summary className="cursor-pointer list-none flex items-center justify-between gap-4 font-heading font-bold text-lg text-ink">
                 {f.q}
                 <span className="text-primary text-2xl leading-none transition-transform group-open:rotate-45">+</span>

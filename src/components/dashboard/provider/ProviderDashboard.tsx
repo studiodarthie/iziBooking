@@ -170,8 +170,8 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
                 <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#C9982B" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#C9982B" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#22D3EE" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#22D3EE" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
@@ -179,9 +179,9 @@ export function ProviderDashboard({ user }: { user: DashboardUser }) {
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} tickFormatter={(value) => `${value}`} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
-                    cursor={{ stroke: '#C9982B', strokeWidth: 1, strokeDasharray: '3 3' }} 
+                    cursor={{ stroke: '#22D3EE', strokeWidth: 1, strokeDasharray: '3 3' }} 
                   />
-                  <Area type="monotone" dataKey="revenue" stroke="#C9982B" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                  <Area type="monotone" dataKey="revenue" stroke="#22D3EE" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

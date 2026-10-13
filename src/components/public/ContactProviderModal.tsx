@@ -49,7 +49,7 @@ export function ContactProviderModal({ providerProfileId, providerName }: { prov
     <>
       <button
         onClick={handleOpen}
-        className="flex-1 px-4 py-3.5 bg-white text-[#0d0d0d] font-semibold rounded-xl border border-neutral-200 hover:bg-neutral-50 transition-colors shadow-sm flex items-center justify-center gap-2"
+        className="flex-1 px-4 py-3.5 bg-white text-[#0E1430] font-semibold rounded-xl border border-neutral-200 hover:bg-neutral-50 transition-colors shadow-sm flex items-center justify-center gap-2"
       >
         <Mail size={18} />
         Envoyer un message
@@ -68,18 +68,18 @@ export function ContactProviderModal({ providerProfileId, providerName }: { prov
             {sent ? (
               <div className="flex flex-col items-center text-center py-6">
                 <CheckCircle2 size={40} className="text-green-600 mb-3" />
-                <h3 className="text-lg font-bold text-[#0d0d0d] mb-1">Message envoyé</h3>
+                <h3 className="text-lg font-bold text-[#0E1430] mb-1">Message envoyé</h3>
                 <p className="text-sm text-neutral-500">{providerName} a été notifié par email et pourra vous répondre.</p>
                 <button
                   onClick={handleClose}
-                  className="mt-6 px-5 py-2.5 rounded-xl bg-[#B5451B] text-white font-semibold hover:bg-[#9a3915] transition-colors"
+                  className="mt-6 px-5 py-2.5 rounded-xl bg-[#1E2A5E] text-white font-semibold hover:bg-[#141D45] transition-colors"
                 >
                   Fermer
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <h3 className="text-lg font-bold text-[#0d0d0d] mb-1">Message à {providerName}</h3>
+                <h3 className="text-lg font-bold text-[#0E1430] mb-1">Message à {providerName}</h3>
                 <p className="text-sm text-neutral-500 mb-4">
                   Posez votre question avant de faire une demande de réservation.
                 </p>
@@ -91,13 +91,13 @@ export function ContactProviderModal({ providerProfileId, providerName }: { prov
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={`Bonjour, je souhaiterais avoir plus d'informations sur vos prestations...`}
-                  className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-[#B5451B] focus:ring-1 focus:ring-[#B5451B] outline-none resize-none text-sm"
+                  className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-[#1E2A5E] focus:ring-1 focus:ring-[#1E2A5E] outline-none resize-none text-sm"
                 />
                 {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
                 <button
                   type="submit"
                   disabled={isSending || !content.trim()}
-                  className="mt-4 w-full px-5 py-3 rounded-xl bg-[#B5451B] text-white font-semibold hover:bg-[#9a3915] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="mt-4 w-full px-5 py-3 rounded-xl bg-[#1E2A5E] text-white font-semibold hover:bg-[#141D45] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSending ? <Loader2 size={18} className="animate-spin" /> : <Mail size={18} />}
                   {isSending ? "Envoi..." : "Envoyer"}

@@ -46,7 +46,7 @@ export default function BlogPage() {
       </section>
 
       {published.length > 0 ? (
-        <section className="bg-[#FCEFDD] py-16 md:py-20">
+        <section className="bg-[#EEF1F8] py-16 md:py-20">
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <h2 className="font-heading font-bold text-3xl md:text-4xl text-ink mb-10">Derniers articles</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -66,7 +66,7 @@ export default function BlogPage() {
           </div>
         </section>
       ) : (
-        <section className="bg-[#FCEFDD] py-16 md:py-20">
+        <section className="bg-[#EEF1F8] py-16 md:py-20">
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="text-center max-w-2xl mx-auto mb-10">
               <span className="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full">

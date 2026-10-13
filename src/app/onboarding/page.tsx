@@ -19,7 +19,7 @@ type Role = "ORGANIZER" | "PROVIDER" | null;
 /** Habillage commun à tout le tunnel d'onboarding : dégradé de marque + halos, logo en tête. */
 function OnboardingBackground({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#FBDDBF] via-[#FCE6CE] to-[#FCEFDD] font-sans">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#C7D2F0] via-[#DCE3F7] to-[#EEF1F8] font-sans">
       <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/25 blur-3xl pointer-events-none" />
       <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/35 blur-3xl pointer-events-none" />
       <div className="relative z-10 flex justify-center pt-8 pb-2">

@@ -37,7 +37,7 @@ export default async function SearchPage(props: {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FCEFDD] font-sans flex flex-col">
+    <div className="min-h-screen bg-[#EEF1F8] font-sans flex flex-col">
       <PageHero
         overlap
         eyebrow="Catalogue"

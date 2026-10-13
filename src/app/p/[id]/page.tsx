@@ -88,9 +88,9 @@ export default async function PublicProviderPage(props: Props) {
   const displayPole = poleLabels[profile.pole] || profile.pole;
 
   return (
-    <div className="min-h-screen bg-[#FBF6EE] pb-20 font-sans text-[#0d0d0d]">
+    <div className="min-h-screen bg-[#F8F9FC] pb-20 font-sans text-[#0E1430]">
       {/* Header : même fond que l'accueil, hauteur inchangée (navbar + bandeau) */}
-      <div className="relative overflow-hidden bg-[#3A1508]">
+      <div className="relative overflow-hidden bg-[#0E1430]">
         <Image
           src="/images/home/traditional-dance.jpg"
           alt=""
@@ -99,7 +99,7 @@ export default async function PublicProviderPage(props: Props) {
           sizes="100vw"
           className="object-cover object-center opacity-45"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#B5451B]/90 via-[#8E3414]/85 to-[#3A1508]/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1E2A5E]/90 via-[#16214A]/85 to-[#0E1430]/95" />
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-accent/30 blur-[120px] pointer-events-none" />
         <PublicNavbar />
         <div className="h-48 md:h-72" />
@@ -111,7 +111,7 @@ export default async function PublicProviderPage(props: Props) {
         {/* Left Column */}
         <div>
           {/* Avatar */}
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#FBF6EE] bg-white overflow-hidden shadow-xl shrink-0 relative flex items-center justify-center mb-6">
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#F8F9FC] bg-white overflow-hidden shadow-xl shrink-0 relative flex items-center justify-center mb-6">
             {profile.user.image ? (
               <Image 
                 src={profile.user.image} 
@@ -127,7 +127,7 @@ export default async function PublicProviderPage(props: Props) {
           {/* Name & Title */}
           <div className="mb-10">
             <div className="flex items-center gap-2 mb-3">
-              <span className="bg-[#B5451B]/10 text-[#B5451B] text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+              <span className="bg-[#1E2A5E]/10 text-[#1E2A5E] text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
                 {displayPole}
               </span>
               {profile.isVerified && (
@@ -141,20 +141,20 @@ export default async function PublicProviderPage(props: Props) {
                 </span>
               )}
             </div>
-            <h1 className="text-3xl md:text-5xl font-heading font-extrabold text-[#0d0d0d] tracking-tight">
+            <h1 className="text-3xl md:text-5xl font-heading font-extrabold text-[#0E1430] tracking-tight">
               {profile.name}
             </h1>
-            <p className="text-lg md:text-xl text-[#0d0d0d]/70 font-medium mt-2">
+            <p className="text-lg md:text-xl text-[#0E1430]/70 font-medium mt-2">
               {profile.category} {profile.specialty && <span className="opacity-50">· {profile.specialty}</span>}
             </p>
-            <div className="flex items-center gap-4 mt-4 text-sm text-[#0d0d0d]/60 font-medium">
+            <div className="flex items-center gap-4 mt-4 text-sm text-[#0E1430]/60 font-medium">
               <div className="flex items-center gap-1.5">
-                <MapPin size={16} className="text-[#C9982B]" />
+                <MapPin size={16} className="text-[#0891B2]" />
                 {profile.location}
               </div>
-              <div className="flex items-center gap-1 text-[#C9982B]">
+              <div className="flex items-center gap-1 text-[#0891B2]">
                 <Star size={16} className="fill-current" />
-                <span className="text-[#0d0d0d]/80">
+                <span className="text-[#0E1430]/80">
                   {ratingSummary.count > 0
                     ? `${ratingSummary.average.toFixed(1)} (${ratingSummary.count} avis)`
                     : "Nouveau sur iziBooking"}
@@ -200,7 +200,7 @@ export default async function PublicProviderPage(props: Props) {
               ) : (
                 <ContactProviderModal providerProfileId={profile.id} providerName={profile.name} />
               )}
-              <Link href={`/book/${profile.id}`} className="flex-1 px-4 py-3.5 bg-[#B5451B] text-white font-semibold rounded-xl hover:bg-[#9a3915] transition-colors shadow-lg shadow-[#B5451B]/20 flex items-center justify-center gap-2">
+              <Link href={`/book/${profile.id}`} className="flex-1 px-4 py-3.5 bg-[#1E2A5E] text-white font-semibold rounded-xl hover:bg-[#141D45] transition-colors shadow-lg shadow-[#1E2A5E]/20 flex items-center justify-center gap-2">
                 Réserver
               </Link>
             </div>
@@ -212,8 +212,8 @@ export default async function PublicProviderPage(props: Props) {
       {similarProviders.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 md:px-8 mt-24">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-heading font-bold text-[#0d0d0d]">Prestataires similaires</h2>
-            <Link href={`/search?q=${encodeURIComponent(profile.category)}`} className="text-[#B5451B] font-semibold hover:underline">
+            <h2 className="text-2xl font-heading font-bold text-[#0E1430]">Prestataires similaires</h2>
+            <Link href={`/search?q=${encodeURIComponent(profile.category)}`} className="text-[#1E2A5E] font-semibold hover:underline">
               Voir tout
             </Link>
           </div>
