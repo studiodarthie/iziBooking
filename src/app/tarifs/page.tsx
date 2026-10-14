@@ -24,6 +24,7 @@ const freeFeatures = [
   `${FREE_SERVICE_LIMIT} services`,
   "Calendrier de disponibilités",
   "Messagerie avec les organisateurs",
+  "Affiches « J'y serai » (avec filigrane iziBooking)",
   `Commission de ${COMMISSION_FREE * 100} % sur les réservations payées en ligne`,
 ];
 
