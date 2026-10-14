@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { Globe, Mail, ShieldCheck, Lock, CheckCircle2 } from "lucide-react";
+import { FacebookIcon } from "@/components/icons/FacebookIcon";
 
 const ERROR_MESSAGES: Record<string, string> = {
   TooManyRequests: "Trop de demandes de connexion. Réessayez dans quelques minutes.",
@@ -121,6 +122,15 @@ export default function InscriptionPage() {
             >
               <Globe className="w-5 h-5" />
               Inscription rapide avec Google
+            </button>
+
+            <button
+              onClick={() => signIn("facebook", { callbackUrl: "/dashboard" })}
+              disabled={!accepted}
+              className="w-full flex justify-center items-center gap-3 py-3.5 px-4 border-2 border-ink/10 rounded-xl shadow-sm text-sm font-bold text-ink bg-white hover:bg-ink/5 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <FacebookIcon className="w-5 h-5" />
+              Inscription rapide avec Facebook
             </button>
 
             <div className="relative">
