@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -43,6 +44,12 @@ export default async function BlogPostPage(props: Props) {
           <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink/60 hover:text-ink mb-8">
             <ArrowLeft size={16} /> Tous les articles
           </Link>
+
+          {post.image && (
+            <div className="relative aspect-[16/9] rounded-3xl overflow-hidden mb-10 shadow-sm">
+              <Image src={post.image} alt={post.title} fill priority className="object-cover" />
+            </div>
+          )}
 
           <div className="flex items-center gap-4 text-sm text-neutral-500 mb-8 pb-8 border-b border-ink/10">
             <span className="flex items-center gap-1.5">

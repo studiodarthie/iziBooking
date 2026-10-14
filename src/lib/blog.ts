@@ -39,6 +39,7 @@ export const posts: BlogPost[] = [
       "Mariage, concert, soirée d'entreprise : un tour d'horizon des démarches à anticiper selon le type et la taille de votre événement.",
     category: "Conseils organisateurs",
     date: "2026-10-14",
+    image: "/blog/autorisations-evenement-cameroun.jpg",
     readingMinutes: 6,
     content: [
       {
@@ -95,6 +96,7 @@ export const posts: BlogPost[] = [
       "Un dispositif de sécurité mal dimensionné est l'une des premières causes de problèmes le jour J. Quelques repères pour voir juste.",
     category: "Conseils organisateurs",
     date: "2026-10-12",
+    image: "/blog/securite-evenementielle-barrieres-agents.jpg",
     readingMinutes: 5,
     content: [
       {
@@ -145,6 +147,7 @@ export const posts: BlogPost[] = [
       "Du premier rendez-vous avec le traiteur à la liste de diffusion du DJ : tout ce qu'il ne faut pas oublier, mois par mois.",
     category: "Conseils organisateurs",
     date: "2026-10-10",
+    image: "/blog/checklist-mariage-douala-yaounde.jpg",
     readingMinutes: 7,
     content: [
       {
@@ -210,6 +213,7 @@ export const posts: BlogPost[] = [
       "Quelle part du budget revient au traiteur, à l'animation, à la décoration ? Des repères pour éviter les mauvaises surprises.",
     category: "Conseils organisateurs",
     date: "2026-10-08",
+    image: "/blog/budget-evenement-repartir-depenses.jpg",
     readingMinutes: 5,
     content: [
       {
@@ -264,6 +268,7 @@ export const posts: BlogPost[] = [
       "Objectifs, logistique, communication : la méthode pour un événement professionnel qui marque les esprits sans mauvaise surprise.",
     category: "Conseils organisateurs",
     date: "2026-10-06",
+    image: "/blog/organiser-conference-seminaire-entreprise.jpg",
     readingMinutes: 6,
     content: [
       {
@@ -311,6 +316,7 @@ export const posts: BlogPost[] = [
       "Le DJ fait ou défait l'ambiance d'une soirée. Voici les questions à poser avant de signer, pour éviter les mauvaises surprises.",
     category: "Conseils organisateurs",
     date: "2026-10-04",
+    image: "/blog/choisir-dj-mariage-7-questions.jpg",
     readingMinutes: 5,
     content: [
       {
