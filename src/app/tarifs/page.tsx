@@ -33,6 +33,7 @@ const premiumFeatures = [
   "Photos et services en illimité",
   "Mise en avant dans les résultats de recherche",
   "Badge Premium visible sur votre profil",
+  "Affiches « J'y serai » sans filigrane iziBooking",
   "Statistiques de profil (vues, demandes reçues)",
   "Coach IA illimité (tarifs, réponses, devis)",
   "Vérification de votre profil en priorité",
