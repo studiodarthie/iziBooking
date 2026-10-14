@@ -89,6 +89,7 @@
   --font-sans: var(--font-jakarta), sans-serif;
   --font-heading: var(--font-jakarta), sans-serif;
   --font-mono: var(--font-jakarta), monospace;
+  --font-display: var(--font-baloo), sans-serif;
 }
 
 body {
