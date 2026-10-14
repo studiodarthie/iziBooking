@@ -67,7 +67,7 @@ export function ContactProviderModal({ providerProfileId, providerName }: { prov
 
             {sent ? (
               <div className="flex flex-col items-center text-center py-6">
-                <CheckCircle2 size={40} className="text-green-600 mb-3" />
+                <CheckCircle2 size={40} className="text-trust mb-3" />
                 <h3 className="text-lg font-bold text-[#0E1430] mb-1">Message envoyé</h3>
                 <p className="text-sm text-neutral-500">{providerName} a été notifié par email et pourra vous répondre.</p>
                 <button

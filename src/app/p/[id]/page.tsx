@@ -131,7 +131,7 @@ export default async function PublicProviderPage(props: Props) {
                 {displayPole}
               </span>
               {profile.isVerified && (
-                <span className="flex items-center gap-1 text-[11px] font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">
+                <span className="flex items-center gap-1 text-[11px] font-semibold text-trust bg-trust-tint px-3 py-1 rounded-full">
                   <ShieldCheck size={14} /> Vérifié
                 </span>
               )}

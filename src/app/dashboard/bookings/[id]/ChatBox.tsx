@@ -98,7 +98,7 @@ export function ChatBox({
                 <button 
                   onClick={() => handleStatusChange("ACCEPTED")}
                   disabled={statusLoading}
-                  className="px-3 py-1.5 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-trust text-white text-sm font-semibold rounded-lg hover:bg-trust/90 transition-colors flex items-center gap-1.5"
                 >
                   <CheckCircle2 size={16} /> Accepter
                 </button>

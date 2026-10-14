@@ -34,7 +34,7 @@ export function OrganizerSettingsForm({ initialName }: { initialName: string }) 
     <form onSubmit={onSubmit} className="space-y-6 bg-sand rounded-2xl p-6 md:p-8 border border-ink/10">
 
       {message && (
-        <div className={`p-4 rounded-xl text-sm font-medium ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+        <div className={`p-4 rounded-xl text-sm font-medium ${message.type === 'success' ? 'bg-trust-tint text-trust' : 'bg-red-50 text-red-700'}`}>
           {message.text}
         </div>
       )}
