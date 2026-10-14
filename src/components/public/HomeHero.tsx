@@ -47,7 +47,7 @@ export function HomeHero() {
             Réservez artistes et prestataires en confiance
           </span>
 
-          <h1 className="font-display font-extrabold text-[clamp(38px,6vw,76px)] leading-[1.02] mt-8">
+          <h1 className="font-display font-extrabold tracking-[-0.03em] text-[clamp(38px,6vw,76px)] leading-[1.02] mt-8">
             La scène africaine,
             <br />
             <span className="text-accent-2-300">réservable en un clic.</span>
