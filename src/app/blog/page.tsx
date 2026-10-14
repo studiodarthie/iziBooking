@@ -26,7 +26,7 @@ export default function BlogPage() {
             Inspirations & conseils <span className="text-accent-2-300">pour vos événements.</span>
           </>
         }
-        description="Guides pratiques, retours d'expérience et coulisses de la scène événementielle africaine. Nos premiers articles arrivent bientôt."
+        description="Guides pratiques, retours d'expérience et coulisses de la scène événementielle africaine."
       />
 
       {/* Catégories */}
