@@ -16,15 +16,20 @@ export default async function PosterCampaignDetailPage(props: Props) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) redirect("/login");
 
-  const campaign = await prisma.posterCampaign.findUnique({
-    where: { id },
-    include: {
-      leads: { orderBy: { createdAt: "desc" } },
-      user: { select: { providerProfile: { select: { plan: true, planExpiresAt: true } } } },
-    },
-  });
+  const [campaign, viewer] = await Promise.all([
+    prisma.posterCampaign.findUnique({
+      where: { id },
+      include: {
+        leads: { orderBy: { createdAt: "desc" } },
+        user: { select: { providerProfile: { select: { plan: true, planExpiresAt: true } } } },
+      },
+    }),
+    prisma.user.findUnique({ where: { id: session.user.id }, select: { isAdmin: true } }),
+  ]);
 
-  if (!campaign || campaign.userId !== session.user.id) notFound();
+  // Un admin peut consulter n'importe quelle campagne pour le support (lecture seule — le
+  // recalibrage du cadrage photo, lui, reste réservé au propriétaire : voir updatePosterPhotoZone).
+  if (!campaign || (campaign.userId !== session.user.id && !viewer?.isAdmin)) notFound();
 
   const hasTemplate = campaign.templatePublicId && campaign.templateWidth && campaign.templateHeight;
   const showWatermark = !(campaign.user.providerProfile && isPremium(campaign.user.providerProfile));

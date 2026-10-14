@@ -13,12 +13,15 @@ export async function GET(_req: Request, context: { params: Promise<{ id: string
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return new NextResponse("Non autorisé", { status: 401 });
 
-  const campaign = await prisma.posterCampaign.findUnique({
-    where: { id },
-    include: { leads: { orderBy: { createdAt: "desc" } } },
-  });
+  const [campaign, viewer] = await Promise.all([
+    prisma.posterCampaign.findUnique({
+      where: { id },
+      include: { leads: { orderBy: { createdAt: "desc" } } },
+    }),
+    prisma.user.findUnique({ where: { id: session.user.id }, select: { isAdmin: true } }),
+  ]);
 
-  if (!campaign || campaign.userId !== session.user.id) {
+  if (!campaign || (campaign.userId !== session.user.id && !viewer?.isAdmin)) {
     return new NextResponse("Introuvable", { status: 404 });
   }
 
