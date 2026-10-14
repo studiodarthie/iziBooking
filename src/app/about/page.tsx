@@ -49,29 +49,29 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white text-ink font-sans flex flex-col">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#C7D2F0] via-[#DCE3F7] to-[#EEF1F8]">
-        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B1130] via-[#141D45] to-[#1E2A5E]">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-culture/25 blur-3xl pointer-events-none" />
         <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
         <PublicNavbar />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 pt-14 md:pt-20 pb-20 md:pb-28 grid lg:grid-cols-[1.1fr_1fr] gap-12 items-center">
           <div>
-            <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-6">
+            <span className="inline-block bg-white/10 text-accent-2-300 text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-6">
               À propos d&apos;iziBooking
             </span>
-            <h1 className="font-heading font-extrabold text-[clamp(34px,4.6vw,62px)] leading-[1.05] text-ink">
+            <h1 className="font-heading font-extrabold text-[clamp(34px,4.6vw,62px)] leading-[1.05] text-white">
               Donner à la scène africaine
-              <span className="text-primary"> l&apos;outil qu&apos;elle mérite.</span>
+              <span className="text-accent-2-300"> l&apos;outil qu&apos;elle mérite.</span>
             </h1>
-            <p className="mt-6 text-neutral-700 text-base md:text-lg leading-relaxed max-w-xl">
+            <p className="mt-6 text-white/75 text-base md:text-lg leading-relaxed max-w-xl">
               Trouver un DJ, un traiteur ou un photographe fiable, c&apos;est encore trop souvent une affaire de bouche-à-oreille et de groupes WhatsApp.
               iziBooking réunit les talents et les organisateurs au même endroit, avec confiance et simplicité.
             </p>
             <div className="flex flex-wrap gap-3 mt-8">
-              <Link href="/search" className="inline-flex items-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-6 py-3 transition-colors shadow-lg shadow-primary/30">
+              <Link href="/search" className="inline-flex items-center gap-2 bg-white hover:bg-neutral-100 text-primary font-bold rounded-full px-6 py-3 transition-colors shadow-lg">
                 Trouver un prestataire <ArrowRight size={18} />
               </Link>
-              <Link href="/inscription" className="inline-flex items-center gap-2 bg-white border border-neutral-400 text-ink font-semibold rounded-full px-6 py-3 hover:border-primary hover:text-primary transition-colors">
+              <Link href="/inscription" className="inline-flex items-center gap-2 bg-white/10 border border-white/30 text-white font-semibold rounded-full px-6 py-3 hover:bg-white/20 transition-colors">
                 Devenir prestataire
               </Link>
             </div>

@@ -36,19 +36,19 @@ export default async function JySeraiGalleryPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#C7D2F0] via-[#DCE3F7] to-[#EEF1F8]">
-        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B1130] via-[#141D45] to-[#1E2A5E]">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-culture/25 blur-3xl pointer-events-none" />
         <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
         <PublicNavbar />
 
         <section className="relative z-10 px-4 md:px-8 pt-8 pb-14 md:pb-20 text-center">
-          <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
+          <span className="inline-block bg-white/10 text-accent-2-300 text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
             Galerie des badges
           </span>
-          <h1 className="font-heading font-extrabold text-[clamp(28px,4vw,46px)] leading-[1.1] text-ink max-w-3xl mx-auto">
+          <h1 className="font-heading font-extrabold text-[clamp(28px,4vw,46px)] leading-[1.1] text-white max-w-3xl mx-auto">
             Trouvez un événement et créez votre badge « J'y serai »
           </h1>
-          <p className="mt-4 text-ink/60 max-w-xl mx-auto">
+          <p className="mt-4 text-white/70 max-w-xl mx-auto">
             Parcourez les affiches créées par les organisateurs et générez la vôtre avec votre
             photo, en quelques secondes.
           </p>

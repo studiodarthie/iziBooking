@@ -76,7 +76,7 @@ export default function TarifsPage() {
         eyebrow="Tarifs"
         title={
           <>
-            Simple, clair, <span className="text-primary">sans surprise.</span>
+            Simple, clair, <span className="text-accent-2-300">sans surprise.</span>
           </>
         }
         description="Gratuit pour les organisateurs. Pour les prestataires, un plan gratuit pour démarrer et un Premium pour accélérer."

@@ -31,20 +31,20 @@ const faqs = [
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white text-ink font-sans flex flex-col">
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#C7D2F0] via-[#DCE3F7] to-[#EEF1F8]">
-        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B1130] via-[#141D45] to-[#1E2A5E]">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-culture/25 blur-3xl pointer-events-none" />
         <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
         <PublicNavbar />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 pt-12 md:pt-16 pb-24 md:pb-28">
           <div className="max-w-2xl">
-            <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
+            <span className="inline-block bg-white/10 text-accent-2-300 text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
               Contact
             </span>
-            <h1 className="font-heading font-extrabold text-[clamp(34px,4.4vw,58px)] leading-[1.05] text-ink">
+            <h1 className="font-heading font-extrabold text-[clamp(34px,4.4vw,58px)] leading-[1.05] text-white">
               On vous écoute.
             </h1>
-            <p className="mt-5 text-neutral-700 text-base md:text-lg leading-relaxed">
+            <p className="mt-5 text-white/75 text-base md:text-lg leading-relaxed">
               Une question, une suggestion, un souci avec une réservation ? Écrivez-nous, nous vous répondons par email.
             </p>
           </div>

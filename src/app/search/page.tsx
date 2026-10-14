@@ -43,7 +43,7 @@ export default async function SearchPage(props: {
         eyebrow="Catalogue"
         title={
           <>
-            Trouvez le prestataire <span className="text-primary">idéal.</span>
+            Trouvez le prestataire <span className="text-accent-2-300">idéal.</span>
           </>
         }
         description="Artistes, traiteurs, photographes, décorateurs… Filtrez par catégorie, pays et budget pour réserver en confiance."

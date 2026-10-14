@@ -23,7 +23,7 @@ export default function BlogPage() {
         eyebrow="Blog"
         title={
           <>
-            Inspirations & conseils <span className="text-primary">pour vos événements.</span>
+            Inspirations & conseils <span className="text-accent-2-300">pour vos événements.</span>
           </>
         }
         description="Guides pratiques, retours d'expérience et coulisses de la scène événementielle africaine. Nos premiers articles arrivent bientôt."

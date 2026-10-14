@@ -42,22 +42,22 @@ export default async function JySeraiLandingPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#C7D2F0] via-[#DCE3F7] to-[#EEF1F8]">
-        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B1130] via-[#141D45] to-[#1E2A5E]">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-culture/25 blur-3xl pointer-events-none" />
         <div className="absolute top-32 right-[-120px] w-[460px] h-[460px] rounded-full bg-accent/40 blur-3xl pointer-events-none" />
         <PublicNavbar />
 
         <section className="relative z-10 px-4 md:px-8 py-10 md:py-16">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <span className="inline-block bg-primary/10 text-primary text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
+              <span className="inline-block bg-white/10 text-accent-2-300 text-[12px] font-bold tracking-[0.08em] uppercase px-3.5 py-1.5 rounded-full mb-5">
                 Gratuit · Sans compte pour vos invités
               </span>
-              <h1 className="font-heading font-extrabold text-[clamp(32px,4.5vw,52px)] leading-[1.08] text-ink">
+              <h1 className="font-heading font-extrabold text-[clamp(32px,4.5vw,52px)] leading-[1.08] text-white">
                 Faites parler de votre événement avec des affiches{" "}
-                <span className="text-primary">« J'y serai »</span>
+                <span className="text-accent-2-300">« J'y serai »</span>
               </h1>
-              <p className="mt-5 text-lg text-neutral-700 max-w-xl">
+              <p className="mt-5 text-lg text-white/75 max-w-xl">
                 Créez une campagne pour votre mariage, concert, festival ou conférence. Vos
                 invités ajoutent leur photo et partagent leur propre affiche — chaque partage est
                 une publicité gratuite, et vous récupérez leurs coordonnées au passage.
@@ -65,19 +65,19 @@ export default async function JySeraiLandingPage() {
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Link
                   href={ctaHref}
-                  className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-accent-600 text-white font-bold rounded-full px-7 py-4 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-neutral-100 text-primary font-bold rounded-full px-7 py-4 transition-colors"
                 >
                   Créer mon affiche gratuitement <ArrowRight size={18} />
                 </Link>
                 <Link
                   href="/jyserai/galerie"
-                  className="inline-flex items-center justify-center gap-2 bg-white border border-neutral-400 text-ink font-semibold rounded-full px-7 py-4 hover:border-primary hover:text-primary transition-colors"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/30 text-white font-semibold rounded-full px-7 py-4 hover:bg-white/20 transition-colors"
                 >
                   Voir les badges existants
                 </Link>
               </div>
-              <p className="mt-4 text-xs text-ink/50 flex items-center gap-1.5">
-                <Crown size={14} className="text-accent-2-500" />
+              <p className="mt-4 text-xs text-white/60 flex items-center gap-1.5">
+                <Crown size={14} className="text-accent-2-300" />
                 Avec Premium, le filigrane iziBooking disparaît de vos affiches.
               </p>
             </div>
